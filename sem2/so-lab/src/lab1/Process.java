@@ -34,6 +34,10 @@ public class Process {
         }
     }
 
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
+
     public int getArrivalTime() { return arrivalTime; }
     public int getBurstTime() { return burstTime; }
     public int getWaitTime() { return waitTime; }

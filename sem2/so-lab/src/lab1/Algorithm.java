@@ -31,6 +31,7 @@ abstract class Algorithm {
             process.tick(tickDuration);
             if (process.getWaitTime() - process.getBurstTime() > starvationThreshold) {
                 starvedProcesses.add(process);
+//                process.setComplete(true); idk czy to killowac czy nie
             }
         }
 
@@ -67,7 +68,13 @@ abstract class Algorithm {
     }
 
     private List<Process> getQueuedProcesses(List<Process> processes, int currentTime) {
-        return processes.stream().filter(p -> p.getArrivalTime() <= currentTime && !p.isComplete()).collect(Collectors.toList());
+        List<Process> queuedProcesses = new ArrayList<>();
+        for (Process process : processes) {
+            if (process.getArrivalTime() <= currentTime && !process.isComplete()) {
+                queuedProcesses.add(process);
+            }
+        }
+        return queuedProcesses;
     }
 
     private void clearProcesses(List<Process> processes) {
@@ -80,7 +87,7 @@ abstract class Algorithm {
 
 class FCFS extends Algorithm {
     public FCFS(List<Process> processes) {
-        super(processes, 1, 200);
+        super(processes, 1, 1000);
     }
 
     @Override
@@ -91,7 +98,7 @@ class FCFS extends Algorithm {
 
 class SJF extends Algorithm {
     public SJF(List<Process> processes) {
-        super(processes, 1, 200);
+        super(processes, 1, 1000);
     }
 
     @Override
@@ -104,7 +111,7 @@ class RR extends Algorithm {
     private int lastIndex = 0;
 
     public RR(List<Process> processes, int timeQuantum) {
-        super(processes, timeQuantum, 200);
+        super(processes, timeQuantum, 1000);
     }
 
     @Override
