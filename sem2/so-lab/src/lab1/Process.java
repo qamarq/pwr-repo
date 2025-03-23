@@ -1,6 +1,6 @@
 package lab1;
 
-public class Process {
+class Process {
     private final int arrivalTime;
     private final int burstTime;
     private int remainingTime;
@@ -20,22 +20,12 @@ public class Process {
     }
 
     public void tick(int time) {
-        if (!complete) {
-            waitTime += time;
-        }
+        if (!complete) waitTime += time;
     }
 
     public void process(int time) {
-        if (remainingTime <= time) {
-            remainingTime = 0;
-            complete = true;
-        } else {
-            remainingTime -= time;
-        }
-    }
-
-    public void setComplete(boolean complete) {
-        this.complete = complete;
+        remainingTime = Math.max(0, remainingTime - time);
+        complete = remainingTime == 0;
     }
 
     public int getArrivalTime() { return arrivalTime; }

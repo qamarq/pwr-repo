@@ -5,9 +5,7 @@ import java.util.stream.Collectors;
 
 abstract class Algorithm {
     protected int currentTime = 0;
-    protected Process currentProcess = null;
     protected int processSwitches = 0;
-    protected Integer previousProcessId = null;
     protected List<Process> queue = new ArrayList<>();
     protected Set<Process> starvedProcesses = new HashSet<>();
     protected List<Process> processes;
@@ -23,51 +21,32 @@ abstract class Algorithm {
     protected abstract Process selectCurrentProcess();
 
     public void tick() {
-        queue = getQueuedProcesses(processes, currentTime);
+        queue = getQueuedProcesses();
         currentTime++;
-        currentProcess = selectCurrentProcess();
+        Process currentProcess = selectCurrentProcess();
 
         for (Process process : queue) {
             process.tick(tickDuration);
             if (process.getWaitTime() - process.getBurstTime() > starvationThreshold) {
                 starvedProcesses.add(process);
-//                process.setComplete(true); idk czy to killowac czy nie
             }
-        }
-
-        if (previousProcessId == null || previousProcessId != System.identityHashCode(currentProcess)) {
-            processSwitches++;
-            previousProcessId = currentProcess != null ? System.identityHashCode(currentProcess) : null;
         }
 
         if (currentProcess != null) {
+            processSwitches++;
             currentProcess.process(tickDuration);
-            if (currentProcess.isComplete()) {
-                currentProcess = null;
-            }
         }
     }
 
     public Result run() {
-        clearProcesses(processes);
-        int totalTime = processes.stream().mapToInt(Process::getBurstTime).sum() * 2;
-
-        while (hasIncompleteProcesses(processes)) {
+        clearProcesses();
+        while (processes.stream().anyMatch(p -> !p.isComplete())) {
             tick();
         }
-
-        return new Result(calcAvgCompletionTime(processes), processSwitches, starvedProcesses.size());
+        return new Result(processes.stream().mapToInt(Process::getWaitTime).average().orElse(0), processSwitches, starvedProcesses.size());
     }
 
-    private boolean hasIncompleteProcesses(List<Process> processes) {
-        return processes.stream().anyMatch(p -> !p.isComplete());
-    }
-
-    private double calcAvgCompletionTime(List<Process> processes) {
-        return processes.stream().mapToInt(Process::getWaitTime).average().orElse(0);
-    }
-
-    private List<Process> getQueuedProcesses(List<Process> processes, int currentTime) {
+    private List<Process> getQueuedProcesses() {
         List<Process> queuedProcesses = new ArrayList<>();
         for (Process process : processes) {
             if (process.getArrivalTime() <= currentTime && !process.isComplete()) {
@@ -77,10 +56,8 @@ abstract class Algorithm {
         return queuedProcesses;
     }
 
-    private void clearProcesses(List<Process> processes) {
-        for (Process p : processes) {
-            p.reset();
-        }
+    private void clearProcesses() {
+        processes.forEach(Process::reset);
         processes.sort(Comparator.comparingInt(Process::getArrivalTime));
     }
 }
@@ -103,12 +80,12 @@ class SJF extends Algorithm {
 
     @Override
     protected Process selectCurrentProcess() {
-        return queue.isEmpty() ? null : queue.stream().min(Comparator.comparingInt(Process::getBurstTime)).orElse(null);
+        return queue.isEmpty() ? null : Collections.min(queue, Comparator.comparingInt(Process::getBurstTime));
     }
 }
 
 class RR extends Algorithm {
-    private int lastIndex = 0;
+    private int lastIndex = -1;
 
     public RR(List<Process> processes, int timeQuantum) {
         super(processes, timeQuantum, 1000);

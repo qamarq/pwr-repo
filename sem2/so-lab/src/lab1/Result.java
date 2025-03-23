@@ -1,6 +1,6 @@
 package lab1;
 
-public class Result {
+class Result {
     final double avgCompletionTime;
     private final int processSwitches;
     private final int starvedProcesses;
