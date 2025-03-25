@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class Main {
-    private static final int PROCESS_COUNT = 10000;
+    private static final int PROCESS_COUNT = 1000;
     private static final int TIME_QUANTUM = 5;
     private static final int ITERATIONS = 30;
     private static final String[] ALGORITHMS = {"FCFS", "SJF", "SRTF", "RR"};
@@ -13,19 +13,16 @@ public class Main {
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         List<Future<Map<String, Result>>> futures = new ArrayList<>();
 
-        // submit a task per iteration.
         for (int i = 0; i < ITERATIONS; i++) {
             int finalI = i;
             futures.add(executor.submit(() -> runIteration(finalI)));
         }
 
-        // initialize aggregated sums for each algorithm: [totalAvgCompletionTime, totalProcessSwitches, totalStarvedProcesses]
         Map<String, double[]> aggregated = new LinkedHashMap<>();
         for (String algo : ALGORITHMS) {
             aggregated.put(algo, new double[]{0, 0, 0});
         }
 
-        // process task results and update aggregate sums.
         for (Future<Map<String, Result>> future : futures) {
             Map<String, Result> iterationResults = future.get(); // blocking call
             for (String algo : ALGORITHMS) {
@@ -40,7 +37,6 @@ public class Main {
 
         executor.shutdown();
 
-        // compute average for each algorithm
         Map<String, Result> finalResults = new LinkedHashMap<>();
         for (String key : aggregated.keySet()) {
             double[] sums = aggregated.get(key);
@@ -59,7 +55,6 @@ public class Main {
         System.out.println("Najlepszy algorytm: " + bestAlgorithm);
     }
 
-    // callable task for one iteration that returns a map with algorithm results.
     private static Map<String, Result> runIteration(int i) {
         Map<String, Result> iterationResults = new LinkedHashMap<>();
 

@@ -75,13 +75,6 @@ abstract class Algorithm {
     private List<Process> getQueuedProcesses(List<Process> processes, int currentTime) {
         return processes.stream().filter(p -> p.getArrivalTime() <= currentTime && !p.isComplete()).collect(Collectors.toList());
     }
-
-    private void clearProcesses(List<Process> processes) {
-        for (Process p : processes) {
-            p.reset();
-        }
-        processes.sort(Comparator.comparingInt(Process::getArrivalTime));
-    }
 }
 
 class FCFS extends Algorithm {
@@ -131,13 +124,10 @@ class SRTF extends Algorithm {
         if (queue.isEmpty())
             return null;
 
-        // Get the process with minimum remaining time from the queue
         Process selected = queue.stream()
                 .min(java.util.Comparator.comparingInt(Process::getRemainingTime))
                 .orElse(null);
 
-        // If currentProcess is active and its remaining time is less than or equal to the selected process's,
-        // then continue using currentProcess (preemption only occurs if a new process has shorter remaining time).
         if (currentProcess != null && !currentProcess.isComplete()) {
             if (currentProcess.getRemainingTime() <= selected.getRemainingTime()) {
                 return currentProcess;
