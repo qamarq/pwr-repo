@@ -11,8 +11,17 @@ class Result {
         this.starvedProcesses = starvedProcesses;
     }
 
+    public int getProcessSwitches() {
+        return processSwitches;
+    }
+
+    public int getStarvedProcesses() {
+        return starvedProcesses;
+    }
+
     @Override
     public String toString() {
-        return String.format("Średni czas zakończenia: %.2f, Zmiany procesu: %d, Zagłodzone: %d", avgCompletionTime, processSwitches, starvedProcesses);
+        return String.format("Średni czas zakończenia: %.2f, Zmiany procesu: %d, Zagłodzone: %d",
+                avgCompletionTime, processSwitches, starvedProcesses);
     }
 }

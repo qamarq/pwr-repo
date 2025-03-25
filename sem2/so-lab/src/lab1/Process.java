@@ -6,11 +6,13 @@ class Process {
     private int remainingTime;
     private int waitTime = 0;
     private boolean complete = false;
+    private int pid = 0;
 
-    public Process(int arrivalTime, int burstTime) {
+    public Process(int arrivalTime, int burstTime, int pid) {
         this.arrivalTime = arrivalTime;
         this.burstTime = burstTime;
         this.remainingTime = burstTime;
+        this.pid = pid;
     }
 
     public void reset() {
@@ -28,8 +30,14 @@ class Process {
         complete = remainingTime == 0;
     }
 
+    public int pid() {
+        return pid;
+    }
+
     public int getArrivalTime() { return arrivalTime; }
     public int getBurstTime() { return burstTime; }
     public int getWaitTime() { return waitTime; }
     public boolean isComplete() { return complete; }
+
+    public int getRemainingTime() { return remainingTime; }
 }
