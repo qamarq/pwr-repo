@@ -1,51 +1,52 @@
 package lab1;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 public class Main {
-    public static void main(String[] args) {
-        int processCount = 1000;
-        int timeQuantum = 2;
-        int iterations = 30;
+    private static final int PROCESS_COUNT = 1000;
+    private static final int TIME_QUANTUM = 2;
+    private static final int ITERATIONS = 30;
+    private static final String[] ALGORITHMS = {"FCFS", "SJF", "SRTF", "RR"};
 
-        String[] algorithms = {"FCFS", "SJF", "SRTF", "RR"};
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        List<Future<Map<String, Result>>> futures = new ArrayList<>();
+
+        // submit a task per iteration.
+        for (int i = 0; i < ITERATIONS; i++) {
+            int finalI = i;
+            futures.add(executor.submit(() -> runIteration(finalI)));
+        }
+
+        // initialize aggregated sums for each algorithm: [totalAvgCompletionTime, totalProcessSwitches, totalStarvedProcesses]
         Map<String, double[]> aggregated = new LinkedHashMap<>();
-        for (String algo : algorithms) {
+        for (String algo : ALGORITHMS) {
             aggregated.put(algo, new double[]{0, 0, 0});
         }
 
-        for (int i = 0; i < iterations; i++) {
-            List<Process> processes = generateProcesses(processCount);
-
-            // run each algorithm for current iteration and update the aggregated sums
-            Result fcfsResult = new FCFS(processes).run();
-            updateAggregated(aggregated, "FCFS", fcfsResult);
-            System.out.println("Iteration " + (i+1) + " FCFS done");
-
-            // generate processes again to reset the state
-            processes = generateProcesses(processCount);
-            Result sjfResult = new SJF(processes).run();
-            updateAggregated(aggregated, "SJF", sjfResult);
-            System.out.println("Iteration " + (i+1) + " SJF done");
-
-            processes = generateProcesses(processCount);
-            Result srtfResult = new SRTF(processes).run();
-            updateAggregated(aggregated, "SRTF", srtfResult);
-            System.out.println("Iteration " + (i+1) + " SRTF done");
-
-            processes = generateProcesses(processCount);
-            Result rrResult = new RR(processes, timeQuantum).run();
-            updateAggregated(aggregated, "RR", rrResult);
-            System.out.println("Iteration " + (i+1) + " RR done");
+        // process task results and update aggregate sums.
+        for (Future<Map<String, Result>> future : futures) {
+            Map<String, Result> iterationResults = future.get(); // blocking call
+            for (String algo : ALGORITHMS) {
+                Result result = iterationResults.get(algo);
+                double[] sums = aggregated.get(algo);
+                sums[0] += result.avgCompletionTime;
+                sums[1] += result.getProcessSwitches();
+                sums[2] += result.getStarvedProcesses();
+                aggregated.put(algo, sums);
+            }
         }
 
-        // compute averages for each algorithm
+        executor.shutdown();
+
+        // compute average for each algorithm
         Map<String, Result> finalResults = new LinkedHashMap<>();
         for (String key : aggregated.keySet()) {
             double[] sums = aggregated.get(key);
-            double avgCompletionTime = sums[0] / iterations;
-            int avgSwitches = (int) Math.round(sums[1] / iterations);
-            int avgStarved = (int) Math.round(sums[2] / iterations);
+            double avgCompletionTime = sums[0] / ITERATIONS;
+            int avgSwitches = (int) Math.round(sums[1] / ITERATIONS);
+            int avgStarved = (int) Math.round(sums[2] / ITERATIONS);
             finalResults.put(key, new Result(avgCompletionTime, avgSwitches, avgStarved));
         }
 
@@ -58,19 +59,32 @@ public class Main {
         System.out.println("Najlepszy algorytm: " + bestAlgorithm);
     }
 
-    private static void updateAggregated(Map<String, double[]> aggregated, String key, Result result) {
-        double[] sums = aggregated.get(key);
-        sums[0] += result.avgCompletionTime;
-        sums[1] += result.getProcessSwitches();
-        sums[2] += result.getStarvedProcesses();
-        aggregated.put(key, sums);
+    // callable task for one iteration that returns a map with algorithm results.
+    private static Map<String, Result> runIteration(int i) {
+        Map<String, Result> iterationResults = new LinkedHashMap<>();
+
+        List<Process> processes = generateProcesses();
+        Result fcfsResult = new FCFS(processes).run();
+        System.out.println("Iteration " + (i+1) + " FCFS done");
+        iterationResults.put("FCFS", fcfsResult);
+        Result sjfResult = new SJF(processes).run();
+        System.out.println("Iteration " + (i+1) + " SJF done");
+        iterationResults.put("SJF", sjfResult);
+        Result srtfResult = new SRTF(processes).run();
+        System.out.println("Iteration " + (i+1) + " SRTF done");
+        iterationResults.put("SRTF", srtfResult);
+        Result rrResult = new RR(processes, TIME_QUANTUM).run();
+        System.out.println("Iteration " + (i+1) + " RR done");
+        iterationResults.put("RR", rrResult);
+
+        return iterationResults;
     }
 
-    private static List<Process> generateProcesses(int count) {
+    private static List<Process> generateProcesses() {
         Random rand = new Random();
         int pid = 0;
         List<Process> processes = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < Main.PROCESS_COUNT; i++) {
             pid++;
             processes.add(new Process(rand.nextInt(20), rand.nextInt(100) + 1, pid));
         }
@@ -83,7 +97,6 @@ public class Main {
         System.out.printf("| %-10s | %-20s | %-15s | %-18s |\n",
                 "Algorithm", "Avg Completion Time", "Switches", "Starved Processes");
         System.out.println(line);
-
         for (Map.Entry<String, Result> entry : results.entrySet()) {
             System.out.printf("| %-10s | %-20.2f | %-15d | %-18d |\n",
                     entry.getKey(),
