@@ -7,17 +7,19 @@ abstract class Algorithm {
     protected int currentTime = 0;
     protected Process currentProcess = null;
     protected int processSwitches = 0;
-    protected Integer previousProcessId = null;
+    private Process previousProcess = null;
     protected List<Process> queue = new ArrayList<>();
     protected Set<Process> starvedProcesses = new HashSet<>();
     protected List<Process> processes;
     protected int tickDuration;
-    protected int starvationThreshold;
 
-    public Algorithm(List<Process> processes, int tickDuration, int starvationThreshold) {
-        this.processes = new ArrayList<>(processes);
+    public Algorithm(List<Process> processes, int tickDuration) {
+        this.processes = new ArrayList<>();
+        for (Process p : processes) {
+            this.processes.add(p.clone());
+        }
+
         this.tickDuration = tickDuration;
-        this.starvationThreshold = starvationThreshold;
     }
 
     protected abstract Process selectCurrentProcess();
@@ -34,12 +36,13 @@ abstract class Algorithm {
             }
         }
 
-        if (currentProcess != null && previousProcessId != null && previousProcessId != currentProcess.pid()) {
-            processSwitches++;
-        }
-
-        if (previousProcessId == null || previousProcessId != (currentProcess != null ? currentProcess.pid() : 0)) {
-            previousProcessId = currentProcess != null ? currentProcess.pid() : null;
+        if (previousProcess != currentProcess) {
+            if (currentProcess == null) {
+                System.out.println("Running null after running process");
+            } else {
+                processSwitches++;
+                previousProcess = currentProcess;
+            }
         }
 
         if (currentProcess != null) {
@@ -51,7 +54,8 @@ abstract class Algorithm {
     }
 
     public Result run() {
-        clearProcesses(processes);
+//        clearProcesses(processes);
+        processes.sort(Comparator.comparingInt(Process::getArrivalTime));
 
         while (hasIncompleteProcesses(processes)) {
             tick();
@@ -82,7 +86,7 @@ abstract class Algorithm {
 
 class FCFS extends Algorithm {
     public FCFS(List<Process> processes) {
-        super(processes, 1, 200);
+        super(processes, 1);
     }
 
     @Override
@@ -93,12 +97,12 @@ class FCFS extends Algorithm {
 
 class SJF extends Algorithm {
     public SJF(List<Process> processes) {
-        super(processes, 1, 200);
+        super(processes, 1);
     }
 
     @Override
     protected Process selectCurrentProcess() {
-        return queue.isEmpty() ? null : queue.stream().min(Comparator.comparingInt(Process::getBurstTime)).orElse(null);
+        return currentProcess == null ? queue.isEmpty() ? null : queue.stream().min(Comparator.comparingInt(Process::getBurstTime)).orElse(null) : currentProcess;
     }
 }
 
@@ -106,7 +110,7 @@ class RR extends Algorithm {
     private int lastIndex = 0;
 
     public RR(List<Process> processes, int timeQuantum) {
-        super(processes, timeQuantum, 200);
+        super(processes, timeQuantum);
     }
 
     @Override
@@ -119,7 +123,7 @@ class RR extends Algorithm {
 
 class SRTF extends Algorithm {
     public SRTF(List<Process> processes) {
-        super(processes, 1, 200);
+        super(processes, 1);
     }
 
     @Override

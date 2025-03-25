@@ -30,14 +30,16 @@ class Process {
         complete = remainingTime == 0;
     }
 
-    public int pid() {
-        return pid;
-    }
-
     public int getArrivalTime() { return arrivalTime; }
     public int getBurstTime() { return burstTime; }
     public int getWaitTime() { return waitTime; }
     public boolean isComplete() { return complete; }
 
     public int getRemainingTime() { return remainingTime; }
+
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    public Process clone() {
+        return new Process(arrivalTime, burstTime, pid);
+    }
 }

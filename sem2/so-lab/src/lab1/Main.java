@@ -4,8 +4,8 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class Main {
-    private static final int PROCESS_COUNT = 1000;
-    private static final int TIME_QUANTUM = 2;
+    private static final int PROCESS_COUNT = 10000;
+    private static final int TIME_QUANTUM = 5;
     private static final int ITERATIONS = 30;
     private static final String[] ALGORITHMS = {"FCFS", "SJF", "SRTF", "RR"};
 
