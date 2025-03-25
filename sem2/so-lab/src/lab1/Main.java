@@ -86,7 +86,7 @@ public class Main {
         List<Process> processes = new ArrayList<>();
         for (int i = 0; i < Main.PROCESS_COUNT; i++) {
             pid++;
-            processes.add(new Process(rand.nextInt(20), rand.nextInt(100) + 1, pid));
+            processes.add(new Process(rand.nextInt(2000), rand.nextInt(100) + 1, pid));
         }
         return processes;
     }
