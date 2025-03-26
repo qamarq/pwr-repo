@@ -181,45 +181,67 @@ public class OneWaySquareList<E> implements IList<E> {
         } catch (Exception e) {
             System.out.println("Błąd przy get(0) na pustej liście: " + e.getMessage());
         }
-        System.out.println("\nTest listy jednoelementowej:");
+
+        System.out.println("\n============================================");
+        System.out.println("Test listy jednoelementowej:");
         list.add("jedyny");
         list.printStructure();
         System.out.println("indexOf('jedyny'): " + list.indexOf("jedyny"));
         System.out.println("set(0, 'zmieniony'): " + list.set(0, "zmieniony"));
         list.printStructure();
         list.clear();
-        System.out.println("\nTest dodawania wielu elementów (nieparzysta liczba elementów):");
+
+
+        System.out.println("\n============================================");
+        System.out.println("Test dodawania wielu elementów (nieparzysta liczba elementów):");
         list.add(1);
         list.add(2);
         list.add(3);
         list.add(4);
         list.add(5);
         list.printStructure();
-        System.out.println("\nTest dodawania wielu elementów (parzysta liczba elementów):");
+
+        System.out.println("\n============================================");
+        System.out.println("Test dodawania wielu elementów (parzysta liczba elementów):");
         list.clear();
         list.add("a");
         list.add("b");
         list.add("c");
         list.add("d");
         list.printStructure();
-        System.out.println("\nTest dodawania na niepoprawnym indeksie:");
+
+
+        System.out.println("\n============================================");
+        System.out.println("Test dodawania na niepoprawnym indeksie:");
         try {
             list.add(100, "out");
         } catch (Exception e) {
             System.out.println("Błąd: " + e.getMessage());
         }
-        System.out.println("\nTest dodawania null:");
+
+
+        System.out.println("\n============================================");
+        System.out.println("Test dodawania null:");
         list.add(null);
         list.printStructure();
-        System.out.println("\nTest dodawania emotki i słowa:");
+
+
+        System.out.println("\n============================================");
+        System.out.println("Test dodawania emotki i słowa:");
         list.add("😊");
         list.add("Hello");
         list.printStructure();
-        System.out.println("\nTest usuwania elementu:");
+
+
+        System.out.println("\n============================================");
+        System.out.println("Test usuwania elementu:");
         Object removed = list.remove(2);
         System.out.println("Usunięto: " + removed);
         list.printStructure();
-        System.out.println("\nTest usuwania metodą remove(element):");
+
+
+        System.out.println("\n============================================");
+        System.out.println("Test usuwania metodą remove(element):");
         boolean removedBool = list.remove("b");
         System.out.println("Czy usunięto 'b': " + removedBool);
         list.printStructure();
