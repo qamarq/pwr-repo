@@ -1,16 +1,15 @@
 package lab2;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
+import org.w3c.dom.Node;
+
+import java.util.*;
 
 public class OneWaySquareList<E> implements IList<E> {
 
-    private List<SimpleSinglyLinkedList<E>> rows;
+    private OneWayLinkedListWithHead<OneWayLinkedListWithHead<E>> rows;
 
     public OneWaySquareList() {
-        rows = new ArrayList<>();
+        rows = new OneWayLinkedListWithHead<>();
     }
 
     public boolean add(E e) {
@@ -22,13 +21,13 @@ public class OneWaySquareList<E> implements IList<E> {
         if (index < 0 || index > size()) {
             throw new IndexOutOfBoundsException("Index " + index + " is out of range. Size: " + size());
         }
+
         if (rows.isEmpty()) {
-            SimpleSinglyLinkedList<E> newRow = new SimpleSinglyLinkedList<>();
+            OneWayLinkedListWithHead<E> newRow = new OneWayLinkedListWithHead<>();
             newRow.add(element);
             rows.add(newRow);
         } else if (index == size()) {
-            SimpleSinglyLinkedList<E> lastRow = rows.get(rows.size() - 1);
-            lastRow.add(element);
+            getLastRow().add(element);
         } else {
             Position pos = findPosition(index);
             rows.get(pos.row).add(pos.col, element);
@@ -36,12 +35,17 @@ public class OneWaySquareList<E> implements IList<E> {
         rebalance();
     }
 
+    private OneWayLinkedListWithHead<E> getLastRow() {
+        if (rows.isEmpty()) return null;
+        return rows.get(rows.size() - 1);
+    }
+
     public void clear() {
         rows.clear();
     }
 
     public boolean contains(E element) {
-        for (SimpleSinglyLinkedList<E> row : rows) {
+        for (OneWayLinkedListWithHead<E> row : rows) {
             if (row.contains(element)) {
                 return true;
             }
@@ -63,7 +67,7 @@ public class OneWaySquareList<E> implements IList<E> {
 
     public int indexOf(E element) {
         int idx = 0;
-        for (SimpleSinglyLinkedList<E> row : rows) {
+        for (OneWayLinkedListWithHead<E> row : rows) {
             int pos = row.indexOf(element);
             if (pos != -1) return idx + pos;
             idx += row.size();
@@ -76,7 +80,26 @@ public class OneWaySquareList<E> implements IList<E> {
     }
 
     public java.util.Iterator<E> iterator() {
-        throw new UnsupportedOperationException("Metoda iterator() nie jest zaimplementowana.");
+        return new Iterator<E>() {
+            private int row = 0;
+            private int col = 0;
+
+            @Override
+            public boolean hasNext() {
+                return row < rows.size() && col < rows.get(row).size();
+            }
+
+            @Override
+            public E next() {
+                E element = rows.get(row).get(col);
+                col++;
+                if (col == rows.get(row).size()) {
+                    row++;
+                    col = 0;
+                }
+                return element;
+            }
+        };
     }
 
     public ListIterator<E> listIterator() {
@@ -101,7 +124,7 @@ public class OneWaySquareList<E> implements IList<E> {
 
     public int size() {
         int total = 0;
-        for (SimpleSinglyLinkedList<E> row : rows) {
+        for (OneWayLinkedListWithHead<E> row : rows) {
             total += row.size();
         }
         return total;
@@ -109,7 +132,22 @@ public class OneWaySquareList<E> implements IList<E> {
 
     private int calculateK() {
         int n = size();
-        return (int) Math.ceil(Math.sqrt(n));
+        return (int) Math.round(Math.sqrt(n));
+    }
+
+    private E middle() {
+        Iterator<E> slow = this.iterator();
+        Iterator<E> fast = this.iterator();
+
+        while (fast.hasNext()) {
+            fast.next();
+            if (fast.hasNext()) {
+                fast.next();
+                slow.next();
+            }
+        }
+
+        return slow.next();
     }
 
     private void rebalance() {
@@ -118,16 +156,20 @@ public class OneWaySquareList<E> implements IList<E> {
             rows.clear();
             return;
         }
+
         int k = calculateK();
         List<E> temp = new ArrayList<>(total);
-        for (SimpleSinglyLinkedList<E> row : rows) {
+
+        for (int r = 0; r < rows.size(); r++) {
+            OneWayLinkedListWithHead<E> row = rows.get(r);
             for (int i = 0; i < row.size(); i++) {
                 temp.add(row.get(i));
             }
         }
+
         rows.clear();
         for (int i = 0; i < total; i += k) {
-            SimpleSinglyLinkedList<E> newRow = new SimpleSinglyLinkedList<>();
+            OneWayLinkedListWithHead<E> newRow = new OneWayLinkedListWithHead<>();
             int end = Math.min(i + k, total);
             for (int j = i; j < end; j++) {
                 newRow.add(temp.get(j));
@@ -140,11 +182,12 @@ public class OneWaySquareList<E> implements IList<E> {
         if (index < 0 || index >= size()) {
             throw new IndexOutOfBoundsException("Index " + index + " is out of range. Size: " + size());
         }
+
         int pos = index;
-        for (int i = 0; i < rows.size(); i++) {
-            SimpleSinglyLinkedList<E> row = rows.get(i);
+        for (int r = 0; r < rows.size(); r++) {
+            OneWayLinkedListWithHead<E> row = rows.get(r);
             if (pos < row.size()) {
-                return new Position(i, pos);
+                return new Position(r, pos);
             } else {
                 pos -= row.size();
             }
@@ -165,8 +208,8 @@ public class OneWaySquareList<E> implements IList<E> {
         System.out.println("+------+-------------------------------+");
         System.out.println("| Row  | Elements                      |");
         System.out.println("+------+-------------------------------+");
-        for (int i = 0; i < rows.size(); i++) {
-            System.out.printf("| %-4d | %-29s |\n", i, rows.get(i));
+        for (int r = 0; r < rows.size(); r++) {
+            System.out.printf("| %-4d | %-29s |\n", r, rows.get(r));
         }
         System.out.println("+------+-------------------------------+");
         System.out.println("Total elements: " + size());
@@ -195,11 +238,32 @@ public class OneWaySquareList<E> implements IList<E> {
         System.out.println("\n============================================");
         System.out.println("Test dodawania wielu elementów (nieparzysta liczba elementów):");
         list.add(1);
+        list.printStructure();
+        System.out.println("Middle: " + list.middle());
         list.add(2);
+        list.printStructure();
+        System.out.println("Middle: " + list.middle());
         list.add(3);
+        list.printStructure();
+        System.out.println("Middle: " + list.middle());
         list.add(4);
+        list.printStructure();
+        System.out.println("Middle: " + list.middle());
         list.add(5);
         list.printStructure();
+        System.out.println("Middle: " + list.middle());
+        list.add(6);
+        list.printStructure();
+        System.out.println("Middle: " + list.middle());
+        list.add(7);
+        list.printStructure();
+        System.out.println("Middle: " + list.middle());
+        list.add(8);
+        list.printStructure();
+        System.out.println("Middle: " + list.middle());
+        list.add(9);
+        list.printStructure();
+        System.out.println("Middle: " + list.middle());
 
         System.out.println("\n============================================");
         System.out.println("Test dodawania wielu elementów (parzysta liczba elementów):");
@@ -245,5 +309,17 @@ public class OneWaySquareList<E> implements IList<E> {
         boolean removedBool = list.remove("b");
         System.out.println("Czy usunięto 'b': " + removedBool);
         list.printStructure();
+
+
+
+        System.out.println("\n============================================");
+        System.out.println("Test get middle");
+        System.out.println("Middle: " + list.middle());
+
+
+        System.out.println("\n============================================");
+        System.out.println("Test get middle null list");
+        list.clear();
+        System.out.println("Middle: " + list.middle());
     }
 }
