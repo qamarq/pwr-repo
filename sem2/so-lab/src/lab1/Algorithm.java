@@ -84,7 +84,7 @@ class FCFS extends Algorithm {
 
     @Override
     protected Process selectCurrentProcess() {
-        return queue.isEmpty() ? null : queue.getFirst();
+        return queue.isEmpty() ? null : queue.get(0);
     }
 }
 
