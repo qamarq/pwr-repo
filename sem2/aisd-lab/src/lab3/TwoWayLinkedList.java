@@ -148,6 +148,7 @@ public class TwoWayLinkedList<T> implements IList<T> {
         list.add("🚀");
         list.add(null);
         list.add(3.14);
+        list.printList();
         System.out.println("Rozmiar listy: " + list.size());
 
         System.out.println("Element na indeksie 1: " + list.get(1));
