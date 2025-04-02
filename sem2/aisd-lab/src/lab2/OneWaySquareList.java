@@ -132,7 +132,7 @@ public class OneWaySquareList<E> implements IList<E> {
 
     private int calculateK() {
         int n = size();
-        return (int) Math.round(Math.sqrt(n));
+        return (int) (Math.sqrt(n));
     }
 
     private E middle() {

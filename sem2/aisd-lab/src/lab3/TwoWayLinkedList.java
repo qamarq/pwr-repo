@@ -5,8 +5,8 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 public class TwoWayLinkedList<T> implements IList<T> {
-    private Node<T> head;
-    private Node<T> tail;
+    public Node<T> head;
+    public Node<T> tail;
     private int size;
 
     public TwoWayLinkedList() {
@@ -25,12 +25,15 @@ public class TwoWayLinkedList<T> implements IList<T> {
     @Override
     public void add(int index, T element) {
         if (index < 0 || index > size) throw new IndexOutOfBoundsException();
-        Node<T> prevNode = (index == 0) ? head : getNode(index - 1);
-        Node<T> nextNode = prevNode.next;
-        Node<T> newNode = new Node<>(element, nextNode, prevNode);
-        prevNode.next = newNode;
-        nextNode.prev = newNode;
-        if (index == size) tail.prev = newNode;
+        Node<T> current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        Node<T> newNode = new Node<>(element, current.next, current == head ? head : current.next.prev);
+        if(current.next != tail)
+            current.next.next.prev = newNode;
+        current.next.prev = current;
+        current.next = newNode;
         size++;
     }
 
@@ -53,9 +56,13 @@ public class TwoWayLinkedList<T> implements IList<T> {
 
     @Override
     public T set(int index, T element) {
-        Node<T> node = getNode(index);
-        T oldValue = node.data;
-        node.data = element;
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
+        Node<T> current = head.next;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        T oldValue = current.data;
+        current.data = element;
         return oldValue;
     }
 
@@ -104,12 +111,23 @@ public class TwoWayLinkedList<T> implements IList<T> {
 
     @Override
     public T remove(int index) {
-        Node<T> node = getNode(index);
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
-        if (index == size - 1) tail.prev = node.prev;
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
+        Node<T> current = head.next;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        if(current.prev == head && current.next.prev == head){
+            current.prev.next = current.next;
+            if(current.next != tail)
+                current.next.next.prev = current.prev;
+        } else {
+            current.prev.next.next = current.next;
+            current.next.prev = current.prev;
+            if(current.next != tail)
+                current.next.next.prev = current.prev.next;
+        }
         size--;
-        return node.data;
+        return current.data;
     }
 
     @Override
@@ -132,37 +150,16 @@ public class TwoWayLinkedList<T> implements IList<T> {
         return current;
     }
 
-    private void printList() {
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
         Node<T> current = head.next;
         while (current != tail) {
-            System.out.print(current.data + " ");
+            sb.append(current.data);
+            if (current.next != tail) sb.append(", ");
             current = current.next;
         }
-        System.out.println();
-    }
-
-    public static void main(String[] args) {
-        TwoWayLinkedList<Object> list = new TwoWayLinkedList<>();
-        System.out.println("Dodawanie elementów: ");
-        list.add(1);
-        list.add("🚀");
-        list.add(null);
-        list.add(3.14);
-        list.printList();
-        System.out.println("Rozmiar listy: " + list.size());
-
-        System.out.println("Element na indeksie 1: " + list.get(1));
-
-        System.out.println("Usuwanie elementu o wartości 1");
-        list.remove(Integer.valueOf(1));
-        System.out.println("Czy lista zawiera 1? " + list.contains(1));
-
-        System.out.println("Aktualizacja elementu na indeksie 1 do wartości 5");
-        list.set(1, 5);
-        System.out.println("Element na indeksie 1: " + list.get(1));
-
-        System.out.println("Czyszczenie listy");
-        list.clear();
-        System.out.println("Czy lista jest pusta? " + list.isEmpty());
+        sb.append("]");
+        return sb.toString();
     }
 }
