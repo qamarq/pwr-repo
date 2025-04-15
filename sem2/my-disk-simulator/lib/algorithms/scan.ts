@@ -85,18 +85,6 @@ export const runSCAN: AlgorithmFunction = (
             );
 
       if (nextPotentialRequests.length > 0 && remainingRequests.length > 0) {
-        // Znajdź najbliższe żądanie w nowym kierunku
-        let targetCylinder: number;
-        if (direction === 1) {
-          targetCylinder = Math.min(
-            ...nextPotentialRequests.map((r) => r.cylinder)
-          );
-        } else {
-          targetCylinder = Math.max(
-            ...nextPotentialRequests.map((r) => r.cylinder)
-          );
-        }
-
         const boundary = direction === 1 ? diskSize - 1 : 0;
         if (currentHeadPosition !== boundary) {
           totalMovement += calculateMovement(currentHeadPosition, boundary);

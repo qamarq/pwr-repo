@@ -50,21 +50,21 @@ export function generateFdScanBenchmark() {
   for (let i = 0; i < 30; i++) {
     const cylinder = Math.floor(Math.random() * 100);
     // Zróżnicowane deadline'y, niektóre mogą być niewykonalne
-    const deadline = Math.floor(Math.random() * 50) + 10;
+    const deadline = Math.floor(Math.random() * 450) + 110;
     requests.push(`${cylinder}:true:${deadline}`);
   }
 
   // Grupa 2: Skupisko RT w środku dysku (cylindry 100-200)
   for (let i = 0; i < 30; i++) {
     const cylinder = Math.floor(Math.random() * 100) + 100;
-    const deadline = Math.floor(Math.random() * 60) + 20;
+    const deadline = Math.floor(Math.random() * 560) + 220;
     requests.push(`${cylinder}:true:${deadline}`);
   }
 
   // Grupa 3: Skupisko RT na końcu dysku (cylindry 200-300)
   for (let i = 0; i < 30; i++) {
     const cylinder = Math.floor(Math.random() * 100) + 200;
-    const deadline = Math.floor(Math.random() * 70) + 30;
+    const deadline = Math.floor(Math.random() * 670) + 330;
     requests.push(`${cylinder}:true:${deadline}`);
   }
 

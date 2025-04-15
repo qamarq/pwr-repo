@@ -9,11 +9,21 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SimulationParams } from '../lib/types';
 import { testCases } from '@/lib/tests';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface Props {
   onSubmit: (params: SimulationParams) => void;
   isSimulating: boolean;
 }
+const allTestCases = testCases.flatMap((tc) => tc.tests);
 
 export function SimulationConfigForm({ onSubmit, isSimulating }: Props) {
   const [selectedTestCase, setSelectedTestCase] = useState<string>('custom');
@@ -21,19 +31,18 @@ export function SimulationConfigForm({ onSubmit, isSimulating }: Props) {
   const [initialHeadPosition, setInitialHeadPosition] = useState<number>(100);
   const [requestsString, setRequestsString] = useState<string>('');
 
-  const handleTestCaseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const testCase = testCases.find((tc) => tc.name === e.target.value);
+  const handleTestCaseChange = (value: string) => {
+    const testCase = allTestCases.find((tc) => tc.name === value);
     if (testCase) {
       setDiskSize(testCase.diskSize);
       setInitialHeadPosition(testCase.initialHead);
       setRequestsString(testCase.requests);
     } else {
-      // Reset dla przypadku customowego
       setDiskSize(200);
       setInitialHeadPosition(100);
       setRequestsString('');
     }
-    setSelectedTestCase(e.target.value);
+    setSelectedTestCase(value);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -52,31 +61,38 @@ export function SimulationConfigForm({ onSubmit, isSimulating }: Props) {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+          <div className="flex flex-col gap-1">
             <Label htmlFor="testCase">Przykładowe testy wydajnościowe</Label>
-            <select
-              id="testCase"
-              className="w-full p-2 border rounded-md"
-              value={selectedTestCase}
-              onChange={handleTestCaseChange}>
-              <option value="custom">Niestandardowy</option>
-              {testCases.map((tc) => (
-                <option key={tc.name} value={tc.name}>
-                  {tc.name}
-                </option>
-              ))}
-            </select>
+            <Select
+              onValueChange={handleTestCaseChange}
+              defaultValue="Niestandardowy">
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select test case" />
+              </SelectTrigger>
+              <SelectContent>
+                {testCases.map((group) => (
+                  <SelectGroup key={group.name}>
+                    <SelectLabel>{group.name}</SelectLabel>
+                    {group.tests.map((test) => (
+                      <SelectItem key={test.name} value={test.name}>
+                        {test.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                ))}
+              </SelectContent>
+            </Select>
             {selectedTestCase !== 'custom' && (
               <p className="text-sm text-muted-foreground mt-2">
                 {
-                  testCases.find((tc) => tc.name === selectedTestCase)
+                  allTestCases.find((tc) => tc.name === selectedTestCase)
                     ?.description
                 }
               </p>
             )}
           </div>
 
-          <div>
+          <div className="flex flex-col gap-1">
             <Label htmlFor="diskSize">Rozmiar Dysku (liczba cylindrów)</Label>
             <Input
               id="diskSize"
@@ -88,7 +104,7 @@ export function SimulationConfigForm({ onSubmit, isSimulating }: Props) {
             />
           </div>
 
-          <div>
+          <div className="flex flex-col gap-1">
             <Label htmlFor="initialHeadPosition">
               Pozycja Początkowa Głowicy
             </Label>
@@ -105,7 +121,7 @@ export function SimulationConfigForm({ onSubmit, isSimulating }: Props) {
             />
           </div>
 
-          <div>
+          <div className="flex flex-col gap-1">
             <Label htmlFor="requests">
               Żądania (numery cylindrów oddzielone przecinkami)
             </Label>

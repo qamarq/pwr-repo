@@ -2,21 +2,17 @@ import { AlgorithmFunction } from '../types';
 import { deepCopyRequests, calculateMovement } from '../utils';
 
 // 1. FCFS (First Come First Serve)
-export const runFCFS: AlgorithmFunction = (
-  initialHeadPosition,
-  requests,
-  diskSize
-) => {
+export const runFCFS: AlgorithmFunction = (initialHeadPosition, requests) => {
   const hadRtFlag = requests.some((req) => req.isRealtime);
   let currentHeadPosition = initialHeadPosition;
   let totalMovement = 0;
   const path = [{ step: 0, cylinder: initialHeadPosition }];
   const servedRequestsOrder: number[] = [];
-  const remainingRequests = deepCopyRequests(requests); // Pracujemy na kopii
+  const remainingRequests = deepCopyRequests(requests);
 
   let step = 1;
   while (remainingRequests.length > 0) {
-    const nextRequest = remainingRequests.shift(); // Bierzemy pierwszy z brzegu
+    const nextRequest = remainingRequests.shift();
     if (!nextRequest) break;
 
     totalMovement += calculateMovement(

@@ -16,7 +16,7 @@ export const runFDSCAN: AlgorithmFunction = (
   const rejectedRequests: number[] = [];
   const remainingRequests = deepCopyRequests(requests);
   let step = 1;
-  let currentTime = 0; // Dodajemy śledzenie czasu
+  let currentTime = 0;
 
   while (remainingRequests.length > 0) {
     // Krok 1: Zidentyfikuj i odrzuć nieosiągalne RT
@@ -27,11 +27,10 @@ export const runFDSCAN: AlgorithmFunction = (
           currentHeadPosition,
           req.cylinder
         );
-        // Sprawdź czy żądanie jest osiągalne względem aktualnego czasu
         console.log(
           `Request ${req.id}: currentTime=${currentTime}, timeToReach=${timeToReach}, deadline=${req.deadline}`
         );
-        if (currentTime + timeToReach >= req.deadline) {
+        if (timeToReach > req.deadline) {
           console.log(
             `FD-SCAN: Rejecting RT request ${req.id} (current time ${currentTime} + time to reach ${timeToReach} > deadline ${req.deadline})`
           );
@@ -41,7 +40,7 @@ export const runFDSCAN: AlgorithmFunction = (
       }
     }
 
-    if (remainingRequests.length === 0) break; // Koniec jeśli nic nie zostało
+    if (remainingRequests.length === 0) break;
 
     // Krok 2: Znajdź wszystkie *osiągalne* RT i posortuj według deadline
     const feasibleRtRequests = remainingRequests
@@ -50,7 +49,7 @@ export const runFDSCAN: AlgorithmFunction = (
 
     let primaryTarget: Request | null = null;
     if (feasibleRtRequests.length > 0) {
-      primaryTarget = feasibleRtRequests[0]; // Cel główny: RT z najkrótszym możliwym deadline
+      primaryTarget = feasibleRtRequests[0];
     }
 
     // Krok 3: Wykonaj ruch w stylu SCAN
@@ -84,7 +83,7 @@ export const runFDSCAN: AlgorithmFunction = (
       );
     } else {
       // Brak aktywnych celów RT - działaj jak standardowy SCAN na pozostałych
-      if (remainingRequests.length === 0) break; // Powtórne sprawdzenie
+      if (remainingRequests.length === 0) break;
 
       let closestReqDist = Infinity;
       remainingRequests.forEach((req) => {
@@ -98,9 +97,8 @@ export const runFDSCAN: AlgorithmFunction = (
           calculateMovement(currentHeadPosition, req.cylinder) ===
           closestReqDist
       );
-      if (closestRequests.length === 0) break; // Nie powinno się zdarzyć
+      if (closestRequests.length === 0) break;
 
-      // Preferuj ruch w górę jeśli równie blisko, lub jeśli jedyna opcja
       const closestUp = closestRequests.find(
         (r) => r.cylinder > currentHeadPosition
       );
@@ -110,9 +108,8 @@ export const runFDSCAN: AlgorithmFunction = (
 
       if (closestUp) direction = 1;
       else if (closestDown) direction = -1;
-      else direction = 1; // Jesteśmy na którymś żądaniu, ruszaj w górę
+      else direction = 1;
 
-      // Zbierz wszystkie żądania w wybranym kierunku
       if (direction === 1) {
         requestsToServeOnPath = remainingRequests.filter(
           (req) => req.cylinder >= currentHeadPosition
@@ -144,11 +141,9 @@ export const runFDSCAN: AlgorithmFunction = (
 
     // Krok 4: Obsłuż żądania znalezione na ścieżce
     if (requestsToServeOnPath.length === 0) {
-      // Sytuacja, gdy nie ma celu RT i SCAN też nic nie znalazł
       console.warn(
         'FD-SCAN: No requests to serve on path found, potentially stuck?'
       );
-      // Spróbuj ruszyć do najbliższego, jeśli jeszcze coś zostało
       const sstfFallback = runSSTF(
         currentHeadPosition,
         remainingRequests,
@@ -170,9 +165,9 @@ export const runFDSCAN: AlgorithmFunction = (
           (r) => r.id === servedId
         );
         if (indexToRemove > -1) remainingRequests.splice(indexToRemove, 1);
-        continue; // Przejdź do następnej iteracji pętli while
+        continue;
       } else {
-        break; // Nic więcej do zrobienia
+        break;
       }
     }
 
@@ -188,7 +183,6 @@ export const runFDSCAN: AlgorithmFunction = (
       (a, b) => (a.deadline ?? Infinity) - (b.deadline ?? Infinity)
     );
 
-    // Łączymy obie listy, RT pierwsze
     const sortedRequestsToServe = [...rtRequests, ...nonRtRequests];
 
     for (const reqToServe of sortedRequestsToServe) {
@@ -197,12 +191,11 @@ export const runFDSCAN: AlgorithmFunction = (
         reqToServe.cylinder
       );
       totalMovement += movement;
-      currentTime += movement; // Aktualizuj czas
+      currentTime += movement;
       currentHeadPosition = reqToServe.cylinder;
       path.push({ step: step++, cylinder: currentHeadPosition });
       servedRequestsOrder.push(reqToServe.id);
 
-      // Usuń obsłużone żądanie z głównej listy
       const indexToRemove = remainingRequests.findIndex(
         (r) => r.id === reqToServe.id
       );
@@ -214,7 +207,6 @@ export const runFDSCAN: AlgorithmFunction = (
         );
       }
     }
-    // Po obsłużeniu ścieżki, pętla while zacznie od nowa (sprawdzi RT, itd.)
   }
 
   return {

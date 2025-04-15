@@ -7,6 +7,7 @@ import { SimulationResults } from '@/components/simulation-results';
 import { algorithms } from '@/lib/algorithms';
 import { SimulationParams, AlgorithmResult, Request } from '@/lib/types';
 import { toast } from 'sonner';
+import { ModeToggle } from '@/components/theme-switch';
 
 export default function HomePage() {
   const [results, setResults] = useState<AlgorithmResult[]>([]);
@@ -143,9 +144,12 @@ export default function HomePage() {
 
   return (
     <main className="container mx-auto p-4 md:p-8">
-      <h1 className="text-3xl font-bold tracking-tight mb-6">
-        Symulator Algorytmów Planowania Dostępu do Dysku
-      </h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold tracking-tight">
+          Symulator Algorytmów Planowania Dostępu do Dysku
+        </h1>
+        <ModeToggle />
+      </div>
 
       <SimulationConfigForm
         onSubmit={handleSimulationSubmit}

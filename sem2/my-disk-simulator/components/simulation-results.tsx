@@ -55,12 +55,12 @@ export function SimulationResults({ results, diskSize }: Props) {
                   <p>
                     Całkowity ruch głowicy: {result.totalMovement} cylindrów
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  {/* <p className="text-sm text-muted-foreground">
                     Średni czas oczekiwania: {result.averageWaitTime ?? 'N/A'}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Największy czas oczekiwania: {result.maxWaitTime ?? 'N/A'}
-                  </p>
+                  </p> */}
                 </CardDescription>
                 {result.rejectedRequests &&
                   result.rejectedRequests.length > 0 && (
