@@ -11,6 +11,8 @@ import {
   Legend,
   Area,
   AreaChart,
+  BarChart,
+  Bar,
 } from 'recharts';
 import {
   ChartConfig,
@@ -42,7 +44,7 @@ export function HeadMovementChart({ data, diskSize, title }: Props) {
 
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <AreaChart
+      <LineChart
         accessibilityLayer
         data={data}
         margin={{
@@ -92,17 +94,15 @@ export function HeadMovementChart({ data, diskSize, title }: Props) {
           strokeWidth={2}
           dot={true} // Pokaż kropki dla każdego kroku
         /> */}
-        <Area
+        <Line
           dataKey="cylinder"
-          type="natural"
-          fill="url(#fillCylinder)"
-          fillOpacity={0.4}
+          type="linear"
           strokeWidth={2}
           stroke="var(--color-cylinder)"
-          stackId="a"
+          dot={false}
         />
         <ChartLegend content={<ChartLegendContent />} />
-      </AreaChart>
+      </LineChart>
     </ChartContainer>
   );
 }

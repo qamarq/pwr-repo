@@ -8,54 +8,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SimulationParams } from '../lib/types';
+import { testCases } from '@/lib/tests';
 
 interface Props {
   onSubmit: (params: SimulationParams) => void;
   isSimulating: boolean;
 }
-
-const testCases = [
-  {
-    name: 'SSTF Optimalny',
-    requests: '53, 50, 55, 51, 54, 52, 49',
-    initialHead: 53,
-    diskSize: 200,
-    description:
-      'Żądania skupione wokół pozycji startowej - SSTF powinien mieć najmniejszy ruch',
-  },
-  {
-    name: 'SCAN Wydajny',
-    requests: '0, 199, 100, 50, 150, 25, 175',
-    initialHead: 100,
-    diskSize: 200,
-    description:
-      'Żądania rozłożone równomiernie - SCAN/C-SCAN będą najbardziej efektywne',
-  },
-  {
-    name: 'EDF Krytyczny',
-    requests: '100:true:10, 150:true:5, 50:true:15, 200:true:20',
-    initialHead: 100,
-    diskSize: 200,
-    description:
-      "Real-time z krótkimi deadline'ami - EDF/FD-SCAN powinny działać najlepiej",
-  },
-  {
-    name: 'C-SCAN Skrajne',
-    requests: '0, 199, 1, 198, 2, 197',
-    initialHead: 100,
-    diskSize: 200,
-    description:
-      'Żądania na przeciwnych końcach dysku - C-SCAN zminimalizuje liczbę zmian kierunku',
-  },
-  {
-    name: 'FCFS Niekorzystny',
-    requests: '199, 0, 198, 1, 197, 2',
-    initialHead: 100,
-    diskSize: 200,
-    description:
-      'Skrajne żądania w losowej kolejności - FCFS będzie miał najgorsze wyniki',
-  },
-];
 
 export function SimulationConfigForm({ onSubmit, isSimulating }: Props) {
   const [selectedTestCase, setSelectedTestCase] = useState<string>('custom');

@@ -22,6 +22,7 @@ export interface AlgorithmResult {
   servedRequestsOrder: number[]; // Kolejność ID obsłużonych żądań
   rejectedRequests?: number[]; // ID odrzuconych żądań (dla FD-SCAN)
   error?: string; // W razie problemów
+  hadRtFlag: boolean; // Czy algorytm miał flagę RT
 }
 
 // Typ dla danych wejściowych do wykresu

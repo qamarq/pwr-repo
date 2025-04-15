@@ -33,7 +33,7 @@ export default function HomePage() {
       const deadlineStr = segments.length > 2 ? segments[2] : undefined;
 
       const cylinder = parseInt(cylinderStr, 10);
-      if (isNaN(cylinder) || cylinder < 0 || cylinder >= diskSize) {
+      if (isNaN(cylinder) || cylinder < 0 || cylinder > diskSize) {
         toast.error('Błąd parsowania żądań', {
           description: `Nieprawidłowy numer cylindra: "${cylinderStr}". Musi być liczbą >= 0 i < ${diskSize}.`,
         });
@@ -124,6 +124,7 @@ export default function HomePage() {
             totalMovement: Infinity, // lub 0
             path: [{ step: 0, cylinder: params.initialHeadPosition }],
             servedRequestsOrder: [],
+            hadRtFlag: false,
             error:
               error instanceof Error
                 ? error.message
