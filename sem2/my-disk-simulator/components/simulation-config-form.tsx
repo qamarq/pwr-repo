@@ -1,4 +1,3 @@
-// app/_components/simulation-config-form.tsx
 'use client';
 
 import { useState } from 'react';

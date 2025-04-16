@@ -1,0 +1,1 @@
+export const STARVED_AFTER_TICKS = 1000;

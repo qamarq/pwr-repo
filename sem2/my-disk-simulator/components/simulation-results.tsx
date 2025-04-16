@@ -1,4 +1,3 @@
-// app/_components/simulation-results.tsx
 import {
   Card,
   CardContent,
@@ -36,6 +35,14 @@ export function SimulationResults({ results, diskSize }: Props) {
             !result.hadRtFlag
           ) {
             return null;
+          } else if (
+            (result.name.includes('FCFS') ||
+              result.name.includes('SSTF') ||
+              result.name == 'SCAN' ||
+              result.name.includes('C-SCAN')) &&
+            result.hadRtFlag
+          ) {
+            return null;
           }
 
           return (
@@ -55,6 +62,7 @@ export function SimulationResults({ results, diskSize }: Props) {
                   <p>
                     Całkowity ruch głowicy: {result.totalMovement} cylindrów
                   </p>
+                  <p>Zagłodzone żądania: {result.starvedRequests ?? 'N/A'}</p>
                   {/* <p className="text-sm text-muted-foreground">
                     Średni czas oczekiwania: {result.averageWaitTime ?? 'N/A'}
                   </p>

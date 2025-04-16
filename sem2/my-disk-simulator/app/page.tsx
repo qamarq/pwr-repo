@@ -1,4 +1,3 @@
-// app/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -14,7 +13,6 @@ export default function HomePage() {
   const [currentDiskSize, setCurrentDiskSize] = useState<number>(0);
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
 
-  // Funkcja do parsowania stringa z żądaniami
   const parseRequests = (
     requestsString: string,
     diskSize: number
@@ -38,7 +36,7 @@ export default function HomePage() {
         toast.error('Błąd parsowania żądań', {
           description: `Nieprawidłowy numer cylindra: "${cylinderStr}". Musi być liczbą >= 0 i < ${diskSize}.`,
         });
-        return null; // Błąd
+        return null;
       }
 
       const isRealtime = isRealtimeStr === 'true';
@@ -64,6 +62,7 @@ export default function HomePage() {
         cylinder: cylinder,
         isRealtime: isRealtime,
         deadline: deadline,
+        arrivalTime: Math.floor(Math.random() * 1000),
       });
     }
     if (parsedRequests.length === 0) {
@@ -77,10 +76,9 @@ export default function HomePage() {
 
   const handleSimulationSubmit = (params: SimulationParams) => {
     setIsSimulating(true);
-    setResults([]); // Wyczyść poprzednie wyniki
+    setResults([]);
     setCurrentDiskSize(params.diskSize);
 
-    // Dodaj małe opóźnienie, aby użytkownik widział stan ładowania
     setTimeout(() => {
       const parsedRequests = parseRequests(
         params.requestsString,
@@ -89,7 +87,7 @@ export default function HomePage() {
 
       if (!parsedRequests) {
         setIsSimulating(false);
-        return; // Błąd parsowania został już obsłużony przez toast
+        return;
       }
 
       if (
@@ -109,12 +107,11 @@ export default function HomePage() {
 
       for (const name in algorithms) {
         try {
-          // Klonuj żądania dla każdego algorytmu, aby uniknąć modyfikacji
           const requestsCopy = parsedRequests.map((req) => ({ ...req }));
 
           const result = algorithms[name](
             params.initialHeadPosition,
-            requestsCopy, // Przekaż kopię!
+            requestsCopy,
             params.diskSize
           );
           simulationResults.push({ name, ...result });
@@ -122,10 +119,11 @@ export default function HomePage() {
           console.error(`Error running algorithm ${name}:`, error);
           simulationResults.push({
             name,
-            totalMovement: Infinity, // lub 0
+            totalMovement: Infinity,
             path: [{ step: 0, cylinder: params.initialHeadPosition }],
             servedRequestsOrder: [],
             hadRtFlag: false,
+            starvedRequests: 0,
             error:
               error instanceof Error
                 ? error.message
@@ -139,7 +137,7 @@ export default function HomePage() {
       toast.success('Symulacja zakończona', {
         description: `Porównano ${simulationResults.length} algorytmów.`,
       });
-    }, 100); // Krótkie opóźnienie dla UX
+    }, 100);
   };
 
   return (

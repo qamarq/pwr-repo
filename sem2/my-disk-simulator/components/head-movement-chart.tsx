@@ -1,19 +1,6 @@
-// app/_components/head-movement-chart.tsx
 'use client';
 
-import {
-  Line,
-  LineChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  Area,
-  AreaChart,
-  BarChart,
-  Bar,
-} from 'recharts';
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import {
   ChartConfig,
   ChartContainer,
@@ -62,8 +49,7 @@ export function HeadMovementChart({ data, diskSize, title }: Props) {
           name="Krok"
         />
         <YAxis
-          // dataKey="cylinder" // Nie jest potrzebne jeśli jest tylko jedna linia
-          domain={[0, diskSize > 0 ? diskSize - 1 : 100]} // Ustaw zakres osi Y
+          domain={[0, diskSize > 0 ? diskSize - 1 : 100]}
           tickLine={false}
           axisLine={false}
           tickMargin={8}
