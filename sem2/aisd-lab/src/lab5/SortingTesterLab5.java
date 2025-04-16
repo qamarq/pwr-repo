@@ -1,0 +1,132 @@
+package lab5;
+
+import core.AbstractSwappingSortingAlgorithm;
+import testing.MarkedValue;
+import testing.Tester;
+import testing.comparators.IntegerComparator;
+import testing.comparators.MarkedValueComparator;
+import testing.generation.*;
+import testing.generation.conversion.LinkedListGenerator;
+import testing.generation.conversion.MarkingGenerator;
+
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.Comparator;
+
+
+public class SortingTesterLab5 {
+
+    public static void main(String[] args) {
+
+
+        Comparator<MarkedValue<Integer>> markedComparator = new MarkedValueComparator<>(new IntegerComparator());
+
+        AbstractSwappingSortingAlgorithm<MarkedValue<Integer>> mergeAlgorithm = new ThreeWayMergeSort<>(markedComparator);
+        AbstractSwappingSortingAlgorithm<MarkedValue<Integer>> quickFirstAlgorithm = new OptimizedQuickSort<>(markedComparator, new OptimizedQuickSort.FirstPivotSelector<>());
+        AbstractSwappingSortingAlgorithm<MarkedValue<Integer>> quickRandomAlgorithm = new OptimizedQuickSort<>(markedComparator, new OptimizedQuickSort.RandomPivotSelector<>());
+
+        Generator<MarkedValue<Integer>> orderedGenerator = new MarkingGenerator<>(new OrderedIntegerArrayGenerator());
+        Generator<MarkedValue<Integer>> reversedGenerator = new MarkingGenerator<>(new ReversedIntegerArrayGenerator());
+        Generator<MarkedValue<Integer>> shuffledGenerator = new MarkingGenerator<>(new ShuffledIntegerArrayGenerator(10));
+        Generator<MarkedValue<Integer>> randomGenerator = new MarkingGenerator<>(new RandomIntegerArrayGenerator(100));
+
+        Generator<MarkedValue<Integer>> orderedLinkedGenerator = new LinkedListGenerator<>(new MarkingGenerator<>(new OrderedIntegerArrayGenerator()));
+        Generator<MarkedValue<Integer>> reversedLinkedGenerator = new LinkedListGenerator<>(new MarkingGenerator<>(new ReversedIntegerArrayGenerator()));
+        Generator<MarkedValue<Integer>> shuffledLinkedGenerator = new LinkedListGenerator<>(new MarkingGenerator<>(new ShuffledIntegerArrayGenerator(10)));
+        Generator<MarkedValue<Integer>> randomLinkedGenerator = new LinkedListGenerator<>(new MarkingGenerator<>(new RandomIntegerArrayGenerator(100)));
+
+
+        System.out.println("OrderedArray:");
+        generator("OrderedArray", orderedGenerator, mergeAlgorithm, quickFirstAlgorithm, quickRandomAlgorithm);
+        System.out.println("OrderedLinked:");
+        generator("OrderedLinked", orderedLinkedGenerator, mergeAlgorithm, quickFirstAlgorithm, quickRandomAlgorithm);
+
+        System.out.println("ReversedArray");
+        generator("ReversedArray", reversedGenerator, mergeAlgorithm, quickFirstAlgorithm, quickRandomAlgorithm);
+        System.out.println("ReversedLinked");
+        generator("ReversedLinked", reversedLinkedGenerator, mergeAlgorithm, quickFirstAlgorithm, quickRandomAlgorithm);
+
+        System.out.println("ShuffledArray:");
+        generator("ShuffledArray", shuffledGenerator, mergeAlgorithm, quickFirstAlgorithm, quickRandomAlgorithm);
+        System.out.println("ShuffledLinked:");
+        generator("ShuffledLinked", shuffledLinkedGenerator, mergeAlgorithm, quickFirstAlgorithm, quickRandomAlgorithm);
+
+        System.out.println("RandomArray: ");
+        generator("RandomArray", randomGenerator, mergeAlgorithm, quickFirstAlgorithm, quickRandomAlgorithm);
+        System.out.println("RandomLinked: ");
+        generator("RandomLinked", randomLinkedGenerator, mergeAlgorithm, quickFirstAlgorithm, quickRandomAlgorithm);
+    }
+
+    private static void generator(String generatorType, Generator<MarkedValue<Integer>> generator,
+                                  AbstractSwappingSortingAlgorithm<MarkedValue<Integer>> mergeAlgorithm,
+                                  AbstractSwappingSortingAlgorithm<MarkedValue<Integer>> quickFirstAlgorithm,
+                                  AbstractSwappingSortingAlgorithm<MarkedValue<Integer>> quickRandomAlgorithm){
+        System.out.println("-------------------------------------");
+        System.out.println("Merge: ");
+        check("MergeSort", generatorType, generator, mergeAlgorithm);
+        System.out.println("QuickFirst: ");
+        check("QuickSortFirst", generatorType, generator, quickFirstAlgorithm);
+        System.out.println("QuickRandom: ");
+        check("QuickSortRandom", generatorType, generator, quickRandomAlgorithm);
+        System.out.println("-------------------------------------");
+    }
+
+    private static void check(String sortType, String generatorType, Generator<MarkedValue<Integer>> generator, AbstractSwappingSortingAlgorithm<MarkedValue<Integer>> algorithm){
+        String fileName = sortType + generatorType + ".txt";
+        int[] sizes = {0, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 100, 150, 200, 300, 400, 500, 600, 750, 1000};
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+            writer.println("-- " + sortType + " test; numbers generated by: " + generatorType + " --");
+            writer.println("Size\tTime\t\tStddev\t\tCompare\t\tStddev\t\tSwaps\t\tStddev");
+            for (int size : sizes) {
+
+                testing.results.swapping.Result result = Tester.runNTimes(algorithm, generator, size, 20);
+                String formattedOutput = String.format("%5d\t%f\t%f\t%f\t%f\t%f\t%f", size,
+                        result.averageTimeInMilliseconds(), result.timeStandardDeviation(),
+                        result.averageComparisons(), result.comparisonsStandardDeviation(),
+                        result.averageSwaps(), result.swapsStandardDeviation());
+
+                writer.println(formattedOutput.replace('.', ','));
+
+            }
+        } catch (Exception e) {
+            System.err.println("Wystąpił błąd podczas zapisywania wyników do pliku: " + e.getMessage());
+        }
+//
+    }
+
+    private static void printExcel(testing.results.swapping.Result result) {
+        System.out.printf("%.9f %.9f",
+                result.averageTimeInMilliseconds(),
+                result.timeStandardDeviation());
+        System.out.printf(" %.9f %.9f",
+                result.averageComparisons(),
+                result.comparisonsStandardDeviation());
+        System.out.printf(" %.9f %.9f",
+                result.averageSwaps(),
+                result.swapsStandardDeviation());
+
+//        System.out.printf(" %s %s", result.sorted(), result.stable());
+    }
+
+    private static void print(testing.results.swapping.Result result){
+        printStatistic("time [ms]", result.averageTimeInMilliseconds(), result.timeStandardDeviation());
+        printStatistic("comparisons", result.averageComparisons(), result.comparisonsStandardDeviation());
+        printStatistic("swaps", result.averageSwaps(), result.swapsStandardDeviation());
+
+        System.out.println("always sorted: " + result.sorted());
+        System.out.println("always stable: " + result.stable());
+    }
+
+    private static void printOnceStatistic(String label, double average) {
+        System.out.println(label + ": " + double2String(average));
+    }
+
+    private static void printStatistic(String label, double average, double stdDev) {
+        System.out.println(label + ": " + double2String(average) + " +- " + double2String(stdDev));
+    }
+
+    private static String double2String(double value) {
+        return String.format("%.12f", value);
+    }
+}

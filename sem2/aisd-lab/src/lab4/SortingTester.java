@@ -49,7 +49,7 @@ public class SortingTester {
             writer.println("Size\tTime\t\tStddev\t\tCompare\t\tStddev\t\tSwaps\t\tStddev");
 
             for (int size : arraySizes) {
-                testing.results.swapping.Result result = Tester.runNTimes(algorithm, generator, size, 50);
+                testing.results.swapping.Result result = Tester.runNTimes(algorithm, generator, size, 20);
                 String formattedOutput = String.format("%5d\t%f\t%f\t%f\t%f\t%f\t%f", size,
                         result.averageTimeInMilliseconds(), result.timeStandardDeviation(),
                         result.averageComparisons(), result.comparisonsStandardDeviation(),

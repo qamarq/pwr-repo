@@ -1,11 +1,11 @@
 package lab5;
 
-import core.AbstractSortingAlgorithm;
+import core.AbstractSwappingSortingAlgorithm;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class ThreeWayMergeSort<T> extends AbstractSortingAlgorithm<T> {
+public class ThreeWayMergeSort<T> extends AbstractSwappingSortingAlgorithm<T> {
 
     public ThreeWayMergeSort(Comparator<? super T> comparator) {
         super(comparator);
