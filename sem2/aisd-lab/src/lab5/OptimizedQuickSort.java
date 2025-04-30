@@ -40,7 +40,6 @@ public class OptimizedQuickSort<T> extends AbstractSwappingSortingAlgorithm<T> {
         T pivot = pivotSelector.select(list.subList(low, high + 1));
         int pivotIndex = -1;
 
-        // Znajdź indeks pivotu (ten pierwszy odpowiadający element z subList)
         for (int i = low; i <= high; i++) {
             if (compare(list.get(i), pivot) == 0) {
                 pivotIndex = i;
@@ -52,7 +51,7 @@ public class OptimizedQuickSort<T> extends AbstractSwappingSortingAlgorithm<T> {
             throw new IllegalStateException("Pivot not found in list range");
         }
 
-        swap(list, pivotIndex, high); // Przenieś pivot na koniec
+        swap(list, pivotIndex, high);
 
         int i = low - 1;
         ListIterator<T> jIter = list.listIterator(low);
@@ -64,7 +63,7 @@ public class OptimizedQuickSort<T> extends AbstractSwappingSortingAlgorithm<T> {
             }
         }
 
-        swap(list, i + 1, high); // Wstaw pivot na właściwe miejsce
+        swap(list, i + 1, high);
         return i + 1;
     }
 

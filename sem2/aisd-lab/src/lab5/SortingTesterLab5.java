@@ -92,34 +92,6 @@ public class SortingTesterLab5 {
         } catch (Exception e) {
             System.err.println("Wystąpił błąd podczas zapisywania wyników do pliku: " + e.getMessage());
         }
-//
-    }
-
-    private static void printExcel(testing.results.swapping.Result result) {
-        System.out.printf("%.9f %.9f",
-                result.averageTimeInMilliseconds(),
-                result.timeStandardDeviation());
-        System.out.printf(" %.9f %.9f",
-                result.averageComparisons(),
-                result.comparisonsStandardDeviation());
-        System.out.printf(" %.9f %.9f",
-                result.averageSwaps(),
-                result.swapsStandardDeviation());
-
-//        System.out.printf(" %s %s", result.sorted(), result.stable());
-    }
-
-    private static void print(testing.results.swapping.Result result){
-        printStatistic("time [ms]", result.averageTimeInMilliseconds(), result.timeStandardDeviation());
-        printStatistic("comparisons", result.averageComparisons(), result.comparisonsStandardDeviation());
-        printStatistic("swaps", result.averageSwaps(), result.swapsStandardDeviation());
-
-        System.out.println("always sorted: " + result.sorted());
-        System.out.println("always stable: " + result.stable());
-    }
-
-    private static void printOnceStatistic(String label, double average) {
-        System.out.println(label + ": " + double2String(average));
     }
 
     private static void printStatistic(String label, double average, double stdDev) {
