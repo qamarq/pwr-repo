@@ -38,6 +38,19 @@ public class TreeArrayBinaryHeapTest {
     }
 
     @Test
+    void testAddInTreeHeight() {
+        TreeArrayBinaryHeap<Integer> heap = new TreeArrayBinaryHeap<>(2);
+        heap.add(10); // root
+        heap.add(20); // left
+        heap.add(30); // right
+        heap.add(40); // left left
+        heap.add(50); // left right
+        assertEquals(50, heap.maximum());
+        assertEquals(40, heap.maximum());
+        assertEquals(30, heap.maximum());
+    }
+
+    @Test
     void testClear() {
         TreeArrayBinaryHeap<Integer> heap = new TreeArrayBinaryHeap<>(1);
         heap.add(1);
@@ -57,6 +70,38 @@ public class TreeArrayBinaryHeapTest {
     @Test
     void testMaximumEmptyHeap() {
         TreeArrayBinaryHeap<Integer> heap = new TreeArrayBinaryHeap<>(2);
+        assertNull(heap.maximum());
+    }
+
+    @Test
+    void testAddAndRemoveRoot() {
+        TreeArrayBinaryHeap<Integer> heap = new TreeArrayBinaryHeap<>(2);
+        heap.add(10);
+        heap.add(20);
+        heap.add(5);
+        assertEquals(20, heap.maximum());
+        heap.remove(5);
+        assertEquals(10, heap.maximum());
+        assertNull(heap.maximum());
+    }
+
+    @Test
+    void differentBranchesTest() {
+        TreeArrayBinaryHeap<Integer> heap = new TreeArrayBinaryHeap<>(2);
+        heap.add(11);
+        heap.add(10);
+        heap.add(7);
+        heap.add(7);
+        heap.add(6);
+        heap.add(5);
+        heap.add(4);
+        heap.remove(7);
+        assertEquals(11, heap.maximum());
+        assertEquals(10, heap.maximum());
+        assertEquals(7, heap.maximum());
+        assertEquals(6, heap.maximum());
+        heap.remove(5);
+        heap.remove(4);
         assertNull(heap.maximum());
     }
 }

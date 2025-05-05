@@ -7,6 +7,7 @@ public class TreeArrayBinaryHeap<T extends Comparable<T>> {
     private Node root;
     private final List<ArrayHeap> arrayHeaps = new ArrayList<>();
     private int size = 0;
+    private boolean removedFlag = false;
 
     public TreeArrayBinaryHeap(int maxTreeHeight) {
         this.maxTreeHeight = maxTreeHeight;
@@ -51,6 +52,33 @@ public class TreeArrayBinaryHeap<T extends Comparable<T>> {
 
         size--;
         return max;
+    }
+
+    public void remove(T element) {
+        if (element == null || size == 0) return;
+        removedFlag = false;
+        root = removeFromTree(root, element);
+        if (removedFlag) {
+            size--;
+            return;
+        }
+        for (ArrayHeap heap : arrayHeaps) {
+            if (heap.remove(element)) {
+                size--;
+                return;
+            }
+        }
+    }
+
+    private Node removeFromTree(Node node, T value) {
+        if (node == null || removedFlag) return node;
+        if (node.value.equals(value) && !removedFlag) {
+            removedFlag = true;
+            return removeRoot(node);
+        }
+        node.left = removeFromTree(node.left, value);
+        node.right = removeFromTree(node.right, value);
+        return node;
     }
 
     private Node insertTree(Node node, T value, String path, int depth) {
