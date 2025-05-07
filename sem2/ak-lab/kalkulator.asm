@@ -4,6 +4,7 @@ prompt2: .asciiz "Podaj kod operacji (0-dodawanie, 1-odejmowanie, 2-dzielenie, 3
 prompt3: .asciiz "Podaj drugi argument: "
 result_text: .asciiz "Wynik: "
 continue_prompt: .asciiz "Czy chcesz kontynuowac? (1 - tak, 0 - nie): "
+not_by_zero: .asciiz "Nie mozna dzielic przez 0!"
 newline: .asciiz "\n"
 
 .text
@@ -59,10 +60,16 @@ sub_op:
     j end_op
 
 div_op:
-    beq $t2, $zero, end_op
+    beq $t2, $zero, div_by_zero
     div $t0, $t2
     mflo $t3
     move $a0, $t3
+    syscall
+    j end_op
+    
+div_by_zero:
+    li $v0, 4
+    la $a0, not_by_zero
     syscall
     j end_op
 
