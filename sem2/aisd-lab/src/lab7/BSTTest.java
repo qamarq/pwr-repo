@@ -83,8 +83,8 @@ public class BSTTest {
     @Test
     void testKthGreatest() {
         BST<Integer> tree = new BST<>(Integer::compareTo);
-//        int[] vals = {5, 3, 7, 2, 4, 6, 8};
-        int [] vals = {2, 3, 4, 5, 6, 7, 8};
+        int[] vals = {5, 3, 7, 2, 4, 6, 8};
+//        int [] vals = {2, 3, 4, 5, 6, 7, 8};
         for (int v : vals) tree.insert(v);
         Integer[] expected = {8, 7, 6, 5, 4, 3, 2};
         for (int i = 0; i < expected.length; i++) {
@@ -92,5 +92,11 @@ public class BSTTest {
         }
         assertNull(tree.kthGreatest(0));
         assertNull(tree.kthGreatest(expected.length + 1));
+    }
+
+    @Test
+    void testKthGreatestNullTree() {
+        BST<Integer> tree = new BST<>(Integer::compareTo);
+        assertNull(tree.kthGreatest(1));
     }
 }
