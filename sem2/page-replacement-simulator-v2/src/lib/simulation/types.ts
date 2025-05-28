@@ -1,29 +1,52 @@
-import type { z } from 'zod';
-import type { simulationConfigSchema } from '@/components/simulation-config-form';
-
-export type SimulationConfig = z.infer<typeof simulationConfigSchema>;
+export type LocalPageReplacementAlgorithm =
+  | 'FIFO'
+  | 'LRU'
+  | 'SecondChance'
+  | 'RAND';
 
 export interface PageReference {
   processId: number;
   page: number;
-  timestamp: number; // Global timestamp
+  timestamp: number;
 }
 
 export interface ProcessInfo {
   id: number;
-  pageCount: number; // si - number of unique pages used by this process
-  referenceString: PageReference[]; // The local reference string portion for this process
-  initialFrames?: number; // Used for algorithms like PFF
+  pageCount: number;
+  referenceString: PageReference[];
+}
+
+export interface SimulationConfig {
+  localAlgorithm: LocalPageReplacementAlgorithm;
+  thrashingWindowW: number;
+  thrashingThresholdEFactor: number;
+  pffDeltaT: number;
+  pffLowerThresholdL: number;
+  pffUpperThresholdU: number;
+  pffSuspendThresholdH?: number;
+  wsDeltaT: number;
+  wsCalculationIntervalC: number;
+  wsSuspensionStrategy:
+    | 'smallest_wss'
+    | 'largest_wss'
+    | 'lowest_priority_mock'
+    | 'random_mock';
+  totalFrames: number;
+  numProcesses: number;
+  minPageRefLength: number;
+  maxPageRefLength: number;
+  maxPagesPerProcess: number;
+  localityFactor: number;
+  localityWindowSize: number;
 }
 
 export interface AlgorithmStats {
   pageFaults: number;
-  pageFaultsPerProcess: Record<number, number>; // { processId: faultCount }
+  pageFaultsPerProcess: Record<number, number>;
   thrashingEvents: number;
   processSuspensions: number;
-  suspendedProcesses: number[]; // list of process IDs
-  finalFrameAllocations?: Record<number, number>; // { processId: frameCount } for static, or a snapshot for dynamic
-  // Additional detailed data for charts, e.g., frame allocation over time
+  suspendedProcesses: number[];
+  finalFrameAllocations?: Record<number, number>;
   timelineData?: Array<{
     time: number;
     allocations: Record<number, number>;
@@ -31,22 +54,61 @@ export interface AlgorithmStats {
   }>;
 }
 
-export interface SimulationResult {
-  algorithmName: string;
-  description: string;
-  stats: AlgorithmStats;
+export interface FrameRange {
+  start: number;
+  end: number;
+}
+
+export interface BaseSimParams {
+  totalSystemFrames: number;
+  globalReferences: PageReference[];
+  processConfigs: Array<{
+    id: number;
+    numVirtualPages: number;
+    pageOffset: number;
+    frameRange?: FrameRange;
+  }>;
+  localAlgorithm: LocalPageReplacementAlgorithm;
+  thrashingWindowSize: number;
+  thrashingThreshold: number;
+}
+
+export interface PFFParams extends BaseSimParams {
+  pffDeltaT: number;
+  pffLowerBound: number;
+  pffUpperBound: number;
+  pffHighSuspendThreshold?: number;
+}
+
+export interface WorkingSetParams extends BaseSimParams {
+  wsDeltaT: number;
+  wsCalculationInterval: number;
+}
+
+export interface ProcessMetrics {
+  processId: number;
+  pageFaults: number;
+  thrashingEvents: number;
+  suspensions: number;
+}
+
+export interface AllocationStrategyResult {
+  strategyName: string;
+  name: string;
+  totalPageFaults: number;
+  totalThrashingEvents: number;
+  totalSuspensions: number;
+  processMetrics: ProcessMetrics[];
+  pageFaults: number;
+  thrashing: number;
 }
 
 export interface FullSimulationResults {
   globalReferenceString: PageReference[];
   processInfos: ProcessInfo[];
-  results: SimulationResult[];
+  results: Array<{
+    algorithmName: string;
+    description: string;
+    stats: AlgorithmStats;
+  }>;
 }
-
-// Placeholder for actual algorithm function signature
-export type FrameAllocationAlgorithm = (
-  globalReferences: PageReference[],
-  processes: ProcessInfo[],
-  totalFrames: number,
-  config: SimulationConfig
-) => AlgorithmStats;

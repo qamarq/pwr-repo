@@ -6,8 +6,7 @@ import type {
   AlgorithmStats,
 } from '@/lib/simulation/types';
 import { generateSimulationData } from '@/lib/simulation/page-generator';
-import { runAlgorithm } from '@/lib/simulation/engine'; // Placeholder for actual algorithm implementations
-
+import { runAlgorithm } from '@/lib/simulation/engine';
 const ALGORITHMS = [
   {
     name: 'Equal Allocation',
@@ -29,9 +28,6 @@ const ALGORITHMS = [
       'Processes are allocated frames based on their Working Set Size.',
   },
 ];
-
-// This function will call the specific algorithm implementations.
-// For now, it uses the placeholder `runAlgorithm` from engine.ts.
 async function executeAlgorithm(
   algorithmName: string,
   globalReferences: PageReference[],
@@ -39,40 +35,43 @@ async function executeAlgorithm(
   totalFrames: number,
   config: SimulationConfig
 ): Promise<AlgorithmStats> {
-  // In a real scenario, you'd have separate files/functions for each algorithm.
-  // e.g., import { runEqualAllocation, runProportionalAllocation, ... } from './algorithms';
-  // switch (algorithmName) { case "Equal Allocation": return runEqualAllocation(...); ... }
-  return runAlgorithm(
+  const result = await runAlgorithm(
     algorithmName,
     globalReferences,
     processes,
     totalFrames,
     config
   );
+  return {
+    pageFaults: result.pageFaults,
+    pageFaultsPerProcess: Object.fromEntries(
+      result.processMetrics.map((m) => [m.processId, m.pageFaults])
+    ),
+    thrashingEvents: result.thrashing,
+    processSuspensions: result.totalSuspensions,
+    suspendedProcesses: result.processMetrics
+      .filter((m) => m.suspensions > 0)
+      .map((m) => m.processId),
+  };
 }
-
 export async function runFullSimulation(
   config: SimulationConfig
 ): Promise<FullSimulationResults> {
   const { globalReferenceString, processInfos } =
     generateSimulationData(config);
-
   const results: FullSimulationResults = {
     globalReferenceString,
     processInfos,
     results: [],
   };
-
   for (const alg of ALGORITHMS) {
-    // Simulate a delay to make the loading state more visible
     await new Promise((resolve) =>
       setTimeout(resolve, 250 + Math.random() * 250)
     );
-
     const stats = await executeAlgorithm(
       alg.name,
       globalReferenceString,
-      processInfos, // Pass a deep copy if algorithms modify it: processInfos.map(p => ({...p, referenceString: [...p.referenceString]}))
+      processInfos,
       config.totalFrames,
       config
     );
@@ -82,6 +81,5 @@ export async function runFullSimulation(
       stats,
     });
   }
-
   return results;
 }

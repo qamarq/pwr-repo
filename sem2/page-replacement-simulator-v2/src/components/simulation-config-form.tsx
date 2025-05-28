@@ -34,103 +34,84 @@ import {
 
 export const simulationConfigSchema = z
   .object({
+    localAlgorithm: z.enum(['FIFO', 'LRU', 'SecondChance', 'RAND']),
     numProcesses: z.coerce
       .number()
       .int()
       .min(1, 'Minimum 1 process')
-      .max(10, 'Maximum 10 processes')
-      .default(3),
+      .max(10, 'Maximum 10 processes'),
     totalFrames: z.coerce
       .number()
       .int()
       .min(10, 'Minimum 10 frames')
-      .max(1000, 'Maximum 1000 frames')
-      .default(100),
+      .max(1000, 'Maximum 1000 frames'),
     maxPagesPerProcess: z.coerce
       .number()
       .int()
       .min(5, 'Min 5 pages/process')
-      .max(100, 'Max 100 pages/process')
-      .default(20),
+      .max(100, 'Max 100 pages/process'),
     minPageRefLength: z.coerce
       .number()
       .int()
       .min(20, 'Min 20 references')
-      .max(500, 'Max 500 references')
-      .default(50),
+      .max(500, 'Max 500 references'),
     maxPageRefLength: z.coerce
       .number()
       .int()
       .min(50, 'Min 50 references')
-      .max(1000, 'Max 1000 references')
-      .default(100),
-    localityFactor: z.coerce
-      .number()
-      .min(0.1, 'Min 0.1')
-      .max(1.0, 'Max 1.0')
-      .default(0.8), // Probability of local reference
+      .max(1000, 'Max 1000 references'),
+    localityFactor: z.coerce.number().min(0.1, 'Min 0.1').max(1.0, 'Max 1.0'),
     localityWindowSize: z.coerce
       .number()
       .int()
       .min(3, 'Min 3')
-      .max(20, 'Max 20')
-      .default(5), // Size of "hot" page set
+      .max(20, 'Max 20'),
 
     pffDeltaT: z.coerce
       .number()
       .int()
       .min(5, 'Min 5 time units')
-      .max(100, 'Max 100 time units')
-      .default(20),
+      .max(100, 'Max 100 time units'),
     pffLowerThresholdL: z.coerce
       .number()
       .min(0.01, 'Min 0.01')
-      .max(0.5, 'Max 0.5')
-      .default(0.1),
+      .max(0.5, 'Max 0.5'),
     pffUpperThresholdU: z.coerce
       .number()
       .min(0.1, 'Min 0.1')
-      .max(0.9, 'Max 0.9')
-      .default(0.4),
+      .max(0.9, 'Max 0.9'),
     pffSuspendThresholdH: z.coerce
       .number()
       .min(0.2, 'Min 0.2')
       .max(1.0, 'Max 1.0')
-      .optional()
-      .default(0.7),
+      .optional(),
 
     wsDeltaT: z.coerce
       .number()
       .int()
       .min(5, 'Min 5 time units')
-      .max(100, 'Max 100 time units')
-      .default(15),
+      .max(100, 'Max 100 time units'),
     wsCalculationIntervalC: z.coerce
       .number()
       .int()
       .min(1, 'Min 1 time unit')
-      .max(50, 'Max 50 time units')
-      .default(7),
-    wsSuspensionStrategy: z
-      .enum([
-        'smallest_wss',
-        'largest_wss',
-        'lowest_priority_mock',
-        'random_mock',
-      ])
-      .default('smallest_wss'),
+      .max(50, 'Max 50 time units'),
+    wsSuspensionStrategy: z.enum([
+      'smallest_wss',
+      'largest_wss',
+      'lowest_priority_mock',
+      'random_mock',
+    ]),
 
     thrashingWindowW: z.coerce
       .number()
       .int()
       .min(10, 'Min 10 time units')
-      .max(100, 'Max 100 time units')
-      .default(30),
+      .max(100, 'Max 100 time units'),
     thrashingThresholdEFactor: z.coerce
       .number()
       .min(0.1, 'Min 0.1')
-      .max(1.0, 'Max 1.0')
-      .default(0.5), // e = w * factor
+      .max(1.0, 'Max 1.0'),
   })
   .refine((data) => data.minPageRefLength <= data.maxPageRefLength, {
     message: 'Min page reference length must be less than or equal to Max',
@@ -168,10 +149,35 @@ export function SimulationConfigForm({
   isSimulating,
   defaultValues,
 }: SimulationConfigFormProps) {
-  const form = useForm<z.infer<typeof simulationConfigSchema>>({
+  type FormValues = z.infer<typeof simulationConfigSchema>;
+  const form = useForm<FormValues>({
     resolver: zodResolver(simulationConfigSchema),
-    defaultValues: defaultValues ?? simulationConfigSchema.parse({}), // Use default values from schema
+    defaultValues:
+      defaultValues ??
+      simulationConfigSchema.parse({
+        localAlgorithm: 'FIFO',
+        numProcesses: 3,
+        totalFrames: 30,
+        maxPagesPerProcess: 15,
+        minPageRefLength: 200,
+        maxPageRefLength: 400,
+        localityFactor: 0.8,
+        localityWindowSize: 5,
+        pffDeltaT: 8,
+        pffLowerThresholdL: 0.1,
+        pffUpperThresholdU: 0.4,
+        pffSuspendThresholdH: 0.7,
+        wsDeltaT: 15,
+        wsCalculationIntervalC: 4,
+        wsSuspensionStrategy: 'smallest_wss',
+        thrashingWindowW: 10,
+        thrashingThresholdEFactor: 0.5,
+      }),
   });
+
+  const handleSubmit = (values: FormValues) => {
+    onSubmit(values as SimulationConfig);
+  };
 
   return (
     <Card className="shadow-lg">
@@ -183,7 +189,9 @@ export function SimulationConfigForm({
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6">
             <Accordion
               type="multiple"
               defaultValue={['general', 'page-ref', 'pff', 'ws', 'thrashing']}
@@ -535,14 +543,6 @@ export function SimulationConfigForm({
             <Separator />
 
             <div className="flex flex-col sm:flex-row gap-4 justify-end pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onGenerateReferences}
-                disabled={isSimulating}>
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Generate New References
-              </Button>
               <Button
                 type="submit"
                 disabled={isSimulating}

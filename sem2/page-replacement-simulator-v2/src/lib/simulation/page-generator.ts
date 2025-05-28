@@ -62,11 +62,12 @@ export function generateSimulationData(config: SimulationConfig): {
   const allProcessLocalReferences: PageReference[][] = [];
 
   for (let i = 0; i < config.numProcesses; i++) {
-    const refLength =
-      config.minPageRefLength +
-      Math.floor(
-        Math.random() * (config.maxPageRefLength - config.minPageRefLength + 1)
-      );
+    // const refLength =
+    //   config.minPageRefLength +
+    //   Math.floor(
+    //     Math.random() * (config.maxPageRefLength - config.minPageRefLength + 1)
+    //   );
+    const refLength = 1000;
     const processRefs = generateProcessReferenceString(
       i,
       currentPageOffset,

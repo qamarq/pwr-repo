@@ -1,6 +1,6 @@
 'use client';
 
-import { BarChart, LineChart, Activity } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -52,6 +52,79 @@ interface SimulationResultsDisplayProps {
 const chartConfig = {
   pageFaults: { label: 'Page Faults', color: 'var(--primary)' },
   frames: { label: 'Frames', color: 'var(--accent)' },
+  thrashingEvents: { label: 'Thrashing Events', color: 'var(--chart-2)' },
+};
+
+const PageFaultsAllStrategiesChart = ({
+  data,
+}: {
+  data: SimulationResult[];
+}) => {
+  const chartData = data.map((result) => ({
+    name: result.algorithmName,
+    pageFaults: result.stats.pageFaults,
+  }));
+
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <RechartsBarChart data={chartData} accessibilityLayer>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="name"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+        />
+        <YAxis
+          domain={[(dataMin: number) => Math.round(dataMin * 0.9), 'auto']}
+        />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <RechartsLegend content={<ChartLegendContent />} />
+        <Bar
+          dataKey="pageFaults"
+          name="Page Faults"
+          fill="var(--color-pageFaults)"
+          radius={4}
+        />
+      </RechartsBarChart>
+    </ChartContainer>
+  );
+};
+
+const PageTrashingAllStrategiesChart = ({
+  data,
+}: {
+  data: SimulationResult[];
+}) => {
+  const chartData = data.map((result) => ({
+    name: result.algorithmName,
+    thrashingEvents: result.stats.thrashingEvents,
+  }));
+
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <RechartsBarChart data={chartData} accessibilityLayer>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="name"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+        />
+        <YAxis
+          domain={[(dataMin: number) => Math.round(dataMin * 0.9), 'auto']}
+        />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <RechartsLegend content={<ChartLegendContent />} />
+        <Bar
+          dataKey="thrashingEvents"
+          name="Thrashing Events"
+          fill="var(--color-thrashingEvents)"
+          radius={4}
+        />
+      </RechartsBarChart>
+    </ChartContainer>
+  );
 };
 
 const PageFaultsChart = ({
@@ -63,7 +136,7 @@ const PageFaultsChart = ({
 }) => {
   const chartData = processes.map((p) => ({
     name: `P${p.id}`,
-    faults: data.pageFaultsPerProcess[p.id] || 0,
+    pageFaults: data.pageFaultsPerProcess[p.id] || 0,
   }));
 
   return (
@@ -80,7 +153,7 @@ const PageFaultsChart = ({
         <ChartTooltip content={<ChartTooltipContent />} />
         <RechartsLegend content={<ChartLegendContent />} />
         <Bar
-          dataKey="faults"
+          dataKey="pageFaults"
           name="Page Faults"
           fill="var(--color-pageFaults)"
           radius={4}
@@ -116,6 +189,12 @@ const FrameAllocationTimelineChart = ({ data }: { data: AlgorithmStats }) => {
       ? Object.keys(timelineData[0].allocations).map((pid) => `P${pid}`)
       : [];
 
+  // Generate colors for all processes
+  const colors = processKeys.map((_, index) => {
+    const hue = (index * 360) / processKeys.length;
+    return `hsl(${hue}, 70%, 50%)`;
+  });
+
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
       <RechartsLineChart data={transformedData} accessibilityLayer>
@@ -139,7 +218,7 @@ const FrameAllocationTimelineChart = ({ data }: { data: AlgorithmStats }) => {
             key={key}
             type="monotone"
             dataKey={key}
-            stroke={`var(--chart-${(index % 5) + 1})`}
+            stroke={colors[index]}
             strokeWidth={2}
             dot={false}
           />
@@ -173,7 +252,9 @@ const AlgorithmResultCard = ({
           </div>
           <div className="p-3 bg-secondary/50 rounded-md">
             <p className="text-muted-foreground">Thrashing Events</p>
-            <p className="font-bold text-2xl">{result.stats.thrashingEvents}</p>
+            <p className="font-bold text-2xl">
+              {Math.floor(result.stats.thrashingEvents)}
+            </p>
           </div>
           <div className="p-3 bg-secondary/50 rounded-md">
             <p className="text-muted-foreground">Process Suspensions</p>
@@ -197,8 +278,7 @@ const AlgorithmResultCard = ({
         <PageFaultsChart data={result.stats} processes={processes} />
       </div>
 
-      {result.algorithmName.includes('PFF') ||
-      result.algorithmName.includes('Working Set') ? (
+      {result.algorithmName.includes('Working Set') ? (
         <div>
           <h4 className="font-semibold mb-2 text-lg">
             Frame Allocation Over Time
@@ -289,6 +369,10 @@ export function SimulationResultsDisplay({
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="grid grid-cols-2 gap-10">
+          <PageFaultsAllStrategiesChart data={results.results} />
+          <PageTrashingAllStrategiesChart data={results.results} />
+        </div>
         <Tabs
           defaultValue={results.results[0]?.algorithmName || 'equal'}
           className="w-full">
