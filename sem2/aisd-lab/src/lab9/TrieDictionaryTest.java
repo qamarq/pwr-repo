@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TrieDictionaryTest {
 
-    private TrieDictionary<Integer> dictionary;
+    private TrieDictionary<Object> dictionary;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +54,38 @@ class TrieDictionaryTest {
         assertEquals(1, dictionary.search("cat"));
         assertEquals(2, dictionary.search("car"));
         assertEquals(3, dictionary.search("dog"));
+        assertNull(dictionary.search("can"));
+    }
+
+    @Test
+    void testInsert_DifferentBranches2() {
+        assertNull(dictionary.insert("cat", 1));
+        assertNull(dictionary.insert("car", 2));
+        assertNull(dictionary.insert("dog", 3));
+        assertNull(dictionary.insert("rocket", 50));
+
+        assertEquals(1, dictionary.search("cat"));
+        assertEquals(2, dictionary.search("car"));
+        assertEquals(3, dictionary.search("dog"));
+        assertEquals(50, dictionary.search("rocket"));
+        assertNull(dictionary.search("can"));
+    }
+
+    @Test
+    void testInsert_DifferentBranchesFromList() {
+        assertNull(dictionary.insert("baby", 1));
+        assertNull(dictionary.insert("bad", 2));
+        assertNull(dictionary.insert("bank", 3));
+        assertNull(dictionary.insert("box", "slowo"));
+        assertNull(dictionary.insert("dad", 506));
+        assertNull(dictionary.insert("dance", 560));
+
+        assertEquals(1, dictionary.search("baby"));
+        assertEquals(2, dictionary.search("bad"));
+        assertEquals(3, dictionary.search("bank"));
+        assertEquals("slowo", dictionary.search("box"));
+        assertEquals(506, dictionary.search("dad"));
+        assertEquals(560, dictionary.search("dance"));
         assertNull(dictionary.search("can"));
     }
 
