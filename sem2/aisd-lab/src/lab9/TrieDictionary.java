@@ -1,5 +1,8 @@
 package lab9;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class TrieDictionary<V> {
 
     private static class TrieNode<V> {
@@ -166,5 +169,36 @@ class TrieDictionary<V> {
     boolean hasValueAtKey(String key) {
         TrieNode<V> node = findNode(key);
         return node != null && node.value != null;
+    }
+
+    public List<String> suggest(String prefix) {
+        List<String> suggestions = new ArrayList<>();
+        if (prefix == null) {
+            throw new IllegalArgumentException("Prefix cannot be null");
+        }
+        TrieNode<V> node = findNode(prefix);
+        if (node == null) {
+            return suggestions;
+        }
+        StringBuilder sb = new StringBuilder(prefix);
+        collectSuggestions(node, sb, suggestions);
+        return suggestions;
+    }
+
+    private void collectSuggestions(
+            TrieNode<V> node,
+            StringBuilder prefix,
+            List<String> suggestions
+    ) {
+        if (node.value != null) {
+            suggestions.add(prefix.toString());
+        }
+        TrieNode<V> child = node.firstChild;
+        while (child != null) {
+            prefix.append(child.character);
+            collectSuggestions(child, prefix, suggestions);
+            prefix.deleteCharAt(prefix.length() - 1);
+            child = child.nextSibling;
+        }
     }
 }

@@ -2,6 +2,9 @@ package lab9;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TrieDictionaryTest {
@@ -249,5 +252,48 @@ class TrieDictionaryTest {
         assertNull(dictionary.search("try"));
         assertFalse(dictionary.hasValueAtKey("try"));
         assertFalse(dictionary.containsKey("t"));
+    }
+
+    @Test
+    void testSuggestEmptyPrefixReturnsAllWordsSorted() {
+        dictionary.insert("dog", 1);
+        dictionary.insert("deer", 2);
+        dictionary.insert("deal", 3);
+        List<String> suggestions = dictionary.suggest("");
+        assertEquals(List.of("deal", "deer", "dog"), suggestions);
+    }
+
+    @Test
+    void testSuggestWithExistingPrefixIncludesFullWordAndDescendants() {
+        dictionary.insert("app", 1);
+        dictionary.insert("apple", 2);
+        dictionary.insert("application", 3);
+        dictionary.insert("banana", 4);
+
+        List<String> suggestions = dictionary.suggest("app");
+        assertEquals(List.of("app", "apple", "application"), suggestions);
+    }
+
+    @Test
+    void testSuggestFullWordWithNoChildrenAndLongerPrefix() {
+        dictionary.insert("solo", 10);
+
+        List<String> s1 = dictionary.suggest("solo");
+        assertEquals(List.of("solo"), s1);
+
+        List<String> s2 = dictionary.suggest("sol");
+        assertEquals(List.of("solo"), s2);
+
+        List<String> s3 = dictionary.suggest("soloooo");
+        assertTrue(s3.isEmpty());
+    }
+
+    @Test
+    void testSuggestWithNoMatchesReturnsEmptyList() {
+        dictionary.insert("a", 1);
+        dictionary.insert("b", 2);
+
+        List<String> suggestions = dictionary.suggest("c");
+        assertTrue(suggestions.isEmpty());
     }
 }
