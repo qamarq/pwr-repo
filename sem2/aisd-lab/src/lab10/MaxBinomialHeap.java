@@ -1,6 +1,5 @@
 package lab10;
 
-// MaxBinomialHeap.java
 public class MaxBinomialHeap<T extends Comparable<T>> {
     private Node<T> head;
 
@@ -17,19 +16,16 @@ public class MaxBinomialHeap<T extends Comparable<T>> {
         }
     }
 
-    /** Tworzy pusty kopiec. */
     public MaxBinomialHeap() {
         head = null;
     }
 
-    /** Wstawia wartość do kopca. */
     public void insert(T value) {
         MaxBinomialHeap<T> tmp = new MaxBinomialHeap<>();
         tmp.head = new Node<>(value);
         merge(tmp);
     }
 
-    /** Zwraca maksimum (null, jeśli pusty). */
     public T findMax() {
         if (head == null) return null;
         Node<T> curr = head, maxNode = head;
@@ -42,12 +38,8 @@ public class MaxBinomialHeap<T extends Comparable<T>> {
         return maxNode.key;
     }
 
-    /**
-     * Usuwa i zwraca maksimum (null, jeśli pusty).
-     */
     public T extractMax() {
         if (head == null) return null;
-        // 1) Znajdź korzeń z max
         Node<T> prev = null, curr = head;
         Node<T> maxNode = head, maxPrev = null;
         while (curr != null) {
@@ -58,13 +50,11 @@ public class MaxBinomialHeap<T extends Comparable<T>> {
             prev = curr;
             curr = curr.sibling;
         }
-        // 2) Usuń maxNode z listy korzeni
         if (maxPrev == null) {
             head = maxNode.sibling;
         } else {
             maxPrev.sibling = maxNode.sibling;
         }
-        // 3) Weź dzieci maxNode, odwróć ich listę i utwórz nowy kopiec
         Node<T> child = maxNode.child, rev = null;
         while (child != null) {
             Node<T> next = child.sibling;
@@ -75,20 +65,14 @@ public class MaxBinomialHeap<T extends Comparable<T>> {
         }
         MaxBinomialHeap<T> tmp = new MaxBinomialHeap<>();
         tmp.head = rev;
-        // 4) Scal
         merge(tmp);
         return maxNode.key;
     }
 
-    /**
-     * Łączy ten kopiec z innym; po scaleniu drugi kopiec
-     * zostaje „wyczyszczony” (head = null).
-     */
     public void merge(MaxBinomialHeap<T> other) {
         head = mergeRootLists(head, other.head);
         other.head = null;
         if (head == null) return;
-        // Teraz łącz drzewa o tej samej stopniu
         Node<T> prev = null;
         Node<T> curr = head;
         Node<T> next = curr.sibling;
@@ -98,13 +82,10 @@ public class MaxBinomialHeap<T extends Comparable<T>> {
                 prev = curr;
                 curr = next;
             } else {
-                // curr.degree == next.degree i nie ma trzeciego drzewa
                 if (curr.key.compareTo(next.key) >= 0) {
-                    // next dołączamy pod curr
                     curr.sibling = next.sibling;
                     linkTrees(curr, next);
                 } else {
-                    // curr dołączamy pod next
                     if (prev == null) {
                         head = next;
                     } else {
@@ -118,7 +99,6 @@ public class MaxBinomialHeap<T extends Comparable<T>> {
         }
     }
 
-    // scala dwie posortowane wg stopnia listy korzeni
     private Node<T> mergeRootLists(Node<T> h1, Node<T> h2) {
         if (h1 == null) return h2;
         if (h2 == null) return h1;
@@ -145,7 +125,6 @@ public class MaxBinomialHeap<T extends Comparable<T>> {
         return head;
     }
 
-    // linkuje drzewo child pod parent (max-heap)
     private void linkTrees(Node<T> parent, Node<T> child) {
         child.parent = parent;
         child.sibling = parent.child;
