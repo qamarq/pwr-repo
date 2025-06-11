@@ -115,6 +115,7 @@ public class MaxBinomialHeapTest {
         MaxBinomialHeap<Integer> heap = new MaxBinomialHeap<>();
         List<Integer> vals = Arrays.asList(3, 1, 3, 2, 3);
         vals.forEach(heap::insert);
+        heap.printHeap();
         List<Integer> list = heap.toList();
         List<Integer> expected = Arrays.asList(3, 3, 3, 2, 1);
         assertEquals(expected, list);
