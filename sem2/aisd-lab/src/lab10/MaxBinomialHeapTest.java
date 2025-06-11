@@ -1,7 +1,11 @@
 package lab10;
 
-// MaxBinomialHeapTest.java
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MaxBinomialHeapTest {
@@ -46,5 +50,73 @@ public class MaxBinomialHeapTest {
             assertEquals(expected, h1.extractMax());
         }
         assertNull(h1.findMax());
+    }
+
+    @Test
+    void testToListOnEmptyHeap() {
+        MaxBinomialHeap<Integer> heap = new MaxBinomialHeap<>();
+        List<Integer> list = heap.toList();
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    void testToListSingleElement() {
+        MaxBinomialHeap<String> heap = new MaxBinomialHeap<>();
+        heap.insert("Ala");
+        List<String> list = heap.toList();
+        assertEquals(1, list.size());
+        assertEquals("Ala", list.get(0));
+    }
+
+    @Test
+    void testToListMultipleElements() {
+        MaxBinomialHeap<Integer> heap = new MaxBinomialHeap<>();
+        int[] vals = {5, 1, 3, 8, 7};
+        for (int v : vals) {
+            heap.insert(v);
+        }
+//        heap.printHeap();
+        List<Integer> list = heap.toList();
+        List<Integer> expected = Arrays.asList(8, 7, 5, 3, 1);
+//        heap.printHeap();
+        assertEquals(expected, list);
+    }
+
+    @Test
+    void testToListMultipleElements2() {
+        MaxBinomialHeap<Integer> heap = new MaxBinomialHeap<>();
+        int[] vals = {3, 1, 2, 7, 5, 9};
+        for (int v : vals) {
+            heap.insert(v);
+        }
+        heap.printHeap();
+        List<Integer> list = heap.toList();
+        List<Integer> expected = Arrays.asList(9, 7, 5, 3, 2, 1);
+        heap.printHeap();
+        assertEquals(expected, list);
+    }
+
+    @Test
+    void testOriginalHeapNotModified() {
+        MaxBinomialHeap<Integer> heap = new MaxBinomialHeap<>();
+        List<Integer> input = Arrays.asList(2, 9, 4);
+        input.forEach(heap::insert);
+        List<Integer> extracted = new ArrayList<>();
+        Integer x;
+        while ((x = heap.extractMax()) != null) {
+            extracted.add(x);
+        }
+        List<Integer> expected = Arrays.asList(9, 4, 2);
+        assertEquals(expected, extracted);
+    }
+
+    @Test
+    void testWithDuplicates() {
+        MaxBinomialHeap<Integer> heap = new MaxBinomialHeap<>();
+        List<Integer> vals = Arrays.asList(3, 1, 3, 2, 3);
+        vals.forEach(heap::insert);
+        List<Integer> list = heap.toList();
+        List<Integer> expected = Arrays.asList(3, 3, 3, 2, 1);
+        assertEquals(expected, list);
     }
 }

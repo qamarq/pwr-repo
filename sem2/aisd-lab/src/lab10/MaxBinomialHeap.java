@@ -1,5 +1,8 @@
 package lab10;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MaxBinomialHeap<T extends Comparable<T>> {
     private Node<T> head;
 
@@ -130,5 +133,45 @@ public class MaxBinomialHeap<T extends Comparable<T>> {
         child.sibling = parent.child;
         parent.child = child;
         parent.degree++;
+    }
+
+    public List<T> toList() {
+        MaxBinomialHeap<T> copy = new MaxBinomialHeap<>();
+        copy.head = cloneNode(head, null);
+        List<T> result = new ArrayList<>();
+        T key;
+        while ((key = copy.extractMax()) != null) {
+            result.add(key);
+        }
+        return result;
+    }
+
+    private Node<T> cloneNode(Node<T> node, Node<T> parent) {
+        if (node == null) return null;
+        Node<T> newNode = new Node<>(node.key);
+        newNode.degree = node.degree;
+        newNode.parent = parent;
+        newNode.sibling = cloneNode(node.sibling, parent);
+        newNode.child   = cloneNode(node.child, newNode);
+        return newNode;
+    }
+
+    public void printHeap() {
+        if (head == null) {
+            System.out.println("Heap is empty.");
+            return;
+        }
+        System.out.println("Binomial Heap:");
+        printNode(head, 0);
+    }
+
+    private void printNode(Node<T> node, int level) {
+        if (node == null) return;
+        for (int i = 0; i < level; i++) {
+            System.out.print("  ");
+        }
+        System.out.println(node.key + " (degree: " + node.degree + ")");
+        printNode(node.child, level + 1);
+        printNode(node.sibling, level);
     }
 }
