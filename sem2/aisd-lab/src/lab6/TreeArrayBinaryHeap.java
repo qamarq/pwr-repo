@@ -1,174 +1,302 @@
 package lab6;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class TreeArrayBinaryHeap<T extends Comparable<T>> {
-    private final int maxTreeHeight;
-    private Node root;
-    private final List<ArrayHeap> arrayHeaps = new ArrayList<>();
-    private int size = 0;
-    private boolean removedFlag = false;
+public class TreeArrayBinaryHeap<T extends Comparable<? super T>> {
+    private final int H;
+    private Node<T> root;
+    private int size;
 
-    public TreeArrayBinaryHeap(int maxTreeHeight) {
-        this.maxTreeHeight = maxTreeHeight;
+    public TreeArrayBinaryHeap(int H) {
+        if (H < 0) throw new IllegalArgumentException("H must be >= 0");
+        this.H = H;
+        this.size = 0;
+        this.root = null;
     }
 
+    /** Usuwa wszystkie elementy. */
     public void clear() {
         root = null;
-        arrayHeaps.clear();
         size = 0;
     }
 
+    /** Dodaje nowy element do kopca. */
     public void add(T element) {
-        if (element == null) throw new IllegalArgumentException("Null values are not allowed");
+        if (element == null) throw new IllegalArgumentException("Null not allowed");
         size++;
-        String path = Integer.toBinaryString(size);
-        if (path.length() - 1 <= maxTreeHeight) {
-            root = insertTree(root, element, path.substring(1), 0);
+        int idx = size;
+        List<Boolean> bits = getPathBits(idx);
+        // 1) Wstawiamy do części wskaźnikowej, o ile głębokość ≤ H
+        if (bits.size() <= H) {
+            if (root == null) {
+                root = new Node<>(element);
+                if (bits.size() == H) {
+                    root.leftHeap = new ArrayHeap<>();
+                    root.rightHeap = new ArrayHeap<>();
+                }
+            } else {
+                Node<T> newNode = insertPointerNode(element, bits);
+                if (bits.size() == H) {
+                    newNode.leftHeap = new ArrayHeap<>();
+                    newNode.rightHeap = new ArrayHeap<>();
+                }
+            }
+            bubbleUpPointer(bits);
         } else {
-            int heapIndex = getHeapIndex(path);
-            ensureArrayHeapExists(heapIndex);
-            arrayHeaps.get(heapIndex).add(element);
+            // 2) Wstawiamy do jednej z tablic na poziomie H
+            Node<T> parentH = findPointerNode(bits, H);
+            boolean toRight = bits.get(H);
+            ArrayHeap<T> arr = toRight ? parentH.rightHeap : parentH.leftHeap;
+            arr.add(element);
+            // ewentualna wymiana z węzłem wskaźnikowym
+            T childRoot = arr.peek();
+            if (childRoot.compareTo(parentH.value) > 0) {
+                T tmp = parentH.value;
+                parentH.value = childRoot;
+                arr.set(1, tmp);
+                arr.shiftDown(1);
+                bubbleUpPointer(bits.subList(0, H));
+            }
         }
     }
 
     public T maximum() {
-        if (size == 0) return null;
-        T max = root != null ? root.value : null;
-        for (ArrayHeap heap : arrayHeaps) {
-            T candidate = heap.peek();
-            if (candidate != null && (max == null || candidate.compareTo(max) > 0)) {
-                max = candidate;
-            }
+        if (size == 0) throw new IllegalStateException("Heap is empty");
+        T maxVal = root.value;
+        if (size == 1) {
+            clear();
+            return maxVal;
         }
-
-        if (max != null && root != null && max.equals(root.value)) {
-            root = removeRoot(root);
-        } else {
-            for (ArrayHeap heap : arrayHeaps) {
-                if (heap.remove(max)) break;
-            }
-        }
-
+        int oldSize = size;
         size--;
-        return max;
-    }
-
-    public void remove(T element) {
-        if (element == null || size == 0) return;
-        removedFlag = false;
-        root = removeFromTree(root, element);
-        if (removedFlag) {
-            size--;
-            return;
-        }
-        for (ArrayHeap heap : arrayHeaps) {
-            if (heap.remove(element)) {
-                size--;
-                return;
-            }
-        }
-    }
-
-    private Node removeFromTree(Node node, T value) {
-        if (node == null || removedFlag) return node;
-        if (node.value.equals(value) && !removedFlag) {
-            removedFlag = true;
-            return removeRoot(node);
-        }
-        node.left = removeFromTree(node.left, value);
-        node.right = removeFromTree(node.right, value);
-        return node;
-    }
-
-    private Node insertTree(Node node, T value, String path, int depth) {
-        if (node == null) return new Node(value);
-        if (value.compareTo(node.value) > 0) {
-            T tmp = node.value;
-            node.value = value;
-            value = tmp;
-        }
-
-        if (path.charAt(0) == '0') {
-            node.left = insertTree(node.left, value, path.substring(1), depth + 1);
+        List<Boolean> bits = getPathBits(oldSize);
+        T replacement;
+        if (bits.size() <= H) {
+            // usuwamy ostatni węzeł wskaźnikowy
+            List<Boolean> parentBits = bits.subList(0, bits.size() - 1);
+            Node<T> parent = findPointerNode(parentBits, parentBits.size());
+            boolean isRight = bits.get(bits.size() - 1);
+            Node<T> child = isRight ? parent.right : parent.left;
+            replacement = child.value;
+            if (isRight) parent.right = null;
+            else parent.left = null;
         } else {
-            node.right = insertTree(node.right, value, path.substring(1), depth + 1);
+            // usuwamy ostatni element z odpowiedniej tablicy
+            Node<T> parentH = findPointerNode(bits, H);
+            boolean toRight = bits.get(H);
+            ArrayHeap<T> arr = toRight ? parentH.rightHeap : parentH.leftHeap;
+            replacement = arr.removeLast();
         }
-        return node;
+        root.value = replacement;
+        heapifyDownPointer(root, 0);
+        return maxVal;
     }
 
-    private Node removeRoot(Node node) {
-        if (node.left == null && node.right == null) return null;
-        if (node.left != null && (node.right == null || node.left.value.compareTo(node.right.value) >= 0)) {
-            node.value = node.left.value;
-            node.left = removeRoot(node.left);
+    // ----- metody pomocnicze dla części wskaźnikowej -----
+
+    /** Buduje ścieżkę (lista true=right, false=left) z indeksu w "heap-array". */
+    private List<Boolean> getPathBits(int idx) {
+        char[] c = Integer.toBinaryString(idx).toCharArray();
+        List<Boolean> bits = new ArrayList<>(c.length - 1);
+        for (int i = 1; i < c.length; i++) bits.add(c[i] == '1');
+        return bits;
+    }
+
+    /** Wstawia nowy węzeł wskaźnikowy w określoną pozycję (głębokość ≤ H). */
+    private Node<T> insertPointerNode(T element, List<Boolean> bits) {
+        Node<T> cur = root;
+        // tworzymy po drodze ewentualnie braku­jące węzły
+        for (int i = 0; i < bits.size() - 1; i++) {
+            boolean toRight = bits.get(i);
+            if (!toRight) {
+                if (cur.left == null) cur.left = new Node<>(null);
+                cur = cur.left;
+            } else {
+                if (cur.right == null) cur.right = new Node<>(null);
+                cur = cur.right;
+            }
+        }
+        boolean toRight = bits.get(bits.size() - 1);
+        Node<T> newNode = new Node<>(element);
+        if (!toRight) cur.left = newNode;
+        else cur.right = newNode;
+        return newNode;
+    }
+
+    /** "Bąbelkuje" nowy węzeł w górę drzewa wskaźnikowego. */
+    private void bubbleUpPointer(List<Boolean> bits) {
+        if (root == null || bits.isEmpty()) return;
+        List<Node<T>> path = new ArrayList<>(bits.size() + 1);
+        Node<T> cur = root;
+        path.add(cur);
+        for (boolean toRight : bits) {
+            cur = toRight ? cur.right : cur.left;
+            path.add(cur);
+        }
+        for (int i = path.size() - 1; i > 0; i--) {
+            Node<T> child = path.get(i);
+            Node<T> parent = path.get(i - 1);
+            if (child.value.compareTo(parent.value) > 0) {
+                T tmp = child.value;
+                child.value = parent.value;
+                parent.value = tmp;
+            } else {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Znajduje węzeł wskaźnikowy na głębokości 'length'
+     * wg pierwszych 'length' kroków z listy bits.
+     */
+    private Node<T> findPointerNode(List<Boolean> bits, int length) {
+        Node<T> cur = root;
+        for (int i = 0; i < length; i++) {
+            boolean toRight = bits.get(i);
+            cur = toRight ? cur.right : cur.left;
+        }
+        return cur;
+    }
+
+    /** Odnajduje i naprawia własność kopca od danego węzła w dół. */
+    private void heapifyDownPointer(Node<T> node, int depth) {
+        if (node == null) return;
+        if (depth < H) {
+            Node<T> L = node.left, R = node.right, largest = node;
+            if (L != null && L.value.compareTo(largest.value) > 0) largest = L;
+            if (R != null && R.value.compareTo(largest.value) > 0) largest = R;
+            if (largest != node) {
+                T tmp = node.value;
+                node.value = largest.value;
+                largest.value = tmp;
+                heapifyDownPointer(largest, depth + 1);
+            }
         } else {
-            node.value = node.right.value;
-            node.right = removeRoot(node.right);
-        }
-        return node;
-    }
-
-    private int getHeapIndex(String path) {
-        return (Integer.parseInt(path, 2) - (1 << maxTreeHeight)) / (1 << maxTreeHeight);
-    }
-
-    private void ensureArrayHeapExists(int index) {
-        while (arrayHeaps.size() <= index) {
-            arrayHeaps.add(new ArrayHeap());
-        }
-    }
-
-    private class Node {
-        T value;
-        Node left, right;
-        Node(T value) {
-            this.value = value;
-        }
-    }
-
-    private class ArrayHeap {
-        private final List<T> data = new ArrayList<>();
-
-        void add(T value) {
-            data.add(value);
-            heapifyUp(data.size() - 1);
-        }
-
-        T peek() {
-            return data.isEmpty() ? null : data.get(0);
-        }
-
-        boolean remove(T value) {
-            int idx = data.indexOf(value);
-            if (idx == -1) return false;
-            Collections.swap(data, idx, data.size() - 1);
-            data.remove(data.size() - 1);
-            heapifyDown(idx);
-            return true;
-        }
-
-        private void heapifyUp(int i) {
-            while (i > 0) {
-                int parent = (i - 1) / 2;
-                if (data.get(i).compareTo(data.get(parent)) <= 0) break;
-                Collections.swap(data, i, parent);
-                i = parent;
+            // depth == H: dzieci są w tablicach
+            ArrayHeap<T> La = node.leftHeap, Ra = node.rightHeap;
+            T lv = (La.size() > 0 ? La.peek() : null);
+            T rv = (Ra.size() > 0 ? Ra.peek() : null);
+            // wybieramy większe z lv,rv
+            if (lv != null
+                    && (rv == null || lv.compareTo(rv) >= 0)
+                    && lv.compareTo(node.value) > 0) {
+                T tmp = node.value;
+                node.value = lv;
+                La.set(1, tmp);
+                La.shiftDown(1);
+            } else if (rv != null && rv.compareTo(node.value) > 0) {
+                T tmp = node.value;
+                node.value = rv;
+                Ra.set(1, tmp);
+                Ra.shiftDown(1);
             }
         }
+    }
 
-        private void heapifyDown(int i) {
-            int left, right, largest;
-            while (true) {
-                left = 2 * i + 1;
-                right = 2 * i + 2;
-                largest = i;
-                if (left < data.size() && data.get(left).compareTo(data.get(largest)) > 0) largest = left;
-                if (right < data.size() && data.get(right).compareTo(data.get(largest)) > 0) largest = right;
-                if (largest == i) break;
-                Collections.swap(data, i, largest);
-                i = largest;
+    // ----- definicja węzła wskaźnikowego -----
+
+    private static class Node<E extends Comparable<? super E>> {
+        E value;
+        Node<E> left, right;
+        ArrayHeap<E> leftHeap, rightHeap;
+
+        Node(E v) {
+            this.value = v;
+            this.left = this.right = null;
+            this.leftHeap = this.rightHeap = null;
+        }
+    }
+}
+
+/** Prosty pomocnik: tablicowy kopiec maksymalny z operacjami add, peek,
+ * removeLast, siftUp, siftDown. */
+class ArrayHeap<T extends Comparable<? super T>> {
+    private static final int DEFAULT_CAP = 8;
+    private Object[] data;
+    private int size;
+
+    public ArrayHeap() {
+        data = new Object[DEFAULT_CAP];
+        size = 0;
+    }
+
+    public void add(T elem) {
+        if (elem == null) throw new IllegalArgumentException("Null not allowed");
+        ensureCapacity(size + 2);
+        size++;
+        data[size] = elem;
+        shiftUp(size);
+    }
+
+    @SuppressWarnings("unchecked")
+    public T peek() {
+        return size > 0 ? (T) data[1] : null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T removeLast() {
+        if (size == 0) throw new IllegalStateException("Heap empty");
+        T v = (T) data[size];
+        data[size] = null;
+        size--;
+        return v;
+    }
+
+    /** Zastępuje wartość na pozycji i (1-based). */
+    public void set(int i, T elem) {
+        if (i < 1 || i > size) throw new IndexOutOfBoundsException();
+        data[i] = elem;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void shiftUp(int i) {
+        while (i > 1) {
+            int p = i >> 1;
+            T cv = (T) data[i], pv = (T) data[p];
+            if (cv.compareTo(pv) > 0) {
+                data[i] = pv;
+                data[p] = cv;
+                i = p;
+            } else {
+                break;
             }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void shiftDown(int i) {
+        while (true) {
+            int l = i << 1, r = l + 1, mx = i;
+            if (l <= size) {
+                T lv = (T) data[l], mv = (T) data[mx];
+                if (lv.compareTo(mv) > 0) mx = l;
+            }
+            if (r <= size) {
+                T rv = (T) data[r], mv = (T) data[mx];
+                if (rv.compareTo(mv) > 0) mx = r;
+            }
+            if (mx != i) {
+                Object tmp = data[i];
+                data[i] = data[mx];
+                data[mx] = tmp;
+                i = mx;
+            } else {
+                break;
+            }
+        }
+    }
+
+    private void ensureCapacity(int minCap) {
+        if (minCap > data.length) {
+            int newCap = Math.max(data.length << 1, minCap);
+            data = Arrays.copyOf(data, newCap);
         }
     }
 }
