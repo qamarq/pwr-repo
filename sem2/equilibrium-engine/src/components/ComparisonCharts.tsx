@@ -31,19 +31,19 @@ interface ComparisonChartsProps {
 
 // Chart Configurations
 const averageLoadChartConfig = {
-  averageLoad: { label: 'Avg. Load', color: 'hsl(var(--chart-1))' },
+  averageLoad: { label: 'Avg. Load', color: 'var(--chart-1)' },
 } satisfies ChartConfig;
 
 const stdDevLoadChartConfig = {
-  stdDevLoad: { label: 'Std. Dev.', color: 'hsl(var(--chart-2))' },
+  stdDevLoad: { label: 'Std. Dev.', color: 'var(--chart-2)' },
 } satisfies ChartConfig;
 
 const queriesChartConfig = {
-  queries: { label: 'Queries', color: 'hsl(var(--chart-3))' },
+  queries: { label: 'Queries', color: 'var(--chart-3)' },
 } satisfies ChartConfig;
 
 const migrationsChartConfig = {
-  migrations: { label: 'Migrations', color: 'hsl(var(--chart-4))' },
+  migrations: { label: 'Migrations', color: 'var(--chart-4)' },
 } satisfies ChartConfig;
 
 // Helper to prepare data for a specific metric
@@ -100,7 +100,7 @@ const renderLabelWithUnit = (props: any, unitSuffix: string = '') => {
       y={y}
       dy={-6}
       textAnchor="middle"
-      fill="hsl(var(--foreground))"
+      fill="var(--foreground)"
       fontSize={12}
       fontWeight="500">
       {displayValue}
@@ -222,7 +222,7 @@ export function ComparisonCharts({
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-lg font-headline flex items-center">
-            <AlertTriangle className="mr-2 h-5 w-5 text-[hsl(var(--chart-2))]" />
+            <AlertTriangle className="mr-2 h-5 w-5 text-[var(--chart-2)]" />
             Load Standard Deviation
           </CardTitle>
           <CardDescription>
@@ -273,7 +273,7 @@ export function ComparisonCharts({
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-lg font-headline flex items-center">
-            <Zap className="mr-2 h-5 w-5 text-[hsl(var(--chart-3))]" />
+            <Zap className="mr-2 h-5 w-5 text-[var(--chart-3)]" />
             Number of Load Queries
           </CardTitle>
           <CardDescription>
@@ -321,7 +321,7 @@ export function ComparisonCharts({
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-lg font-headline flex items-center">
-            <Shuffle className="mr-2 h-5 w-5 text-[hsl(var(--chart-4))]" />
+            <Shuffle className="mr-2 h-5 w-5 text-[var(--chart-4)]" />
             Number of Process Migrations
           </CardTitle>
           <CardDescription>

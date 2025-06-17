@@ -21,6 +21,9 @@ function calculateFinalLoadMetrics(processors: Processor[]): {
 
   const totalLoad = processors.reduce((sum, p) => sum + p.currentLoad, 0);
   const averageLoad = totalLoad / processors.length;
+  console.log('averageLoad', averageLoad);
+  console.log('totalLoad', totalLoad);
+  // console.log('processors', processors);
 
   const sumOfSquaredDifferences = processors.reduce((sum, p) => {
     return sum + Math.pow(p.currentLoad - averageLoad, 2);
@@ -211,7 +214,15 @@ function runSingleStrategySimulation(
     }
   }
 
-  const { averageLoad, stdDevLoad } = calculateFinalLoadMetrics(processors);
+  const { averageLoad: rawAvgLoad, stdDevLoad: rawStdDevLoad } =
+    calculateFinalLoadMetrics(processors);
+  // Normalize against maximum possible cumulative load per processor
+  const maxAvgLoad =
+    (fullParams.numTasksToSimulate * fullParams.maxTaskDemand) / fullParams.N;
+  const averageLoad = parseFloat(((rawAvgLoad / maxAvgLoad) * 100).toFixed(2));
+  const stdDevLoad = parseFloat(
+    ((rawStdDevLoad / maxAvgLoad) * 100).toFixed(2)
+  );
   return { ...currentMetrics, averageLoad, stdDevLoad };
 }
 

@@ -95,7 +95,7 @@ export default function Home() {
           />
         </section>
 
-        <section aria-labelledby="introduction-section-title">
+        {/* <section aria-labelledby="introduction-section-title">
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center text-xl font-headline">
@@ -139,7 +139,7 @@ export default function Home() {
               </p>
             </CardContent>
           </Card>
-        </section>
+        </section> */}
 
         <section aria-labelledby="results-section-title">
           <div className="flex items-center mb-6">
