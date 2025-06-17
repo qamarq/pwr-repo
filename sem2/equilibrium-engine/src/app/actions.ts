@@ -13,7 +13,7 @@ import {
 } from '@/lib/simulation';
 
 const DEFAULT_NUM_TASKS_TO_SIMULATE = 10000;
-const DEFAULT_MAX_TASK_DEMAND = 10;
+const DEFAULT_MAX_TASK_DEMAND = 1000;
 
 export async function runAllSimulationsAction(
   userParams: UserSimulationParams
@@ -24,12 +24,6 @@ export async function runAllSimulationsAction(
     maxTaskDemand: DEFAULT_MAX_TASK_DEMAND,
   };
 
-  // Introduce a small delay to simulate computation and allow UI to show loading state.
-  // await new Promise(resolve => setTimeout(resolve, 500));
-
-  // These calls can be run in parallel if they don't share mutable state
-  // or if the simulation functions are pure / handle their own state initialization.
-  // The current simulation.ts structure initializes state per call, so parallel is fine.
   const [strategy1Metrics, strategy2Metrics, strategy3Metrics] =
     await Promise.all([
       applyStrategy1(params),

@@ -66,8 +66,6 @@ export default function Home() {
     });
   };
 
-  const isLoading = isPending; // Simplified, as charts also check for results being null for initial state
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-background to-secondary/30">
       <header className="py-6 px-4 md:px-8 bg-card shadow-md">

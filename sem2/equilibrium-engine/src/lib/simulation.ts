@@ -3,7 +3,6 @@ import type { Processor, Task, SimulationParams, Metrics } from '@/types';
 const DEFAULT_NUM_TASKS_TO_SIMULATE = 10000;
 const DEFAULT_MAX_TASK_DEMAND = 10;
 
-// Helper to initialize processors
 function initializeProcessors(N: number): Processor[] {
   return Array.from({ length: N }, (_, id) => ({
     id,
@@ -12,7 +11,6 @@ function initializeProcessors(N: number): Processor[] {
   }));
 }
 
-// Helper to calculate final load metrics
 function calculateFinalLoadMetrics(processors: Processor[]): {
   averageLoad: number;
   stdDevLoad: number;
@@ -21,9 +19,6 @@ function calculateFinalLoadMetrics(processors: Processor[]): {
 
   const totalLoad = processors.reduce((sum, p) => sum + p.currentLoad, 0);
   const averageLoad = totalLoad / processors.length;
-  console.log('averageLoad', averageLoad);
-  console.log('totalLoad', totalLoad);
-  // console.log('processors', processors);
 
   const sumOfSquaredDifferences = processors.reduce((sum, p) => {
     return sum + Math.pow(p.currentLoad - averageLoad, 2);
@@ -36,10 +31,8 @@ function calculateFinalLoadMetrics(processors: Processor[]): {
   };
 }
 
-// Helper to get a random processor index, optionally excluding one
 function getRandomProcessorIndex(N: number, excludeIndex: number = -1): number {
   if (N <= 1 && excludeIndex !== -1) {
-    // Cannot exclude if only one processor or less
     throw new Error(
       'Cannot select another processor if N <= 1 and an exclusion is requested.'
     );
@@ -51,7 +44,6 @@ function getRandomProcessorIndex(N: number, excludeIndex: number = -1): number {
   return randomIndex;
 }
 
-// Core logic for Strategy 1
 function strategy1Core(
   processors: Processor[],
   newTask: Task,
@@ -64,7 +56,6 @@ function strategy1Core(
   const { N, p, z } = params;
 
   if (N <= 1) {
-    // If only one processor, it must take the task
     processors[originatingProcessorIndex].tasks.push(newTask);
     processors[originatingProcessorIndex].currentLoad += newTask.demand;
     return;
@@ -91,7 +82,6 @@ function strategy1Core(
   }
 }
 
-// Core logic for Strategy 2
 function strategy2Core(
   processors: Processor[],
   newTask: Task,
@@ -102,12 +92,10 @@ function strategy2Core(
   const { N, p } = params;
 
   if (processors[originatingProcessorIndex].currentLoad > p && N > 1) {
-    // Check if any processor can accept the task
     const hasCandidate = processors.some(
       (proc, idx) => idx !== originatingProcessorIndex && proc.currentLoad < p
     );
     if (!hasCandidate) {
-      // No available processor below threshold, execute locally
       processors[originatingProcessorIndex].tasks.push(newTask);
       processors[originatingProcessorIndex].currentLoad += newTask.demand;
     } else {
@@ -124,20 +112,18 @@ function strategy2Core(
       metrics.migrations++;
     }
   } else {
-    // Execute locally if under threshold or only one processor
     processors[originatingProcessorIndex].tasks.push(newTask);
     processors[originatingProcessorIndex].currentLoad += newTask.demand;
   }
 }
 
-// Proactive balancing part for Strategy 3
 function strategy3ProactiveBalancing(
   processors: Processor[],
   params: SimulationParams,
   metrics: { queries: number; migrations: number }
 ): void {
   const { N, p, r } = params;
-  if (N <= 1) return; // No balancing possible with 1 or fewer processors
+  if (N <= 1) return;
 
   for (let u_idx = 0; u_idx < N; u_idx++) {
     if (processors[u_idx].currentLoad < r) {
@@ -147,7 +133,6 @@ function strategy3ProactiveBalancing(
         processors[v_idx].currentLoad > p &&
         processors[v_idx].tasks.length > 0
       ) {
-        // Steal one random task
         const taskIndexToSteal = Math.floor(
           Math.random() * processors[v_idx].tasks.length
         );
@@ -167,7 +152,6 @@ function strategy3ProactiveBalancing(
   }
 }
 
-// Generic simulation runner
 function runSingleStrategySimulation(
   coreLogicFn: (
     processors: Processor[],
@@ -216,12 +200,11 @@ function runSingleStrategySimulation(
 
   const { averageLoad: rawAvgLoad, stdDevLoad: rawStdDevLoad } =
     calculateFinalLoadMetrics(processors);
-  // Normalize against maximum possible cumulative load per processor
   const maxAvgLoad =
     (fullParams.numTasksToSimulate * fullParams.maxTaskDemand) / fullParams.N;
   const averageLoad = parseFloat(((rawAvgLoad / maxAvgLoad) * 100).toFixed(2));
   const stdDevLoad = parseFloat(
-    ((rawStdDevLoad / maxAvgLoad) * 100).toFixed(2)
+    ((rawStdDevLoad / rawAvgLoad) * 100).toFixed(2)
   );
   return { ...currentMetrics, averageLoad, stdDevLoad };
 }
@@ -235,7 +218,6 @@ export function applyStrategy2(params: SimulationParams): Metrics {
 }
 
 export function applyStrategy3(params: SimulationParams): Metrics {
-  // Strategy 3 uses Strategy 2's core logic for initial placement, then its own proactive balancing
   return runSingleStrategySimulation(
     strategy2Core,
     strategy3ProactiveBalancing,
