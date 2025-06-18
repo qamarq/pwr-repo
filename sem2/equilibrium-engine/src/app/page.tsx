@@ -7,7 +7,7 @@ import {
   type SimulationFormValues,
 } from '@/components/ParameterForm';
 import { MetricsCard } from '@/components/MetricsCard';
-import { ComparisonCharts } from '@/components/ComparisonCharts'; // Added import
+import { ComparisonCharts } from '@/components/ComparisonCharts';
 import type { SimulationResults, UserSimulationParams } from '@/types';
 import { runAllSimulationsAction } from './actions';
 import {
@@ -25,7 +25,7 @@ import {
   BarChartBig,
   Info,
   PieChart,
-} from 'lucide-react'; // Added PieChart
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Home() {
@@ -167,13 +167,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* New Chart Section - Conditionally render only if there are results or it's loading them */}
         {(simulationResults || isPending) && (
           <section
             aria-labelledby="comparison-chart-section-title"
             className="mt-12">
             {' '}
-            {/* Added more top margin */}
             <div className="flex items-center mb-6">
               <PieChart className="h-8 w-8 text-primary mr-3" />
               <h2

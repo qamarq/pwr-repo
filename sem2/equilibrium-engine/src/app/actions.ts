@@ -13,7 +13,7 @@ import {
 } from '@/lib/simulation';
 
 const DEFAULT_NUM_TASKS_TO_SIMULATE = 10000;
-const DEFAULT_MAX_TASK_DEMAND = 1000;
+const DEFAULT_MAX_TASK_DEMAND = 10;
 
 export async function runAllSimulationsAction(
   userParams: UserSimulationParams

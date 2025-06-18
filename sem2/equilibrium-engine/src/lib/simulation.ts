@@ -131,7 +131,8 @@ function strategy3ProactiveBalancing(
       metrics.queries++;
       if (
         processors[v_idx].currentLoad > p &&
-        processors[v_idx].tasks.length > 0
+        processors[v_idx].tasks.length > 0 &&
+        processors[v_idx].currentLoad - processors[u_idx].currentLoad > p * 0.2
       ) {
         const taskIndexToSteal = Math.floor(
           Math.random() * processors[v_idx].tasks.length
