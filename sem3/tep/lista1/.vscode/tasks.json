@@ -1,0 +1,97 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build-zad1",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+        "-g",
+        "-std=c++17",
+        "${workspaceFolder}/zad1/main.cpp",
+        "${workspaceFolder}/zad1/zadanie1.cpp",
+        "-o",
+        "${workspaceFolder}/zad1/zadanie1.exe"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "build-zad2",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+        "-g",
+        "-std=c++17",
+        "${workspaceFolder}/zad2/main.cpp",
+        "${workspaceFolder}/zad2/zadanie2.cpp",
+        "-o",
+        "${workspaceFolder}/zad2/zadanie2.exe"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "build-zad3",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+        "-g",
+        "-std=c++17",
+        "${workspaceFolder}/zad3/main.cpp",
+        "${workspaceFolder}/zad3/zadanie3.cpp",
+        "-o",
+        "${workspaceFolder}/zad3/zadanie3.exe"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "build-zad4",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+        "-g",
+        "-std=c++17",
+        "${workspaceFolder}/zad4/main.cpp",
+        "${workspaceFolder}/zad4/CTable.cpp",
+        "-o",
+        "${workspaceFolder}/zad4/zadanie4.exe"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}

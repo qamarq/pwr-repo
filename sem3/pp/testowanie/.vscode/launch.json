@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Compile and Run Scala",
+      "type": "node",
+      "request": "launch",
+      "program": "powershell.exe",
+      "args": [
+        "-Command",
+        "scalac ${file}; if ($LASTEXITCODE -eq 0) { $className = [System.IO.Path]::GetFileNameWithoutExtension('${file}'); scala $className } else { Write-Host 'Compilation failed!' -ForegroundColor Red; Read-Host 'Press Enter to continue' }"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new"
+      }
+    },
+    {
+      "name": "Compile Scala File",
+      "type": "node",
+      "request": "launch",
+      "program": "powershell.exe",
+      "args": ["-Command", "scalac ${file}"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new"
+      }
+    },
+    {
+      "name": "Run Scala Class (Hello)",
+      "type": "node",
+      "request": "launch",
+      "program": "powershell.exe",
+      "args": ["-Command", "scala Hello"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new"
+      }
+    }
+  ]
+}
