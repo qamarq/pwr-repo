@@ -20,7 +20,6 @@ public:
 
     Tree& operator=(const Tree& other);
     
-    // Move Assignment Operator (C++11)
     Tree& operator=(Tree&& other);
 
     Tree operator+(const Tree& other) const;
