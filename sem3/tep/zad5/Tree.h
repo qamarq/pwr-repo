@@ -13,8 +13,7 @@ public:
     Tree();
     Tree(Node* rootNode);
     Tree(const Tree& other);
-    
-    // Move Constructor (C++11)
+
     Tree(Tree&& other);
 
     ~Tree();
@@ -38,7 +37,6 @@ public:
     int howManyVars() const;
     bool isInitialized() const;
 
-    // Helpers for testing optimizations
     static void resetCounters();
     static int getCopyCount();
     static int getMoveCount();
@@ -46,7 +44,6 @@ public:
 private:
     Node* root;
 
-    // Counters for statistics
     static int copyCount;
     static int moveCount;
 

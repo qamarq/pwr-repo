@@ -158,43 +158,43 @@ void Interface::handleSave(const std::string& args) {
 }
 
 void Interface::handleTest() {
-    std::cout << "--- SmartPointer Test ---" << std::endl;
+    std::cout << "--- smartpointer test ---" << std::endl;
     int* val = new int(10);
-    SmartPointer<int> sp1(val);
-    std::cout << "SP1 value: " << *sp1 << std::endl;
-    
+    SmartPointer sp1(val);
+    std::cout << "sp1 start value = " << *sp1 << std::endl;
+
     {
-        SmartPointer<int> sp2 = sp1; // Copy constructor, ref count increases
-        std::cout << "SP2 created from SP1. Value: " << *sp2 << std::endl;
+        SmartPointer<int> sp2 = sp1;
+        std::cout << "sp2 copied from sp1, value = " << *sp2 << std::endl;
         *sp2 = 20;
-        std::cout << "Changed SP2 value to 20. SP1 value: " << *sp1 << " (should be 20)" << std::endl;
-    } // SP2 destroyed, ref count decreases, memory NOT deleted
+        std::cout << "changed sp2 to 20, sp1 now = " << *sp1 << " (should match)" << std::endl;
+    }
 
-    std::cout << "SP2 out of scope. SP1 value: " << *sp1 << " (still valid)" << std::endl;
+    std::cout << "sp2 dead, sp1 still ok, value = " << *sp1 << std::endl;
 
-    std::cout << "\n--- Move Semantics Test (Tree) ---" << std::endl;
+    std::cout << "\n--- move stuff / tree ---" << std::endl;
     Tree::resetCounters();
-    
+
     Result<Tree, Error> r1 = Tree::build("+ + x 1 2");
     Result<Tree, Error> r2 = Tree::build("- y 5");
-    
+
     if (r1.isSuccess() && r2.isSuccess()) {
         Tree t1 = r1.getValue();
         Tree t2 = r2.getValue();
-        
-        std::cout << "Resetting counters..." << std::endl;
+
+        std::cout << "reset counters again" << std::endl;
         Tree::resetCounters();
-        
-        std::cout << "Executing: t3 = t1 + t2" << std::endl;
+
+        std::cout << "doing: t3 = t1 + t2" << std::endl;
         Tree t3 = t1 + t2;
-        
-        std::cout << "Copies: " << Tree::getCopyCount() << std::endl;
-        std::cout << "Moves: " << Tree::getMoveCount() << std::endl;
-        
-        std::cout << "Executing: t3 = std::move(t1)" << std::endl;
+
+        std::cout << "copy count = " << Tree::getCopyCount() << std::endl;
+        std::cout << "move count = " << Tree::getMoveCount() << std::endl;
+
+        std::cout << "now move assign: t3 = move(t1)" << std::endl;
         t3 = std::move(t1);
-        
-        std::cout << "Copies: " << Tree::getCopyCount() << std::endl;
-        std::cout << "Moves: " << Tree::getMoveCount() << std::endl;
+
+        std::cout << "copies now = " << Tree::getCopyCount() << std::endl;
+        std::cout << "moves now = " << Tree::getMoveCount() << std::endl;
     }
 }

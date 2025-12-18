@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <utility> // std::move
 
-// Initialize static counters
 int Tree::copyCount = 0;
 int Tree::moveCount = 0;
 
@@ -12,7 +11,6 @@ Tree::Tree() : root(nullptr) {}
 
 Tree::Tree(Node* rootNode) : root(rootNode) {}
 
-// Copy Constructor
 Tree::Tree(const Tree& other) : root(nullptr) {
     copyCount++;
     if (other.root != nullptr) {
@@ -20,7 +18,6 @@ Tree::Tree(const Tree& other) : root(nullptr) {
     }
 }
 
-// Move Constructor
 Tree::Tree(Tree&& other) : root(other.root) {
     moveCount++;
     other.root = nullptr;
@@ -30,7 +27,6 @@ Tree::~Tree() {
     delete root;
 }
 
-// Copy Assignment
 Tree& Tree::operator=(const Tree& other) {
     if (this != &other) {
         copyCount++;
@@ -43,21 +39,20 @@ Tree& Tree::operator=(const Tree& other) {
     return *this;
 }
 
-// Move Assignment
 Tree& Tree::operator=(Tree&& other) {
     if (this != &other) {
         moveCount++;
-        delete root;       // Clean up current resource
-        root = other.root; // Steal resource
-        other.root = nullptr; // nullptrify source
+        delete root;
+        root = other.root;
+        other.root = nullptr;
     }
     return *this;
 }
 
 Tree Tree::operator+(const Tree& other) const {
-    Tree result(*this); // Copy constructor (1 copy)
+    Tree result(*this);
     result.join(other);
-    return result;      // Return by value -> Move Constructor (or RVO)
+    return result;
 }
 
 bool Tree::operator==(const Tree& other) const {
@@ -186,7 +181,7 @@ Result<double, Error> Tree::compute(const std::vector<double>& values) const {
 
 void Tree::join(const Tree& other) {
     if (!root) {
-        *this = other; // Calls assignment operator (Move or Copy depending on other)
+        *this = other;
         return;
     }
     if (!other.root) return;

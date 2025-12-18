@@ -8,15 +8,15 @@
 template <typename T, typename E>
 class Result {
 public:
-    Result() : value(NULL) {}
+    Result() : value(nullptr) {}
 
     Result(const T& val) : value(new T(val)) {}
 
-    Result(E* err) : value(NULL) {
+    Result(E* err) : value(nullptr) {
         errors.push_back(err);
     }
 
-    Result(const std::vector<E*>& errs) : value(NULL) {
+    Result(const std::vector<E*>& errs) : value(nullptr) {
         copyErrors(errs);
     }
 
@@ -24,7 +24,7 @@ public:
         if (other.value) {
             value = new T(*other.value);
         } else {
-            value = NULL;
+            value = nullptr;
         }
         copyErrors(other.errors);
     }
@@ -43,7 +43,7 @@ public:
             if (other.value) {
                 value = new T(*other.value);
             } else {
-                value = NULL;
+                value = nullptr;
             }
             copyErrors(other.errors);
         }
@@ -63,7 +63,7 @@ public:
     }
 
     bool isSuccess() const {
-        return value != NULL && errors.empty();
+        return value != nullptr && errors.empty();
     }
 
     T getValue() const {
