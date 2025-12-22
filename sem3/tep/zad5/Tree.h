@@ -19,7 +19,7 @@ public:
     ~Tree();
 
     Tree& operator=(const Tree& other);
-    
+
     Tree& operator=(Tree&& other);
 
     Tree operator+(const Tree& other) const;
