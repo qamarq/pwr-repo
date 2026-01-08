@@ -29,7 +29,7 @@ std::vector<MyUniquePointer<Product>> konwersja(std::vector<MySmartPointer<Produ
                     k->releasePayload();
                 }
             } else {
-                std::cout << "Skip '" << prod->getName() << "' due to external reference." << std::endl;
+                std::cout << "skip '" << prod->getName() << "' zewnetrzna referencja" << std::endl;
             }
         }
     }
