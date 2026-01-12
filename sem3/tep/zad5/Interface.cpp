@@ -177,6 +177,7 @@ void Interface::handleTest() {
 
     Result<Tree, Error> r1 = Tree::build("+ + x 1 2");
     Result<Tree, Error> r2 = Tree::build("- y 5");
+    Result<Tree, Error> r3 = Tree::build("- z 6");
 
     if (r1.isSuccess() && r2.isSuccess()) {
         Tree t1 = r1.getValue();
@@ -191,9 +192,15 @@ void Interface::handleTest() {
         std::cout << "copy count = " << Tree::getCopyCount() << std::endl;
         std::cout << "move count = " << Tree::getMoveCount() << std::endl;
 
-        std::cout << "now move assign: t3 = move(t1)" << std::endl;
-        t3 = std::move(t1);
+        Tree::resetCounters();
+        std::cout << "now move assign: t3 = t1 + t2" << std::endl;
+        t3 = t1 + t2;
+        std::cout << "copies now = " << Tree::getCopyCount() << std::endl;
+        std::cout << "moves now = " << Tree::getMoveCount() << std::endl;
 
+        Tree::resetCounters();
+        std::cout << "now move assign: t4(t1+ t2)" << std::endl;
+        Tree t4(std::move(t1));
         std::cout << "copies now = " << Tree::getCopyCount() << std::endl;
         std::cout << "moves now = " << Tree::getMoveCount() << std::endl;
     }
