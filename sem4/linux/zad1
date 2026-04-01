@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Dzisiaj jest $(date '+%a %b %e %H:%M:%S %Z %Y')."
+echo "Znajdujesz się w $HOME i twoj host to $(hostname)."

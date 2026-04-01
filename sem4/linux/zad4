@@ -1,0 +1,18 @@
+#!/bin/bash
+
+read -p "Jaki jest twój ulubiony system operacyjny? " os
+
+case "$os" in
+  Windows|windows)
+    echo "microslop jest dla ciebie!"
+    ;;
+  Mac|mac|macOS|MacOS)
+    echo "fajnie szybko ale gorszego ukladu klawiatury sie nie dalo"
+    ;;
+  Linux|linux)
+    echo "Świetny wybór!"
+    ;;
+  *)
+    echo "Czy $os jest systemem operacyjnym?"
+    ;;
+esac

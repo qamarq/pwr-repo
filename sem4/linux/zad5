@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for slowo in "łoś" "krowa" "gęś" "siano"
+do
+  echo "Mam $slowo"
+done

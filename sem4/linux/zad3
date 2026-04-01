@@ -1,0 +1,6 @@
+#!/bin/bash
+
+read -p "Podaj nazwę ulicy: " mojaUlica
+read -p "Podaj nazwę miasta: " mojeMiasto
+
+echo "Ulica, na której dorastałem, nazywała się $mojaUlica, a miasto było $mojeMiasto"
