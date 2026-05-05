@@ -4,7 +4,6 @@ import subprocess
 from datetime import datetime
 from typing import Optional, Set, List, Dict
 
-
 IMAGE_EXTENSIONS: Set[str] = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"}
 MEDIA_EXTENSIONS: Set[str] = {
     ".mp4",

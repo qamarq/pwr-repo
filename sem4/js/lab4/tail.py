@@ -1,6 +1,7 @@
 import sys
 import time
 import argparse
+import os
 from typing import List, Optional
 
 
@@ -20,6 +21,13 @@ def tail_lines(lines: List[str], n: int) -> List[str]:
     if n <= 0:
         return []
     return lines[-n:] if len(lines) > n else lines
+
+
+def tail_chars(content: str, n: int) -> str:
+    """Return last n characters from content."""
+    if n <= 0:
+        return ""
+    return content[-n:] if len(content) > n else content
 
 
 def follow_file(filepath: str) -> None:
@@ -47,18 +55,41 @@ def main() -> None:
     lines_count: int = args.lines
     follow: bool = args.follow
 
+    tail_reverse = os.environ.get("TAIL_REVERSE", "0") == "1"
+    tail_mode = os.environ.get("TAIL_MODE", "lines")
+
     if file_arg:
-        lines = read_lines_from_file(file_arg)
-        result = tail_lines(lines, lines_count)
-        for line in result:
-            sys.stdout.write(line)
+        if tail_mode == "chars":
+            with open(file_arg, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
+            result_str = tail_chars(content, lines_count)
+            sys.stdout.write(result_str)
+        else:
+            lines = read_lines_from_file(file_arg)
+            result = tail_lines(lines, lines_count)
+
+            if tail_reverse:
+                result = list(reversed(result))
+
+            for line in result:
+                sys.stdout.write(line)
+
         if follow:
             follow_file(file_arg)
     else:
-        lines = read_lines_from_stdin()
-        result = tail_lines(lines, lines_count)
-        for line in result:
-            sys.stdout.write(line)
+        if tail_mode == "chars":
+            content = sys.stdin.read()
+            result_str = tail_chars(content, lines_count)
+            sys.stdout.write(result_str)
+        else:
+            lines = read_lines_from_stdin()
+            result = tail_lines(lines, lines_count)
+
+            if tail_reverse:
+                result = list(reversed(result))
+
+            for line in result:
+                sys.stdout.write(line)
 
 
 if __name__ == "__main__":
