@@ -1,122 +1,117 @@
--- ----------------------------------------------------------
--- MDB Tools - A library for reading MS Access database files
--- Copyright (C) 2000-2011 Brian Bruns and others.
--- Files in libmdb are licensed under LGPL and the utilities under
--- the GPL, see COPYING.LIB and COPYING files respectively.
--- Check out http://mdbtools.sourceforge.net
--- ----------------------------------------------------------
+-- ============================================================
+-- Poprawiony schemat MySQL - wygenerowany na podstawie schema.sql
+-- Kodowanie: UTF-8
+-- ============================================================
 
--- That file uses encoding UTF-8
+SET FOREIGN_KEY_CHECKS = 0;
+SET NAMES utf8mb4;
 
-CREATE TABLE `Archiwum`
- (
-	`IdN`			int, 
-	`Nazwisko`			varchar (50), 
-	`Imie`			varchar (30), 
-	`DZatr`			datetime, 
-	`DUr`			datetime, 
-	`Plec`			varchar (1), 
-	`Pensja`			double, 
-	`Pensum`			int, 
-	`Telefon`			varchar (20), 
-	`Premia`			float
-);
+-- ------------------------------------------------------------
+-- Tabele bez zależności
+-- ------------------------------------------------------------
 
--- CREATE INDEXES ...
-ALTER TABLE `Archiwum` ADD CONSTRAINT `pk_Archiwum` PRIMARY KEY (`IdN`);
+CREATE TABLE IF NOT EXISTS `Miasta` (
+  `IdM`    INT NOT NULL AUTO_INCREMENT,
+  `NazwaM` VARCHAR(30) NOT NULL,
+  PRIMARY KEY (`IdM`),
+  UNIQUE KEY `uq_Miasta_NazwaM` (`NazwaM`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `Klasy`
- (
-	`Symbol`			varchar (6) NOT NULL, 
-	`Profil`			varchar (30) NOT NULL, 
-	`Wych`			int
-);
+CREATE TABLE IF NOT EXISTS `Przedmioty` (
+  `IdP`    INT NOT NULL AUTO_INCREMENT,
+  `NazwaP` VARCHAR(30) NOT NULL,
+  PRIMARY KEY (`IdP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- CREATE INDEXES ...
-ALTER TABLE `Klasy` ADD CONSTRAINT `pk_Klasy` PRIMARY KEY (`Symbol`);
+CREATE TABLE IF NOT EXISTS `Archiwum` (
+  `IdN`      INT NOT NULL,
+  `Nazwisko` VARCHAR(50),
+  `Imie`     VARCHAR(30),
+  `DZatr`    DATETIME,
+  `DUr`      DATETIME,
+  `Plec`     VARCHAR(1),
+  `Pensja`   DOUBLE,
+  `Pensum`   INT,
+  `Telefon`  VARCHAR(20),
+  `Premia`   FLOAT,
+  PRIMARY KEY (`IdN`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `Miasta`
- (
-	`IdM`			int not null auto_increment unique, 
-	`NazwaM`			varchar (30) NOT NULL
-);
+-- ------------------------------------------------------------
+-- Nauczyciele (przed Klasy, bo Klasy.Wych -> Nauczyciele)
+-- ------------------------------------------------------------
 
--- CREATE INDEXES ...
-ALTER TABLE `Miasta` ADD UNIQUE INDEX `NazwaM` (`NazwaM`);
-ALTER TABLE `Miasta` ADD CONSTRAINT `pk_Miasta` PRIMARY KEY (`IdM`);
+CREATE TABLE IF NOT EXISTS `Nauczyciele` (
+  `IdN`      INT NOT NULL AUTO_INCREMENT,
+  `Nazwisko` VARCHAR(30) NOT NULL,
+  `Imie`     VARCHAR(30) NOT NULL,
+  `DZatr`    DATETIME,
+  `DUr`      DATETIME,
+  `Plec`     VARCHAR(1),
+  `Pensja`   DOUBLE,
+  `Pensum`   INT,
+  `Telefon`  VARCHAR(15),
+  `Premia`   FLOAT,
+  PRIMARY KEY (`IdN`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `Oceny`
- (
-	`IdU`			int NOT NULL, 
-	`IdP`			int NOT NULL, 
-	`Ocena`			float, 
-	`DataO`			datetime
-);
+-- ------------------------------------------------------------
+-- Klasy (zależy od Nauczyciele)
+-- ------------------------------------------------------------
 
--- CREATE INDEXES ...
-ALTER TABLE `Oceny` ADD INDEX `IdP` (`IdP`);
-ALTER TABLE `Oceny` ADD PRIMARY KEY (`IdU`, `IdP`);
+CREATE TABLE IF NOT EXISTS `Klasy` (
+  `Symbol` VARCHAR(6)  NOT NULL,
+  `Profil` VARCHAR(30) NOT NULL,
+  `Wych`   INT,
+  PRIMARY KEY (`Symbol`),
+  CONSTRAINT `fk_Klasy_Wych` FOREIGN KEY (`Wych`) REFERENCES `Nauczyciele`(`IdN`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `Przedmioty`
- (
-	`IdP`			int not null auto_increment unique, 
-	`NazwaP`			varchar (30) NOT NULL
-);
+-- ------------------------------------------------------------
+-- Uczniowie (zależy od Klasy i Miasta)
+-- ------------------------------------------------------------
 
--- CREATE INDEXES ...
-ALTER TABLE `Przedmioty` ADD CONSTRAINT `pk_Przedmioty` PRIMARY KEY (`IdP`);
+CREATE TABLE IF NOT EXISTS `Uczniowie` (
+  `Idu`      INT NOT NULL AUTO_INCREMENT,
+  `Nazwisko` VARCHAR(30) NOT NULL,
+  `Imie`     VARCHAR(30) NOT NULL,
+  `DUr`      DATETIME,
+  `Plec`     VARCHAR(1),
+  `KlasaU`   VARCHAR(6),
+  `Miasto`   INT,
+  `Email`    VARCHAR(50),
+  PRIMARY KEY (`Idu`),
+  CONSTRAINT `fk_Uczniowie_KlasaU` FOREIGN KEY (`KlasaU`) REFERENCES `Klasy`(`Symbol`),
+  CONSTRAINT `fk_Uczniowie_Miasto` FOREIGN KEY (`Miasto`)  REFERENCES `Miasta`(`IdM`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `Uczniowie`
- (
-	`Idu`			int not null auto_increment unique, 
-	`Nazwisko`			varchar (30) NOT NULL, 
-	`Imie`			varchar (30) NOT NULL, 
-	`DUr`			datetime, 
-	`Plec`			varchar (1), 
-	`KlasaU`			varchar (6), 
-	`Miasto`			int, 
-	`Email`			varchar (50)
-);
+-- ------------------------------------------------------------
+-- Oceny (zależy od Uczniowie i Przedmioty)
+-- ------------------------------------------------------------
 
--- CREATE INDEXES ...
-ALTER TABLE `Uczniowie` ADD CONSTRAINT `pk_Uczniowie` PRIMARY KEY (`Idu`);
+CREATE TABLE IF NOT EXISTS `Oceny` (
+  `IdU`   INT   NOT NULL,
+  `IdP`   INT   NOT NULL,
+  `Ocena` FLOAT,
+  `DataO` DATETIME,
+  PRIMARY KEY (`IdU`, `IdP`),
+  KEY `idx_Oceny_IdP` (`IdP`),
+  CONSTRAINT `fk_Oceny_IdU` FOREIGN KEY (`IdU`) REFERENCES `Uczniowie`(`Idu`),
+  CONSTRAINT `fk_Oceny_IdP` FOREIGN KEY (`IdP`) REFERENCES `Przedmioty`(`IdP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `Uczy`
- (
-	`IdN`			int NOT NULL, 
-	`IdP`			int NOT NULL, 
-	`IleGodz`			int NOT NULL
-);
+-- ------------------------------------------------------------
+-- Uczy (zależy od Nauczyciele i Przedmioty)
+-- ------------------------------------------------------------
 
--- CREATE INDEXES ...
-ALTER TABLE `Uczy` ADD INDEX `IdP` (`IdP`);
-ALTER TABLE `Uczy` ADD PRIMARY KEY (`IdN`, `IdP`);
+CREATE TABLE IF NOT EXISTS `Uczy` (
+  `IdN`     INT NOT NULL,
+  `IdP`     INT NOT NULL,
+  `IleGodz` INT NOT NULL,
+  PRIMARY KEY (`IdN`, `IdP`),
+  KEY `idx_Uczy_IdP` (`IdP`),
+  CONSTRAINT `fk_Uczy_IdN` FOREIGN KEY (`IdN`) REFERENCES `Nauczyciele`(`IdN`),
+  CONSTRAINT `fk_Uczy_IdP` FOREIGN KEY (`IdP`) REFERENCES `Przedmioty`(`IdP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `Nauczyciele`
- (
-	`IdN`			int not null auto_increment unique, 
-	`Nazwisko`			varchar (30) NOT NULL, 
-	`Imie`			varchar (30) NOT NULL, 
-	`DZatr`			datetime, 
-	`DUr`			datetime, 
-	`Plec`			varchar (1), 
-	`Pensja`			double, 
-	`Pensum`			int, 
-	`Telefon`			varchar (15), 
-	`Premia`			float
-);
-
--- CREATE INDEXES ...
-ALTER TABLE `Nauczyciele` ADD CONSTRAINT `pk_Nauczyciele` PRIMARY KEY (`IdN`);
-
-
--- CREATE Relationships ...
-ALTER TABLE `Uczniowie` ADD CONSTRAINT `Uczniowie_KlasaU_fk` FOREIGN KEY (`KlasaU`) REFERENCES `Klasy`(`Symbol`);
-ALTER TABLE `Uczniowie` ADD CONSTRAINT `Uczniowie_Miasto_fk` FOREIGN KEY (`Miasto`) REFERENCES `Miasta`(`IdM`);
-ALTER TABLE `MSysNavPaneGroups` ADD CONSTRAINT `MSysNavPaneGroups_GroupCategoryID_fk` FOREIGN KEY (`GroupCategoryID`) REFERENCES `MSysNavPaneGroupCategories`(`Id`) ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE `MSysNavPaneGroupToObjects` ADD CONSTRAINT `MSysNavPaneGroupToObjects_GroupID_fk` FOREIGN KEY (`GroupID`) REFERENCES `MSysNavPaneGroups`(`Id`) ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE `Klasy` ADD CONSTRAINT `Klasy_Wych_fk` FOREIGN KEY (`Wych`) REFERENCES `Nauczyciele`(`IdN`);
-ALTER TABLE `Uczy` ADD CONSTRAINT `Uczy_IdN_fk` FOREIGN KEY (`IdN`) REFERENCES `Nauczyciele`(`IdN`);
-ALTER TABLE `Oceny` ADD CONSTRAINT `Oceny_IdP_fk` FOREIGN KEY (`IdP`) REFERENCES `Przedmioty`(`IdP`);
-ALTER TABLE `Uczy` ADD CONSTRAINT `Uczy_IdP_fk` FOREIGN KEY (`IdP`) REFERENCES `Przedmioty`(`IdP`);
-ALTER TABLE `Oceny` ADD CONSTRAINT `Oceny_IdU_fk` FOREIGN KEY (`IdU`) REFERENCES `Uczniowie`(`Idu`);
+SET FOREIGN_KEY_CHECKS = 1;
