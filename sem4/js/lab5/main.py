@@ -142,10 +142,6 @@ def parse_measurements(path: Path) -> dict:
 
 # task 2
 def group_measurement_files_by_key(path: Path) -> dict[tuple[str, str, str], Path]:
-    """
-    Scan *path* (non-recursively) for files matching <year>_<quantity>_<frequency>.csv.
-    Returns {(year, quantity, frequency): Path}.
-    """
     pattern = re.compile(r"^(\d{4})_(.+)_([^_]+)\.csv$")
     result: dict[tuple[str, str, str], Path] = {}
     for f in path.iterdir():
@@ -404,6 +400,51 @@ def cmd_stats(args: argparse.Namespace) -> None:
     print(f"Std dev  : {stdev:.4f} ug/m3")
 
 
+# best-station
+def cmd_best_station(args: argparse.Namespace) -> None:
+    mdir = DATA_DIR / "measurements"
+    files = group_measurement_files_by_key(mdir)
+    station_values: dict[str, list[float]] = {}
+
+    for (year, qty, freq), fpath in files.items():
+        if qty != args.quantity or freq != args.frequency:
+            continue
+        if not (args.start.year <= int(year) <= args.end.year):
+            continue
+        data = parse_measurements(fpath)
+        for dt_str, values in data["data"]:
+            mdate = _parse_meas_date(dt_str)
+            if mdate and args.start <= mdate <= args.end:
+                for code, val in values.items():
+                    if val is not None:
+                        station_values.setdefault(code, []).append(val)
+
+    if not station_values:
+        log.warning(
+            "No data for quantity=%s frequency=%s in [%s, %s]",
+            args.quantity,
+            args.frequency,
+            args.start,
+            args.end,
+        )
+        print("No data found.")
+        return
+
+    best_code = min(station_values, key=lambda c: statistics.mean(station_values[c]))
+    best_mean = statistics.mean(station_values[best_code])
+
+    stations = parse_stations(DATA_DIR / "stacje.csv")
+    station_map = {s.code: s for s in stations}
+    s = station_map.get(best_code)
+
+    print(f"Station  : {s.name} ({best_code})" if s else f"Station  : {best_code}")
+    print(f"Address  : {s.address or '—'}, {s.city}, {s.voivodeship}" if s else "")
+    print(f"Quantity : {args.quantity}  Frequency: {args.frequency}")
+    print(f"Period   : {args.start} – {args.end}")
+    print(f"Count    : {len(station_values[best_code])}")
+    print(f"Mean     : {best_mean:.4f} ug/m3")
+
+
 # parser
 
 
@@ -463,6 +504,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     stats_p.add_argument("station", help="Station code (e.g. DsWrocOrzech)")
     stats_p.set_defaults(func=cmd_stats)
+
+    sub.add_parser(
+        "best-station",
+        help="Find the station with the lowest mean value in the given period",
+    ).set_defaults(func=cmd_best_station)
 
     return parser
 
