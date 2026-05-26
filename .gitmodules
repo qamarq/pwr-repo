@@ -1,0 +1,3 @@
+[submodule "sem4/databases/rezerwownik"]
+	path = sem4/databases/rezerwownik
+	url = https://github.com/qamarq/rezerwownik
