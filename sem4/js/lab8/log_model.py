@@ -76,10 +76,11 @@ class LogModel:
         print(f'wczytano {len(self._all_entries)} wpisow z pliku')
         return len(self._all_entries)
 
-    def apply_time_filter(self, start: datetime, end: datetime) -> None:
+    def apply_time_filter(self, start: datetime, end: datetime, only_2xx: bool = False) -> None:
         self._filtered_entries = [
             e for e in self._all_entries
             if start <= e.timestamp < end
+            and (not only_2xx or 200 <= e.status_code < 300)
         ]
         self._current_index = 0 if self._filtered_entries else -1
         print(f'po filtrowaniu zostalo {len(self._filtered_entries)} wpisow')

@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QSplitter, QListWidget, QListWidgetItem, QPushButton, QLabel,
     QLineEdit, QDateEdit, QTimeEdit, QFormLayout, QGroupBox,
-    QFileDialog, QSpinBox,
+    QFileDialog, QSpinBox, QCheckBox,
 )
 from PyQt6.QtCore import Qt, QDate, QTime
 from PyQt6.QtGui import QFont
@@ -94,6 +94,9 @@ class MainWindow(QMainWindow):
         clear_btn = QPushButton('Wyczyść')
         clear_btn.clicked.connect(self._clear_filter)
         filter_row.addWidget(clear_btn)
+        self.only_2xx = QCheckBox('Tylko 2xx')
+        self.only_2xx.stateChanged.connect(self._apply_filter)
+        filter_row.addWidget(self.only_2xx)
         filter_row.addStretch()
         left_layout.addLayout(filter_row)
 
@@ -208,11 +211,12 @@ class MainWindow(QMainWindow):
         td = self.to_date.date()
         start = datetime(fd.year(), fd.month(), fd.day())
         end = datetime(td.year(), td.month(), td.day()) + timedelta(days=1)
-        self.model.apply_time_filter(start, end)
+        self.model.apply_time_filter(start, end, only_2xx=self.only_2xx.isChecked())
         self._populate_list()
         self._show_current_detail()
 
     def _clear_filter(self):
+        self.only_2xx.setChecked(False)
         self.model.clear_filter()
         self._update_date_filters()
         self._populate_list()
