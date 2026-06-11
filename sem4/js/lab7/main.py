@@ -17,7 +17,7 @@ from implementation import (
     make_generator,
     make_generator_mem,
     median,
-    once,
+    repeat,
     sqrt_newton,
 )
 
@@ -94,12 +94,10 @@ def show_task_6_examples() -> None:
 def show_task_7_examples() -> None:
     print("\nTask 7 examples")
 
-    @once
+    @repeat(5)
     def init() -> None:
         print("hello")
 
-    init()
-    init()
     init()
 
 

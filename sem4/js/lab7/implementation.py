@@ -10,7 +10,6 @@ from collections.abc import Callable, Generator, Iterable, Iterator, Sequence
 from functools import lru_cache, wraps
 from typing import Any, TypeVar
 
-
 T = TypeVar("T")
 R = TypeVar("R")
 
@@ -193,6 +192,20 @@ def once(f: Callable[..., R]) -> Callable[..., R]:
         return None
 
     return wrapper
+
+
+def repeat(n: int) -> Callable[[Callable[..., R]], Callable[..., R]]:
+    def decorator(f: Callable[..., R]) -> Callable[..., R]:
+        @wraps(f)
+        def wrapper(*args: Any, **kwargs: Any) -> R | None:
+            result = None
+            for _ in range(n):
+                result = f(*args, **kwargs)
+            return result
+
+        return wrapper
+
+    return decorator
 
 
 def fibonacci(n: int) -> int:
