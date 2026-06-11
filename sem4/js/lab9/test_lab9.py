@@ -80,6 +80,13 @@ def test_timeseries_getitem_with_missing_date_raises_key_error() -> None:
         _ = series[datetime.date(2024, 1, 2)]
 
 
+def test_timeseries_getitem_with_nonexistent_slice_raises_value_error() -> None:
+    series = make_series([10.0, 20.0, 30.0])
+
+    with pytest.raises(ValueError):
+        _ = series[0:4:0]
+
+
 def test_timeseries_mean_and_stddev_for_complete_values() -> None:
     series = make_series([2.0, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0])
 
