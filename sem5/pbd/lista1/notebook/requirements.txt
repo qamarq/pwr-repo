@@ -1,0 +1,14 @@
+jupysql 
+sqlalchemy 
+psycopg2-binary 
+pymssql 
+oracledb
+psycopg
+pandas
+pyarrow
+jupyter
+ipykernel
+jupyter_server
+python-dotenv
+mermaid-magic
+jupyterlab_mermaid_latest_extension

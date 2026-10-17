@@ -1,0 +1,100 @@
+
+Table dropped.
+
+
+Table dropped.
+
+
+Table dropped.
+
+
+Table dropped.
+
+
+Table dropped.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table altered.
+
+
+Session altered.
+
+
+8 rows created.
+
+
+10 rows created.
+
+
+5 rows created.
+
+
+18 rows created.
+
+
+18 rows created.
+
+
+Commit complete.
+
+
+T			  N
+---------------- ----------
+Kocury			 18
+Bandy			  5
+Funkcje 		  8
+Wrogowie		 10
+Wrogowie_kocurow	 18
+
+5 rows selected.
+
+
+IMIE		P PSEUDO	  FUNKCJA    SZEF	     W_STADKU_O PRZYDZIAL_MYSZY MYSZY_EXTRA   NR_BANDY
+--------------- - --------------- ---------- --------------- ---------- --------------- ----------- ----------
+MRUCZEK 	M TYGRYS	  SZEFUNIO		     2002-01-01 	    103 	 33	     1
+CHYTRY		M BOLEK 	  DZIELCZY   TYGRYS	     2002-05-05 	     50 		     1
+KOREK		M ZOMBI 	  BANDZIOR   TYGRYS	     2004-03-16 	     75 	 13	     3
+ZUZIA		D SZYBKA	  LOWCZY     LYSY	     2006-07-21 	     65 		     2
+BOLEK		M LYSY		  BANDZIOR   TYGRYS	     2006-08-15 	     72 	 21	     2
+RUDA		D MALA		  MILUSIA    TYGRYS	     2006-09-17 	     22 	 42	     1
+PUCEK		M RAFA		  LOWCZY     TYGRYS	     2006-10-15 	     65 		     4
+PUNIA		D KURKA 	  LOWCZY     ZOMBI	     2008-01-01 	     61 		     3
+BELA		D LASKA 	  MILUSIA    LYSY	     2008-02-01 	     24 	 28	     2
+KSAWERY 	M MAN		  LAPACZ     RAFA	     2008-07-12 	     51 		     4
+MELA		D DAMA		  LAPACZ     RAFA	     2008-11-01 	     51 		     4
+JACEK		M PLACEK	  LOWCZY     LYSY	     2008-12-01 	     67 		     2
+BARI		M RURA		  LAPACZ     LYSY	     2009-09-01 	     56 		     2
+MICKA		D LOLA		  MILUSIA    TYGRYS	     2009-10-14 	     25 	 47	     1
+LUCEK		M ZERO		  KOT	     KURKA	     2010-03-01 	     43 		     3
+SONIA		D PUSZYSTA	  MILUSIA    ZOMBI	     2010-11-18 	     20 	 35	     3
+LATKA		D UCHO		  KOT	     RAFA	     2011-01-01 	     40 		     4
+DUDEK		M MALY		  KOT	     RAFA	     2011-05-15 	     40 		     4
+
+18 rows selected.
+
+
+  NR_BANDY NAZWA		TEREN		SZEF_BANDY
+---------- -------------------- --------------- ---------------
+	 1 SZEFOSTWO		CALOSC		TYGRYS
+	 2 CZARNI RYCERZE	POLE		LYSY
+	 3 BIALI LOWCY		SAD		ZOMBI
+	 4 LACIACI MYSLIWI	GORKA		RAFA
+	 5 ROCKERSI		ZAGRODA
+
+5 rows selected.
+
