@@ -5,58 +5,38 @@
 #define RED_BUTTON 2
 #define GREEN_BUTTON 4
 
-const int leds[3] = {LED_RED, LED_GREEN, LED_BLUE};
+int leds[] = {LED_RED, LED_GREEN, LED_BLUE};
+int color = 0;
+bool ledOn = true;
 
-int color = 0;        // 0 = czerwony, 1 = zielony, 2 = niebieski
-bool ledOn = true;    // czy dioda ma świecić
-
-bool lastRedState = HIGH;
-bool lastGreenState = HIGH;
-
-void showLed()
-{
-  for (int i = 0; i < 3; i++)
-  {
-    if (ledOn && i == color)
-      digitalWrite(leds[i], HIGH);
-    else
-      digitalWrite(leds[i], LOW);
-  }
-}
+bool lastRed = HIGH;
+bool lastGreen = HIGH;
 
 void setup()
 {
-  pinMode(LED_RED, OUTPUT);
-  pinMode(LED_GREEN, OUTPUT);
-  pinMode(LED_BLUE, OUTPUT);
+  for (int i = 0; i < 3; i++)
+    pinMode(leds[i], OUTPUT);
 
   pinMode(RED_BUTTON, INPUT_PULLUP);
   pinMode(GREEN_BUTTON, INPUT_PULLUP);
-
-  showLed();
 }
 
 void loop()
 {
-  bool redState = digitalRead(RED_BUTTON);
-  bool greenState = digitalRead(GREEN_BUTTON);
+  bool red = digitalRead(RED_BUTTON);
+  bool green = digitalRead(GREEN_BUTTON);
 
-  // czerwony przycisk: włącz/wyłącz (reakcja tylko w momencie naciśnięcia)
-  if (redState == LOW && lastRedState == HIGH)
-  {
+  if (red == LOW && lastRed == HIGH)
     ledOn = !ledOn;
-    showLed();
-    delay(300);   // proste ograniczenie drgań styków
-  }
 
-  // zielony przycisk: zmiana koloru
-  if (greenState == LOW && lastGreenState == HIGH)
-  {
+  if (green == LOW && lastGreen == HIGH && ledOn)
     color = (color + 1) % 3;
-    showLed();
-    delay(300);
-  }
 
-  lastRedState = redState;
-  lastGreenState = greenState;
+  lastRed = red;
+  lastGreen = green;
+
+  for (int i = 0; i < 3; i++)
+    digitalWrite(leds[i], ledOn && i == color);
+
+  delay(20);
 }
