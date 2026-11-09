@@ -1,0 +1,204 @@
+SET
+ZAD. 1
+    WROG    |             PRZEWINA              
+------------+-----------------------------------
+ KAZIO      | ZLAPAL ZA OGON I ZROBIL WIATRAK
+ KAZIO      | CHCIAL OBEDRZEC ZE SKORY
+ REKSIO     | WYJATKOWO NIEGRZECZNIE OBSZCZEKAL
+ BETHOVEN   | NIE PODZIELIL SIE SWOJA KASZA
+ DZIKI BILL | ODGRYZL OGON
+(5 rows)
+
+ZAD. 2
+ IMIE  | FUNKCJA | Z NAMI OD  
+-------+---------+------------
+ ZUZIA | LOWCZY  | 2006-07-21
+ RUDA  | MILUSIA | 2006-09-17
+(2 rows)
+
+ZAD. 3
+    WROG    | GATUNEK | STOPIEN WROGOSCI 
+------------+---------+------------------
+ SMUKLA     | SOSNA   |                1
+ DZIKI BILL | PIES    |               10
+(2 rows)
+
+ZAD. 4
+                            WSZYSTKO O KOCURACH                             
+----------------------------------------------------------------------------
+ DUDEK zwany MALY (fun. KOT) lowi myszki w bandzie 4 od 2011-05-15
+ LUCEK zwany ZERO (fun. KOT) lowi myszki w bandzie 3 od 2010-03-01
+ BARI zwany RURA (fun. LAPACZ) lowi myszki w bandzie 2 od 2009-09-01
+ JACEK zwany PLACEK (fun. LOWCZY) lowi myszki w bandzie 2 od 2008-12-01
+ KSAWERY zwany MAN (fun. LAPACZ) lowi myszki w bandzie 4 od 2008-07-12
+ PUCEK zwany RAFA (fun. LOWCZY) lowi myszki w bandzie 4 od 2006-10-15
+ BOLEK zwany LYSY (fun. BANDZIOR) lowi myszki w bandzie 2 od 2006-08-15
+ KOREK zwany ZOMBI (fun. BANDZIOR) lowi myszki w bandzie 3 od 2004-03-16
+ CHYTRY zwany BOLEK (fun. DZIELCZY) lowi myszki w bandzie 1 od 2002-05-05
+ MRUCZEK zwany TYGRYS (fun. SZEFUNIO) lowi myszki w bandzie 1 od 2002-01-01
+(10 rows)
+
+ZAD. 5
+ PSEUDO | A | L | Po wymianie A na # oraz L na % 
+--------+---+---+--------------------------------
+ LASKA  | 2 | 1 | %#SKA
+ LOLA   | 4 | 1 | %OL#
+ MALA   | 2 | 3 | M#%A
+ MALY   | 2 | 3 | M#%Y
+ PLACEK | 3 | 2 | P%#CEK
+(5 rows)
+
+ZAD. 6
+  IMIE   |  W stadku  | Zjadal |  Podwyzka  | Zjada 
+---------+------------+--------+------------+-------
+ KOREK   | 2004-03-16 |     68 | 2004-09-16 |    75
+ BOLEK   | 2006-08-15 |     65 | 2007-02-15 |    72
+ ZUZIA   | 2006-07-21 |     59 | 2007-01-21 |    65
+ KSAWERY | 2008-07-12 |     46 | 2009-01-12 |    51
+ CHYTRY  | 2002-05-05 |     45 | 2002-11-05 |    50
+ RUDA    | 2006-09-17 |     20 | 2007-03-17 |    22
+(6 rows)
+
+ZAD. 7
+  IMIE   | MYSZY KWARTALNIE | KWARTALNE DODATKI 
+---------+------------------+-------------------
+ MRUCZEK |              309 |                99
+ KOREK   |              225 |                39
+ BOLEK   |              216 |                63
+ JACEK   |              201 |                 0
+ PUCEK   |              195 |                 0
+ ZUZIA   |              195 |                 0
+ PUNIA   |              183 |                 0
+ BARI    |              168 |                 0
+(8 rows)
+
+ZAD. 8
+  IMIE   | Zjada rocznie 
+---------+---------------
+ BARI    | 672
+ BELA    | Ponizej 660
+ BOLEK   | 1116
+ CHYTRY  | Ponizej 660
+ DUDEK   | Ponizej 660
+ JACEK   | 804
+ KOREK   | 1056
+ KSAWERY | Ponizej 660
+ LATKA   | Ponizej 660
+ LUCEK   | Ponizej 660
+ MELA    | Ponizej 660
+ MICKA   | 864
+ MRUCZEK | 1632
+ PUCEK   | 780
+ PUNIA   | 732
+ RUDA    | 768
+ SONIA   | Limit
+ ZUZIA   | 780
+(18 rows)
+
+ZAD. 9
+ Unikalnosc atr. PSEUDO 
+------------------------
+      BOLEK - Unikalny
+       DAMA - Unikalny
+      KURKA - Unikalny
+      LASKA - Unikalny
+       LOLA - Unikalny
+       LYSY - Unikalny
+       MALA - Unikalny
+       MALY - Unikalny
+        MAN - Unikalny
+     PLACEK - Unikalny
+   PUSZYSTA - Unikalny
+       RAFA - Unikalny
+       RURA - Unikalny
+     SZYBKA - Unikalny
+     TYGRYS - Unikalny
+       UCHO - Unikalny
+       ZERO - Unikalny
+      ZOMBI - Unikalny
+(18 rows)
+
+   Unikalnosc atr. SZEF   
+--------------------------
+      KURKA - Unikalny
+       LYSY - nieunikalny
+       RAFA - nieunikalny
+     TYGRYS - nieunikalny
+      ZOMBI - nieunikalny
+(5 rows)
+
+ZAD. 10
+ Pseudonim | Liczba wrogow 
+-----------+---------------
+ BOLEK     |             2
+ LASKA     |             2
+ TYGRYS    |             2
+(3 rows)
+
+ZAD. 11 (29 pazdziernik)
+  PSEUDO  |  W STADKU  |  WYPLATA   
+----------+------------+------------
+ TYGRYS   | 2002-01-01 | 2024-10-30
+ BOLEK    | 2002-05-05 | 2024-10-30
+ ZOMBI    | 2004-03-16 | 2024-11-27
+ SZYBKA   | 2006-07-21 | 2024-11-27
+ LYSY     | 2006-08-15 | 2024-10-30
+ MALA     | 2006-09-17 | 2024-11-27
+ RAFA     | 2006-10-15 | 2024-10-30
+ KURKA    | 2008-01-01 | 2024-10-30
+ LASKA    | 2008-02-01 | 2024-10-30
+ MAN      | 2008-07-12 | 2024-10-30
+ DAMA     | 2008-11-01 | 2024-10-30
+ PLACEK   | 2008-12-01 | 2024-10-30
+ RURA     | 2009-09-01 | 2024-10-30
+ LOLA     | 2009-10-14 | 2024-10-30
+ ZERO     | 2010-03-01 | 2024-10-30
+ PUSZYSTA | 2010-11-18 | 2024-11-27
+ UCHO     | 2011-01-01 | 2024-10-30
+ MALY     | 2011-05-15 | 2024-10-30
+(18 rows)
+
+ZAD. 11 (31 pazdziernik)
+  PSEUDO  |  W STADKU  |  WYPLATA   
+----------+------------+------------
+ TYGRYS   | 2002-01-01 | 2024-11-27
+ BOLEK    | 2002-05-05 | 2024-11-27
+ ZOMBI    | 2004-03-16 | 2024-11-27
+ SZYBKA   | 2006-07-21 | 2024-11-27
+ LYSY     | 2006-08-15 | 2024-11-27
+ MALA     | 2006-09-17 | 2024-11-27
+ RAFA     | 2006-10-15 | 2024-11-27
+ KURKA    | 2008-01-01 | 2024-11-27
+ LASKA    | 2008-02-01 | 2024-11-27
+ MAN      | 2008-07-12 | 2024-11-27
+ DAMA     | 2008-11-01 | 2024-11-27
+ PLACEK   | 2008-12-01 | 2024-11-27
+ RURA     | 2009-09-01 | 2024-11-27
+ LOLA     | 2009-10-14 | 2024-11-27
+ ZERO     | 2010-03-01 | 2024-11-27
+ PUSZYSTA | 2010-11-18 | 2024-11-27
+ UCHO     | 2011-01-01 | 2024-11-27
+ MALY     | 2011-05-15 | 2024-11-27
+(18 rows)
+
+ZAD. 12
+               |   |           |         |              |        |                   
+---------------+---+-----------+---------+--------------+--------+-------------------
+ Liczba kotow= | 1 | lowi jako | LAPACZ  | i zjada max. |  51.00 | myszy miesiecznie
+ Liczba kotow= | 2 | lowi jako | LOWCZY  | i zjada max. |  65.00 | myszy miesiecznie
+ Liczba kotow= | 4 | lowi jako | MILUSIA | i zjada max. |  72.00 | myszy miesiecznie
+(3 rows)
+
+ZAD. 13
+ Nr bandy | Plec | Minimalny przydzial 
+----------+------+---------------------
+        1 | M    |                  50
+        1 | D    |                  22
+        4 | D    |                  40
+        4 | M    |                  40
+        3 | D    |                  20
+        2 | M    |                  56
+        2 | D    |                  24
+        3 | M    |                  43
+(8 rows)
+

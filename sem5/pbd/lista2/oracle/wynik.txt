@@ -1,0 +1,67 @@
+ZAD. 8
+
+IMIE            Zjada rocznie
+--------------- ---------------
+BARI            672
+BELA            Ponizej 660
+BOLEK           1116
+CHYTRY          Ponizej 660
+DUDEK           Ponizej 660
+JACEK           804
+KOREK           1056
+KSAWERY         Ponizej 660
+LATKA           Ponizej 660
+LUCEK           Ponizej 660
+MELA            Ponizej 660
+MICKA           864
+MRUCZEK         1632
+PUCEK           780
+PUNIA           732
+RUDA            768
+SONIA           Limit
+ZUZIA           780
+
+18 rows selected.
+
+ZAD. 9
+
+Unikalnosc atr. PSEUDO
+------------------------
+     BOLEK - Unikalny
+      DAMA - Unikalny
+     KURKA - Unikalny
+     LASKA - Unikalny
+      LOLA - Unikalny
+      LYSY - Unikalny
+      MALA - Unikalny
+      MALY - Unikalny
+       MAN - Unikalny
+    PLACEK - Unikalny
+  PUSZYSTA - Unikalny
+      RAFA - Unikalny
+      RURA - Unikalny
+    SZYBKA - Unikalny
+    TYGRYS - Unikalny
+      UCHO - Unikalny
+      ZERO - Unikalny
+     ZOMBI - Unikalny
+
+18 rows selected.
+
+
+Unikalnosc atr. SZEF
+------------------------
+     KURKA - Unikalny
+      LYSY - nieunikalny
+      RAFA - nieunikalny
+    TYGRYS - nieunikalny
+     ZOMBI - nieunikalny
+
+ZAD. 10
+
+Pseudonim       Liczba wrogow
+--------------- -------------
+BOLEK                       2
+LASKA                       2
+TYGRYS                      2
+
