@@ -1,0 +1,145 @@
+SET
+ZAD. 1
+ W stadzie przed szefem lub bez incydentu | Przed JACKIEM 
+------------------------------------------+---------------
+ LUCEK                                    | NIE
+ MICKA                                    | NIE
+ PUCEK                                    | TAK
+ ZUZIA                                    | TAK
+(4 rows)
+
+ZAD. 2
+    Przelozony     |    Podwladny     
+-------------------+------------------
+ BOLEK             | Brak podwladnego
+ Brak przelozonego | TYGRYS
+ LYSY              | PLACEK
+ LYSY              | RURA
+ MALY              | Brak podwladnego
+ MAN               | Brak podwladnego
+ PLACEK            | Brak podwladnego
+ RAFA              | MALY
+ RAFA              | MAN
+ RURA              | Brak podwladnego
+ TYGRYS            | BOLEK
+ TYGRYS            | LYSY
+ TYGRYS            | RAFA
+ TYGRYS            | ZOMBI
+ ZERO              | Brak podwladnego
+(15 rows)
+
+ZAD. 3
+ PSEUDO | PRZYDZIAL_MYSZY | SUM_W_BANDZIE | PROC_W_BANDZIE 
+--------+-----------------+---------------+----------------
+ BOLEK  |              50 |           200 |             25
+ TYGRYS |             103 |           200 |             52
+ LASKA  |              24 |           284 |              8
+ RURA   |              56 |           284 |             20
+(4 rows)
+
+ZAD. 4
+   Nazwa bandy   | Koty z wrogami 
+-----------------+----------------
+ SZEFOSTWO       |              3
+ CZARNI RYCERZE  |              5
+ BIALI LOWCY     |              3
+ LACIACI MYSLIWI |              4
+(4 rows)
+
+ZAD. 5
+ Funkcja  | Pseudonim kota | Liczba wrogow 
+----------+----------------+---------------
+ DZIELCZY | BOLEK          |             2
+ MILUSIA  | LASKA          |             2
+ SZEFUNIO | TYGRYS         |             2
+(3 rows)
+
+ZAD. 6a
+ NR BANDY |  NAZWA   |  TEREN  
+----------+----------+---------
+        5 | ROCKERSI | ZAGRODA
+(1 row)
+
+ZAD. 6b
+ NR BANDY |  NAZWA   |  TEREN  
+----------+----------+---------
+        5 | ROCKERSI | ZAGRODA
+(1 row)
+
+ZAD. 7
+ Pseudonim | Zjada | Banda |    Typ    |   Ocena    
+-----------+-------+-------+-----------+------------
+ TYGRYS    |   103 |     1 | Prominent | powyzej 60
+ LYSY      |    72 |     2 | Prominent | powyzej 60
+ PLACEK    |    67 |     2 | Prominent | powyzej 60
+ SZYBKA    |    65 |     2 | Prominent | powyzej 60
+ RURA      |    56 |     2 | Prominent | ponizej 60
+ ZOMBI     |    75 |     3 | Prominent | powyzej 60
+ KURKA     |    61 |     3 | Prominent | powyzej 60
+ RAFA      |    65 |     4 | Prominent | powyzej 60
+ MALA      |    22 |     1 | Szarak    | ponizej 60
+ LASKA     |    24 |     2 | Szarak    | ponizej 60
+ PUSZYSTA  |    20 |     3 | Szarak    | ponizej 60
+ UCHO      |    40 |     4 | Szarak    | ponizej 60
+ MALY      |    40 |     4 | Szarak    | ponizej 60
+(13 rows)
+
+ZAD. 7 - nie sa niczyim szefem (NOT EXISTS)
+ Nie sa niczyim szefem 
+-----------------------
+ BOLEK
+ DAMA
+ LASKA
+ LOLA
+ MALA
+ MALY
+ MAN
+ PLACEK
+ PUSZYSTA
+ RURA
+ SZYBKA
+ UCHO
+ ZERO
+(13 rows)
+
+ZAD. 7 - nie sa niczyim szefem (NOT IN)
+ Nie sa niczyim szefem 
+-----------------------
+(0 rows)
+
+ZAD. 8 - z wartoscia sredniej
+ Lepsze bandy | Sredni przydzial w bandzie | [Sredni przydzial] 
+--------------+----------------------------+--------------------
+            1 |                       80.5 |               63.8
+            2 |                       66.6 |               63.8
+(2 rows)
+
+ZAD. 8 - bez wartosci sredniej
+ Lepsze bandy | Sredni przydzial w bandzie 
+--------------+----------------------------
+            1 |                       80.5
+            2 |                       66.6
+(2 rows)
+
+ZAD. 9
+  Miesiac  | Liczba rekrutow 
+-----------+-----------------
+ JANUARY   |               3
+ FEBRUARY  |               1
+ MARCH     |               2
+ MAY       |               2
+ JULY      |               2
+ AUGUST    |               1
+ SEPTEMBER |               2
+ OCTOBER   |               2
+ NOVEMBER  |               2
+ DECEMBER  |               1
+(10 rows)
+
+ZAD. 10
+  IMIE   | FUNKCJA  | PRZYDZIAL MYSZY 
+---------+----------+-----------------
+ MRUCZEK | SZEFUNIO |             103
+ KOREK   | BANDZIOR |              75
+(2 rows)
+

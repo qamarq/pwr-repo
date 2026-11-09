@@ -1,0 +1,137 @@
+ZAD. 4
+
+Nazwa bandy          Koty z wrogami
+-------------------- --------------
+SZEFOSTWO                         3
+CZARNI RYCERZE                    5
+BIALI LOWCY                       3
+LACIACI MYSLIWI                   4
+ZAD. 5
+
+Funkcja    Pseudonim kota  Liczba wrogow
+---------- --------------- -------------
+DZIELCZY   BOLEK                       2
+MILUSIA    LASKA                       2
+SZEFUNIO   TYGRYS                      2
+ZAD. 6a
+
+  NR BANDY NAZWA                TEREN
+---------- -------------------- ---------------
+         5 ROCKERSI             ZAGRODA
+ZAD. 6b
+
+  NR BANDY NAZWA                TEREN
+---------- -------------------- ---------------
+         5 ROCKERSI             ZAGRODA
+ZAD. 7
+
+Pseudonim            Zjada      Banda Typ       Ocena
+--------------- ---------- ---------- --------- ----------
+TYGRYS                 103          1 Prominent powyzej 60
+LYSY                    72          2 Prominent powyzej 60
+PLACEK                  67          2 Prominent powyzej 60
+SZYBKA                  65          2 Prominent powyzej 60
+RURA                    56          2 Prominent ponizej 60
+ZOMBI                   75          3 Prominent powyzej 60
+KURKA                   61          3 Prominent powyzej 60
+RAFA                    65          4 Prominent powyzej 60
+MALA                    22          1 Szarak    ponizej 60
+LASKA                   24          2 Szarak    ponizej 60
+PUSZYSTA                20          3 Szarak    ponizej 60
+UCHO                    40          4 Szarak    ponizej 60
+MALY                    40          4 Szarak    ponizej 60
+ZAD. 7 - nie sa niczyim szefem (NOT EXISTS)
+
+Nie sa niczyim
+---------------
+BOLEK
+DAMA
+LASKA
+LOLA
+MALA
+MALY
+MAN
+PLACEK
+PUSZYSTA
+RURA
+SZYBKA
+UCHO
+ZERO
+ZAD. 7 - nie sa niczyim szefem (NOT IN)
+ZAD. 8 - z wartoscia sredniej
+
+Lepsze bandy Sredni przydzial w bandzie [Sredni przydzial]
+------------ -------------------------- ------------------
+           1                       80.5               63.8
+           2                       66.6               63.8
+ZAD. 8 - bez wartosci sredniej
+
+Lepsze bandy Sredni przydzial w bandzie
+------------ --------------------------
+           1                       80.5
+           2                       66.6
+ZAD. 9
+
+Miesiac                              Liczba rekrutow
+------------------------------------ ---------------
+JANUARY                                            3
+FEBRUARY                                           1
+MARCH                                              2
+MAY                                                2
+JULY                                               2
+AUGUST                                             1
+SEPTEMBER                                          2
+OCTOBER                                            2
+NOVEMBER                                           2
+DECEMBER                                           1
+ZAD. 10
+
+IMIE            FUNKCJA    PRZYDZIAL MYSZY
+--------------- ---------- ---------------
+MRUCZEK         SZEFUNIO               103
+KOREK           BANDZIOR                75
+ZAD. 11
+
+    Poziom Pseudonim       Funkcja      Nr bandy
+---------- --------------- ---------- ----------
+         1 LYSY            BANDZIOR            2
+         2 PLACEK          LOWCZY              2
+         2 RURA            LAPACZ              2
+         1 ZOMBI           BANDZIOR            3
+         3 ZERO            KOT                 3
+ZAD. 12
+
+Droga sluzbowa
+------------------------------
+BOLEK
+    TYGRYS
+MAN
+    RAFA
+        TYGRYS
+PLACEK
+    LYSY
+        TYGRYS
+RAFA
+    TYGRYS
+ZAD. 13a
+
+Imie            Funkcja    Szef 1          Szef 2          Szef 3
+--------------- ---------- --------------- --------------- ---------------
+LUCEK           KOT        PUNIA           KOREK           MRUCZEK
+SONIA           MILUSIA    KOREK           MRUCZEK
+BELA            MILUSIA    BOLEK           MRUCZEK
+LATKA           KOT        PUCEK           MRUCZEK
+DUDEK           KOT        PUCEK           MRUCZEK
+MICKA           MILUSIA    MRUCZEK
+RUDA            MILUSIA    MRUCZEK
+ZAD. 13b
+
+Imie            Funkcja    Imiona kolejnych szefow
+--------------- ---------- ------------------------------------------------------------
+BELA            MILUSIA     | BOLEK | MRUCZEK
+MICKA           MILUSIA     | MRUCZEK
+RUDA            MILUSIA     | MRUCZEK
+DUDEK           KOT         | PUCEK | MRUCZEK
+SONIA           MILUSIA     | KOREK | MRUCZEK
+LATKA           KOT         | PUCEK | MRUCZEK
+LUCEK           KOT         | PUNIA | KOREK | MRUCZEK
