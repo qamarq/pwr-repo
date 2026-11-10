@@ -1,6 +1,7 @@
 SET DateStyle = 'ISO';
 
 \echo ZAD. 1
+-- brak incydentow = left join nic nie znalazl, distinct bo kot z kilkoma wrogami wychodzi kilka razy
 SELECT DISTINCT k.imie "W stadzie przed szefem lub bez incydentu",
        CASE WHEN k.w_stadku_od < j.w_stadku_od THEN 'TAK' ELSE 'NIE' END "Przed JACKIEM"
 FROM Kocury k
@@ -11,6 +12,7 @@ WHERE wk.pseudo IS NULL OR (k.w_stadku_od < s.w_stadku_od AND wk.imie_wroga LIKE
 ORDER BY 1;
 
 \echo ZAD. 2
+-- filtr w where a nie w on (full join by go olal), coalesce zeby nie wywalic wierszy bez pary
 SELECT COALESCE(s.pseudo, 'Brak przelozonego') "Przelozony",
        COALESCE(p.pseudo, 'Brak podwladnego') "Podwladny"
 FROM Kocury p
@@ -19,6 +21,7 @@ WHERE COALESCE(p.plec, 'M') = 'M' AND COALESCE(s.plec, 'M') = 'M'
 ORDER BY 1, 2;
 
 \echo ZAD. 3
+-- join z wrogami mnozy kazdego kota z bandy x liczba wrogow, wiec suma dzielona z powrotem
 SELECT k.pseudo "PSEUDO", k.przydzial_myszy "PRZYDZIAL_MYSZY",
        ROUND(SUM(m.przydzial_myszy) / COUNT(DISTINCT w.imie_wroga)) "SUM_W_BANDZIE",
        ROUND(100 * k.przydzial_myszy * COUNT(DISTINCT w.imie_wroga) / SUM(m.przydzial_myszy)) "PROC_W_BANDZIE"
@@ -40,6 +43,7 @@ GROUP BY b.nr_bandy, b.nazwa
 ORDER BY b.nr_bandy;
 
 \echo ZAD. 5
+-- case zostawia tylko czlowieka i psa (reszta null), jak sa 2 rozne to kot ma oba
 SELECT k.funkcja "Funkcja", k.pseudo "Pseudonim kota", COUNT(*) "Liczba wrogow"
 FROM Kocury k
 JOIN Wrogowie_kocurow wk ON wk.pseudo = k.pseudo
@@ -61,6 +65,7 @@ EXCEPT
 SELECT b.nr_bandy, b.nazwa, b.teren FROM Bandy b JOIN Kocury k ON k.nr_bandy = b.nr_bandy;
 
 \echo ZAD. 7
+-- szarak - nikt w bandzie nie je mniej (minimum bez MIN), przy remisie wchodza oba
 SELECT pseudo "Pseudonim", przydzial_myszy "Zjada", nr_bandy "Banda", 'Prominent' "Typ",
        CASE WHEN przydzial_myszy > 60 THEN 'powyzej 60' ELSE 'ponizej 60' END "Ocena"
 FROM Kocury
@@ -79,12 +84,14 @@ WHERE NOT EXISTS (SELECT 1 FROM Kocury p WHERE p.szef = k.pseudo)
 ORDER BY 1;
 
 \echo ZAD. 7 - nie sa niczyim szefem (NOT IN)
+-- 0 wierszy bo szef TYGRYSA to null, a x <> null daje unknown wiec nikt nie przechodzi
 SELECT pseudo "Nie sa niczyim szefem"
 FROM Kocury
 WHERE pseudo NOT IN (SELECT szef FROM Kocury)
 ORDER BY 1;
 
 \echo ZAD. 8 - z wartoscia sredniej
+-- coalesce bo 50 + null = null, a avg pomija nulle i liczylby tylko koty z extra
 SELECT nr_bandy "Lepsze bandy",
        ROUND(AVG(przydzial_myszy + COALESCE(myszy_extra, 0)), 1) "Sredni przydzial w bandzie",
        (SELECT ROUND(AVG(przydzial_myszy + COALESCE(myszy_extra, 0)), 1) FROM Kocury) "[Sredni przydzial]"
@@ -104,12 +111,14 @@ HAVING AVG(przydzial_myszy + COALESCE(myszy_extra, 0))
 ORDER BY nr_bandy;
 
 \echo ZAD. 9
+-- nr miesiaca w group by zeby sortowac po kolei a nie alfabetycznie, FM ucina spacje
 SELECT TO_CHAR(w_stadku_od, 'FMMONTH') "Miesiac", COUNT(*) "Liczba rekrutow"
 FROM Kocury
 GROUP BY EXTRACT(MONTH FROM w_stadku_od), TO_CHAR(w_stadku_od, 'FMMONTH')
 ORDER BY EXTRACT(MONTH FROM w_stadku_od);
 
 \echo ZAD. 10
+-- >= all zamiast max, CALOSC tez bo inaczej nie zgadza sie z przykladem
 SELECT imie "IMIE", funkcja "FUNKCJA", przydzial_myszy "PRZYDZIAL MYSZY"
 FROM Kocury
 WHERE przydzial_myszy >= ALL (SELECT 3 * m.przydzial_myszy

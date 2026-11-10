@@ -14,6 +14,7 @@ GROUP BY b.nr_bandy, b.nazwa
 ORDER BY b.nr_bandy;
 
 PROMPT ZAD. 5
+-- case zostawia tylko czlowieka i psa (reszta null), jak sa 2 rozne to kot ma oba
 SELECT k.funkcja "Funkcja", k.pseudo "Pseudonim kota", COUNT(*) "Liczba wrogow"
 FROM Kocury k
 JOIN Wrogowie_kocurow wk ON wk.pseudo = k.pseudo
@@ -35,6 +36,7 @@ MINUS
 SELECT b.nr_bandy, b.nazwa, b.teren FROM Bandy b JOIN Kocury k ON k.nr_bandy = b.nr_bandy;
 
 PROMPT ZAD. 7
+-- szarak - nikt w bandzie nie je mniej (minimum bez MIN), przy remisie wchodza oba
 SELECT pseudo "Pseudonim", przydzial_myszy "Zjada", nr_bandy "Banda", 'Prominent' "Typ",
        CASE WHEN przydzial_myszy > 60 THEN 'powyzej 60' ELSE 'ponizej 60' END "Ocena"
 FROM Kocury
@@ -53,12 +55,14 @@ WHERE NOT EXISTS (SELECT 1 FROM Kocury p WHERE p.szef = k.pseudo)
 ORDER BY 1;
 
 PROMPT ZAD. 7 - nie sa niczyim szefem (NOT IN)
+-- 0 wierszy bo szef TYGRYSA to null, a x <> null daje unknown wiec nikt nie przechodzi
 SELECT pseudo "Nie sa niczyim szefem"
 FROM Kocury
 WHERE pseudo NOT IN (SELECT szef FROM Kocury)
 ORDER BY 1;
 
 PROMPT ZAD. 8 - z wartoscia sredniej
+-- nvl bo 50 + null = null, a avg pomija nulle i liczylby tylko koty z extra
 SELECT nr_bandy "Lepsze bandy",
        ROUND(AVG(przydzial_myszy + NVL(myszy_extra, 0)), 1) "Sredni przydzial w bandzie",
        (SELECT ROUND(AVG(przydzial_myszy + NVL(myszy_extra, 0)), 1) FROM Kocury) "[Sredni przydzial]"
@@ -78,12 +82,14 @@ HAVING AVG(przydzial_myszy + NVL(myszy_extra, 0))
 ORDER BY nr_bandy;
 
 PROMPT ZAD. 9
+-- nls bo nazwy zaleza od jezyka sesji, nr miesiaca w group by zeby sortowac po kolei a nie alfabetycznie
 SELECT TO_CHAR(w_stadku_od, 'FMMONTH', 'NLS_DATE_LANGUAGE=ENGLISH') "Miesiac", COUNT(*) "Liczba rekrutow"
 FROM Kocury
 GROUP BY EXTRACT(MONTH FROM w_stadku_od), TO_CHAR(w_stadku_od, 'FMMONTH', 'NLS_DATE_LANGUAGE=ENGLISH')
 ORDER BY EXTRACT(MONTH FROM w_stadku_od);
 
 PROMPT ZAD. 10
+-- >= all zamiast max, CALOSC tez bo inaczej nie zgadza sie z przykladem
 SELECT imie "IMIE", funkcja "FUNKCJA", przydzial_myszy "PRZYDZIAL MYSZY"
 FROM Kocury
 WHERE przydzial_myszy >= ALL (SELECT 3 * m.przydzial_myszy
@@ -91,6 +97,7 @@ WHERE przydzial_myszy >= ALL (SELECT 3 * m.przydzial_myszy
                               WHERE m.funkcja = 'MILUSIA' AND b.teren IN ('SAD', 'CALOSC'));
 
 PROMPT ZAD. 11
+-- where leci dopiero po zbudowaniu drzewa, dlatego ZERO ma poziom 3 mimo ze KURKA ukryta
 SELECT LEVEL "Poziom", pseudo "Pseudonim", funkcja "Funkcja", nr_bandy "Nr bandy"
 FROM Kocury
 WHERE plec = 'M'
@@ -99,6 +106,7 @@ CONNECT BY PRIOR pseudo = szef
 ORDER SIBLINGS BY pseudo;
 
 PROMPT ZAD. 12
+-- warunki tylko w start with, szefow po drodze nikt nie sprawdza (TYGRYS ma extra a jest)
 SELECT LPAD(' ', 4 * (LEVEL - 1)) || pseudo "Droga sluzbowa"
 FROM Kocury
 START WITH plec = 'M' AND NVL(myszy_extra, 0) = 0
@@ -115,6 +123,7 @@ LEFT JOIN Kocury s3 ON s2.szef = s3.pseudo
 WHERE k.funkcja IN ('KOT', 'MILUSIA');
 
 PROMPT ZAD. 13b
+-- isleaf zostawia tylko wiersz z samej gory, +4 ucina poczatek sciezki z imieniem startowego kota
 SELECT CONNECT_BY_ROOT imie "Imie", CONNECT_BY_ROOT funkcja "Funkcja",
        SUBSTR(SYS_CONNECT_BY_PATH(imie, ' | '), LENGTH(CONNECT_BY_ROOT imie) + 4) "Imiona kolejnych szefow"
 FROM Kocury
