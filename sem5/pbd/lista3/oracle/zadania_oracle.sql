@@ -123,7 +123,6 @@ LEFT JOIN Kocury s3 ON s2.szef = s3.pseudo
 WHERE k.funkcja IN ('KOT', 'MILUSIA');
 
 PROMPT ZAD. 13b
--- isleaf zostawia tylko wiersz z samej gory, +4 ucina poczatek sciezki z imieniem startowego kota
 SELECT CONNECT_BY_ROOT imie "Imie", CONNECT_BY_ROOT funkcja "Funkcja",
        SUBSTR(SYS_CONNECT_BY_PATH(imie, ' | '), LENGTH(CONNECT_BY_ROOT imie) + 4) "Imiona kolejnych szefow"
 FROM Kocury
