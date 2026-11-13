@@ -1,0 +1,38 @@
+@startuml
+!include head.inc
+title UC06 Powierz zajęcia — diagram aktywności
+|Osoba dokonująca powierzeń|
+start
+:Wybiera formę zajęć kursu\nz listy zapotrzebowania;
+|System|
+:Wyświetla szczegóły zapotrzebowania\noraz prowadzących ze stanem pensum\ni preferencjami;
+repeat
+  |Osoba dokonująca powierzeń|
+  :Wybiera prowadzącego, wprowadza\nliczbę godzin i liczbę grup;
+  |System|
+  if (Dane kompletne i poprawne?) then (tak)
+    :Sprawdza pensum i limity godzin\n(UC07);
+    if (Przekroczony limit maksymalny?) then (tak)
+      :Wyświetla błąd o przekroczeniu\nlimitu i blokuje zapis;
+    else (nie)
+      :Wyświetla podgląd pensum\npo zmianie;
+      if (Wymagana zgoda pisemna\nlub braki u innych?) then (tak)
+        :Wyświetla ostrzeżenie\n(RB6, RB7);
+      else (nie)
+      endif
+    endif
+  else (nie)
+    :Wyświetla komunikat\nprzy błędnym polu;
+  endif
+repeat while (Podgląd bez błędu?) is (nie) not (tak)
+|Osoba dokonująca powierzeń|
+if (Decyzja) then (zatwierdza)
+  |System|
+  :Zapisuje powierzenie, aktualizuje\ngodziny nieobsadzone i rozliczenie pensum;
+  :Informuje o zapisaniu\ni odświeża listę;
+else (rezygnuje)
+  |System|
+  :Odrzuca dane i wraca\ndo listy zapotrzebowania;
+endif
+stop
+@enduml

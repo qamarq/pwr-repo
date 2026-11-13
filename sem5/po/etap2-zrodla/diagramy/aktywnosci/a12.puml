@@ -1,0 +1,41 @@
+@startuml
+!include head.inc
+title UC12 Odpowiedz na propozycję przydziału — diagram aktywności
+|Prowadzący|
+start
+:Otwiera odnośnik z wiadomości;
+|System|
+if (Termin minął lub istnieje\nnowsza wersja?) then (tak)
+  :Wyświetla status wersji\ni odnośnik do najnowszej;
+  stop
+else (nie)
+endif
+:Wyświetla propozycję, sumę godzin,\nstan pensum i termin;
+|Prowadzący|
+if (Odpowiedź) then (akceptuję)
+  repeat
+    |System|
+    :Prosi o potwierdzenie\n(i zgodę pisemną, jeśli wymagana);
+    |Prowadzący|
+    :Potwierdza akceptację;
+    |System|
+  repeat while (Brak wymaganej zgody?) is (tak: komunikat) not (nie)
+  :Rejestruje odpowiedź „zgoda”,\nstatus „zaakceptowana”;
+  :Wyświetla potwierdzenie\ni wysyła je e-mailem;
+else (zgłaszam uwagi)
+  |System|
+  :Wyświetla formularz uwag\nprzy pozycjach;
+  repeat
+    |Prowadzący|
+    :Oznacza pozycje\ni wpisuje treść uwag;
+    |System|
+  repeat while (Dane poprawne?) is (nie: komunikat) not (tak)
+  :Rejestruje odpowiedź z uwagami,\nstatus „zgłoszono uwagi”;
+  |Usługa AI|
+  :Rozpoznaje rodzaj odpowiedzi\ni wskazuje pozycje;
+  |System|
+  :Zapisuje wynik analizy jako sugestię\n(gdy AI niedostępna — do ręcznej weryfikacji);
+  :Wyświetla potwierdzenie\ni powiadamia osobę dokonującą powierzeń;
+endif
+stop
+@enduml

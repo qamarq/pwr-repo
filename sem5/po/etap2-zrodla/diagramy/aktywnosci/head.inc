@@ -1,0 +1,9 @@
+skinparam dpi 200
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F7F7F7
+skinparam ActivityBorderColor #444444
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam SwimlaneBorderColor #888888
+skinparam SwimlaneTitleFontStyle bold
+skinparam ArrowColor #333333

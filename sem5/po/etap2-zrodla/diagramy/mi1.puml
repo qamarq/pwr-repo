@@ -1,0 +1,93 @@
+@startuml
+!include cls.inc
+title Model informacyjny — część 1: program studiów i powierzenia
+
+class Kierunek {
+  nazwa: String
+  skrot: String
+}
+class "Plan studiów" as PlanStudiow {
+  stopien: StopienStudiow
+  formaStudiow: FormaStudiow
+  obowiazujeOd: String
+}
+class Etap {
+  numer: Integer {1..8}
+}
+class Kurs {
+  kod: String {unikalny}
+  nazwa: String
+  punktyECTS: Integer
+  ogolny: Boolean
+}
+class "Forma zajęć" as FormaZajec {
+  rodzaj: RodzajZajec
+  liczbaGodzin: Integer
+}
+class "Instancja planu" as InstancjaPlanu {
+  oznaczenie: String
+}
+class "Rok akademicki" as RokAkademicki {
+  oznaczenie: String
+  dataRozpoczecia: Date
+}
+class Semestr {
+  rodzaj: RodzajSemestru
+  terminPrzekazaniaPowierzen: Date
+}
+class "Plan powierzeń" as PlanPowierzen {
+  dataZatwierdzenia: Date [0..1]
+  dataPrzekazania: Date [0..1]
+  przyczynaOpoznienia: String [0..1]
+  /status: StatusPlanu
+}
+class Zapotrzebowanie {
+  liczbaStudentow: Integer
+  /przewidywanaLiczbaGrup: Integer
+  rzeczywistaLiczbaGrup: Integer [0..1]
+  /liczbaGrup: Integer
+  /liczbaGodzin: Integer
+  /godzinyNieobsadzone: Integer
+}
+class "Powierzenie zajęć" as Powierzenie {
+  liczbaGodzin: Integer
+  liczbaGrup: Decimal
+  poZatwierdzeniu: Boolean
+  dataModyfikacji: DateTime
+}
+class "Zgłoszenie dorobienia grupy" as Zgloszenie {
+  dataZgloszenia: DateTime
+  liczbaGrup: Integer
+  uzasadnienie: String
+  status: StatusZgloszenia
+}
+abstract class "Prowadzący" as Prowadzacy {
+  ...
+}
+
+Kierunek "1" -- "1..*" PlanStudiow : ma >
+PlanStudiow "1" *-- "1..*" Etap : składa się z >
+Etap "1..*" -- "1..*" Kurs : obejmuje >
+Kurs "1" *-- "1..5" FormaZajec : realizowany w >
+PlanStudiow "1" -- "0..*" InstancjaPlanu : realizowany jako >
+InstancjaPlanu "0..*" -- "1" Semestr : rozpoczyna się w >
+RokAkademicki "1" *-- "2" Semestr : dzieli się na >
+InstancjaPlanu "1" -- "0..*" PlanPowierzen : ma >
+PlanPowierzen "0..*" -- "1" Semestr : dotyczy >
+PlanPowierzen "1" *-- "0..*" Zapotrzebowanie : obejmuje >
+Zapotrzebowanie "0..*" -- "1" FormaZajec : dotyczy >
+Zapotrzebowanie "1" *-- "0..*" Powierzenie : pokrywane przez >
+Powierzenie "0..*" -- "1" Prowadzacy : powierzone >
+Zapotrzebowanie "1" -- "0..*" Zgloszenie : < dotyczy
+
+note bottom of Powierzenie
+  Powierzamy godziny; liczbaGrup jest
+  informacyjna i może być ułamkowa lub 0
+  (np. 0,5 grupy przy podziale godzin).
+end note
+note right of PlanPowierzen
+  /status: wPrzygotowaniu, gdy
+  dataZatwierdzenia jest pusta;
+  zatwierdzony w przeciwnym razie.
+end note
+@enduml

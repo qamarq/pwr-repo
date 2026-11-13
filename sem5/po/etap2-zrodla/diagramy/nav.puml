@@ -1,0 +1,34 @@
+@startuml
+skinparam dpi 200
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam state {
+ BackgroundColor #F7F7F7
+ BorderColor #444444
+}
+left to right direction
+hide empty description
+title Mapa nawigacji
+state "Pulpit\n(osoba dokonująca powierzeń)" as Pulpit
+state "Stan powierzeń\n(P2 — UC09)" as Stan
+state "Plan powierzeń\n(P1 — UC06)" as Plan
+state "Wysyłka propozycji\n(UC11)" as Wys
+state "E-mail z propozycją" as Mail
+state "Odpowiedź prowadzącego\n(P3 — UC12)" as Odp
+state "Uwagi do rozwiązania\n(UC15)" as Uwagi
+state "Zatwierdzenie planu\n(UC16)" as Zatw
+state "Zatwierdzone powierzenia\n(P4 — UC17)" as Pob
+state "Pulpit\n(dział kształcenia)" as PulpitDK
+[*] --> Pulpit
+[*] --> PulpitDK
+Pulpit --> Stan
+Pulpit --> Plan
+Stan --> Plan : Powierz zajęcia
+Plan --> Wys : Wyślij propozycje
+Wys --> Mail : wysyłka
+Mail --> Odp : link
+Odp --> Uwagi : uwagi
+Plan --> Zatw : Zatwierdź plan
+Zatw --> Pob : plan udostępniony
+PulpitDK --> Pob
+@enduml

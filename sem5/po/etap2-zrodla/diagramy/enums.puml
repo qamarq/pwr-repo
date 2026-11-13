@@ -1,0 +1,97 @@
+@startuml
+!include cls.inc
+title Model informacyjny — typy wyliczeniowe
+enum RodzajZajec {
+  W
+  C
+  L
+  P
+  S
+}
+enum RodzajSemestru {
+  zimowy
+  letni
+}
+enum StopienStudiow {
+  I
+  II
+}
+enum FormaStudiow {
+  stacjonarne
+  niestacjonarne
+}
+enum StatusPlanu {
+  wPrzygotowaniu
+  zatwierdzony
+}
+enum StatusZgloszenia {
+  oczekujace
+  zrealizowane
+  odrzucone
+}
+enum GrupaPracownicza {
+  badawczoDydaktyczna
+  dydaktyczna
+}
+enum Stanowisko {
+  profesor
+  profesorUczelni
+  adiunkt
+  asystent
+  starszyWykladowca
+  wykladowca
+  lektor
+  instruktor
+}
+enum PodstawaZnizki {
+  pelnionaFunkcja
+  osiagnieciaNaukowe
+  wazneZadaniaUczelni
+  inna
+}
+enum StatusPropozycji {
+  wyslana
+  zaakceptowana
+  zaakceptowanaMilczaco
+  zgloszonoUwagi
+  rozwiazana
+}
+enum RodzajOdpowiedzi {
+  zgoda
+  odmowa
+  prosbaOZmiane
+}
+enum KanalOdpowiedzi {
+  formularz
+  email
+}
+enum ZadanieZmiany {
+  rezygnacja
+  zmianaLiczbyGodzin
+  innaZmiana
+}
+enum SposobRozwiazania {
+  zmianaPowierzen
+  odrzucenie
+}
+enum Rola {
+  osobaDokonujacaPowierzen
+  prowadzacy
+  pracownikDzialuKsztalcenia
+  administrator
+}
+RodzajZajec -[hidden]> RodzajSemestru
+RodzajSemestru -[hidden]> StopienStudiow
+StopienStudiow -[hidden]> FormaStudiow
+FormaStudiow -[hidden]> StatusPlanu
+RodzajZajec -[hidden]-> GrupaPracownicza
+GrupaPracownicza -[hidden]> Stanowisko
+Stanowisko -[hidden]> PodstawaZnizki
+PodstawaZnizki -[hidden]> StatusZgloszenia
+StatusZgloszenia -[hidden]> Rola
+GrupaPracownicza -[hidden]-> StatusPropozycji
+StatusPropozycji -[hidden]> RodzajOdpowiedzi
+RodzajOdpowiedzi -[hidden]> KanalOdpowiedzi
+KanalOdpowiedzi -[hidden]> ZadanieZmiany
+ZadanieZmiany -[hidden]> SposobRozwiazania
+@enduml

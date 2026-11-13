@@ -1,0 +1,31 @@
+@startuml
+!include head.inc
+title Widok 1 — dane i przygotowanie powierzeń
+actor "Osoba dokonująca\npowierzeń" as ODP
+rectangle "FLAME" {
+  usecase "UC01 Importuj dane\nz arkusza XLSX" as UC01
+  usecase "UC02 Zarządzaj\nprogramem studiów" as UC02
+  usecase "UC03 Określ\nzapotrzebowanie" as UC03
+  usecase "UC04 Zarządzaj danymi\nprowadzących i pensum" as UC04
+  usecase "UC06 Powierz zajęcia" as UC06
+  usecase "UC08 Zmień lub usuń\npowierzenie" as UC08
+  usecase "UC19 Dorób grupę" as UC19
+  usecase "UC09 Przeglądaj\nstan powierzeń" as UC09
+  usecase "UC10 Skopiuj powierzenia\nz poprzedniego roku" as UC10
+  usecase "UC07 Sprawdź pensum\ni limity godzin" as UC07
+  usecase "UC11 Wyślij propozycje\nprzydziałów" as UC11
+}
+ODP --> UC01
+ODP --> UC02
+ODP --> UC03
+ODP --> UC04
+ODP --> UC06
+ODP --> UC08
+ODP --> UC19
+ODP --> UC09
+ODP --> UC10
+UC06 ..> UC07 : <<include>>
+UC08 ..> UC07 : <<include>>
+UC19 ..> UC07 : <<include>>
+UC19 ..> UC11 : <<include>>
+@enduml

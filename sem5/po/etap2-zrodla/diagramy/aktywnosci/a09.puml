@@ -1,0 +1,39 @@
+@startuml
+!include head.inc
+title UC09 Przeglądaj stan powierzeń — diagram aktywności
+|Osoba dokonująca powierzeń|
+start
+:Wybiera „Stan powierzeń” i semestr;
+|System|
+if (Istnieją plany powierzeń\nw semestrze?) then (nie)
+  :Informuje o braku planów;
+  stop
+else (tak)
+endif
+:Wyświetla podsumowanie semestru:\nobsada, pensum, statusy propozycji;
+|Osoba dokonująca powierzeń|
+repeat
+  :Wybiera widok (Obsada / Pensum / Propozycje)\ni ustawia filtry;
+  |System|
+  if (Są pozycje spełniające kryteria?) then (tak)
+    :Wyświetla zestawienie\ni aktualizuje podsumowanie;
+  else (nie)
+    :Informuje o braku pozycji\ni proponuje wyczyszczenie filtrów;
+  endif
+  |Osoba dokonująca powierzeń|
+  if (Wybiera pozycję?) then (tak)
+    |System|
+    :Wyświetla szczegóły pozycji\n(powierzenia, zniżki, wersje propozycji);
+    |Osoba dokonująca powierzeń|
+    if („Powierz zajęcia” przy\nnieobsadzonej formie?) then (tak)
+      |System|
+      :Uruchamia UC06 dla wybranej\nformy zajęć;
+      stop
+    else (nie)
+    endif
+  else (nie)
+  endif
+  |Osoba dokonująca powierzeń|
+repeat while (Kontynuuje przeglądanie?) is (tak) not (nie)
+stop
+@enduml

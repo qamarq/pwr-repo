@@ -1,0 +1,31 @@
+@startuml
+!include head.inc
+title UC17 Pobierz zatwierdzone powierzenia — diagram aktywności
+|Pracownik działu kształcenia|
+start
+:Wybiera „Zatwierdzone powierzenia”;
+|System|
+if (Istnieje zatwierdzony plan\npowierzeń w semestrze?) then (nie)
+  :Informuje o braku zatwierdzonych planów\ni pokazuje plany w przygotowaniu;
+  stop
+else (tak)
+endif
+:Wyświetla zatwierdzone plany\n(data zatwierdzenia, powierzenia,\ngodziny, zmiany po zatwierdzeniu);
+repeat
+  |Pracownik działu kształcenia|
+  :Zaznacza plany, wybiera format\n(XLSX / CSV) i zakres;
+  |System|
+  :Weryfikuje wybór;
+backward :Wyświetla komunikat;
+repeat while (Wybrano plan i są\npowierzenia w zakresie?) is (nie) not (tak)
+:Generuje plik z powierzeniami;
+if (Plik wygenerowany?) then (tak)
+  :Udostępnia plik do pobrania;
+  |Pracownik działu kształcenia|
+  :Pobiera plik;
+else (nie)
+  |System|
+  :Wyświetla komunikat o błędzie\ni umożliwia ponowienie;
+endif
+stop
+@enduml

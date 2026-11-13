@@ -1,0 +1,80 @@
+@startuml
+!include cls.inc
+title Model informacyjny — część 3: konsultowanie propozycji przydziałów
+
+abstract class "Prowadzący" as Prowadzacy {
+  ...
+}
+class Semestr {
+  ...
+}
+class "Powierzenie zajęć" as Powierzenie {
+  ...
+}
+class "Propozycja przydziału" as Propozycja {
+  /aktualnaWersja: Integer
+}
+class "Wersja propozycji" as Wersja {
+  numer: Integer
+  dataWyslania: DateTime
+  terminOdpowiedzi: Date
+  status: StatusPropozycji
+  dataAkceptacji: Date [0..1]
+  wymagaZgodyPisemnej: Boolean
+  dodatkowaInformacja: String [0..1]
+}
+class "Pozycja propozycji" as Pozycja {
+  kodKursu: String
+  nazwaKursu: String
+  forma: RodzajZajec
+  liczbaGrup: Decimal
+  liczbaGodzin: Integer
+}
+class "Odpowiedź prowadzącego" as Odpowiedz {
+  dataOtrzymania: DateTime
+  kanal: KanalOdpowiedzi
+  rodzaj: RodzajOdpowiedzi [0..1]
+  tresc: String [0..1]
+  zgodaNaPrzekroczenie: Boolean
+}
+class "Uwaga do pozycji" as UwagaPozycji {
+  zadanie: ZadanieZmiany
+}
+class "Analiza AI" as Analiza {
+  rozpoznanyRodzaj: RodzajOdpowiedzi
+  pewnosc: Decimal
+  wymagaWeryfikacji: Boolean
+  zweryfikowana: Boolean
+}
+class "Rozwiązanie uwagi" as Rozwiazanie {
+  dataRozwiazania: DateTime
+  sposob: SposobRozwiazania
+  uzasadnienie: String [0..1]
+}
+
+Prowadzacy "1" -- "0..*" Propozycja : adresat <
+Propozycja "0..*" -- "1" Semestr : dotyczy >
+Propozycja "1" *-- "1..*" Wersja : wysyłana w >
+Wersja "1" *-- "1..*" Pozycja : zawiera >
+Pozycja "0..*" -- "0..1" Powierzenie : odzwierciedla >
+Wersja "1" *-- "0..*" Odpowiedz : otrzymuje >
+Odpowiedz "1" *-- "0..*" UwagaPozycji : zawiera >
+UwagaPozycji "0..*" -- "1" Pozycja : dotyczy >
+Odpowiedz "1" *-- "0..1" Analiza : analizowana w >
+Analiza "0..*" -- "0..*" Pozycja : wskazuje >
+Odpowiedz "1" -- "0..1" Rozwiazanie : rozwiązywana przez <
+Rozwiazanie "0..1" -- "0..1" Wersja : skutkuje wysłaniem >
+
+note right of Wersja
+  terminOdpowiedzi ustala osoba dokonująca
+  powierzeń przy wysyłce danej wersji; każda
+  Odpowiedź dotyczy jednej wersji, a status wersji
+  wynika z ostatniej Odpowiedzi otrzymanej
+  przed terminem (brak odpowiedzi → milcząca zgoda).
+end note
+note bottom of Pozycja
+  Kopia danych z chwili wysłania –
+  późniejsza zmiana Powierzenia
+  nie zmienia wysłanej wersji.
+end note
+@enduml

@@ -1,0 +1,28 @@
+@startuml
+!include head.inc
+title Widok 3 — przekazanie powierzeń, prowadzący i administracja
+actor "Osoba dokonująca\npowierzeń" as ODP
+actor "Prowadzący" as PR
+actor "Nauczyciel\nakademicki" as NA
+actor "Ekspert\nzewnętrzny" as EZ
+actor "Pracownik działu\nkształcenia" as DK
+actor "Administrator" as ADM
+actor "Serwer pocztowy" as SP <<system>>
+NA --|> PR
+EZ --|> PR
+rectangle "FLAME" {
+  usecase "UC16 Zatwierdź\nplan powierzeń" as UC16
+  usecase "UC17 Pobierz zatwierdzone\npowierzenia" as UC17
+  usecase "UC18 Zgłoś potrzebę\ndorobienia grupy" as UC18
+  usecase "UC05 Zgłoś preferencje" as UC05
+  usecase "UC20 Przeglądaj własne\npowierzenia" as UC20
+  usecase "UC21 Zarządzaj kontami\nużytkowników" as UC21
+}
+ODP --> UC16
+DK --> UC17
+DK --> UC18
+PR --> UC05
+PR --> UC20
+ADM --> UC21
+UC16 --> SP
+@enduml

@@ -1,0 +1,71 @@
+@startuml
+!include cls.inc
+title Model informacyjny — część 2: prowadzący, pensum i konta
+
+abstract class "Prowadzący" as Prowadzacy {
+  tytul: String [0..1]
+  imie: String
+  nazwisko: String
+  adresEmail: String {unikalny}
+}
+class "Nauczyciel akademicki" as Nauczyciel {
+  numerPracownika: String {unikalny}
+}
+class "Ekspert zewnętrzny" as Ekspert {
+  numerUmowy: String [0..1]
+}
+class "Roczne rozliczenie pensum" as Rozliczenie {
+  grupaPracownicza: GrupaPracownicza
+  stanowisko: Stanowisko
+  wymiarEtatu: Decimal
+  zgodaProrektora: Boolean
+  /pensumBazowe: Integer
+  /pensumPoZnizkach: Integer
+  /godzinyPowierzone: Integer
+  /brakujaceGodziny: Integer
+  /godzinyPonadwymiarowe: Integer
+}
+class "Zniżka pensum" as Znizka {
+  podstawa: PodstawaZnizki
+  opis: String [0..1]
+  liczbaGodzin: Integer
+}
+class "Rok akademicki" as RokAkademicki {
+  ...
+}
+class Semestr {
+  ...
+}
+class Kurs {
+  ...
+}
+class "Preferencja prowadzącego" as Preferencja {
+  preferowanaForma: RodzajZajec [0..1]
+  opisDostepnosci: String [0..1]
+  dataZgloszenia: DateTime
+}
+class "Konto użytkownika" as Konto {
+  login: String {unikalny}
+  rola: Rola [1..*]
+  aktywne: Boolean
+}
+
+Prowadzacy <|-- Nauczyciel
+Prowadzacy <|-- Ekspert
+Nauczyciel "1" *-- "0..*" Rozliczenie : rozliczany w >
+Rozliczenie "0..*" -- "1" RokAkademicki : dotyczy >
+Rozliczenie "1" *-- "0..*" Znizka : obejmuje >
+Prowadzacy "0..*" -- "0..*" Kurs : może prowadzić >
+Prowadzacy "1" *-- "0..*" Preferencja : zgłasza >
+Preferencja "0..*" -- "1" Semestr : dotyczy >
+Preferencja "0..*" -- "0..1" Kurs : wskazuje >
+Konto "0..1" -- "0..1" Prowadzacy : należy do >
+
+note right of Rozliczenie
+  Co najwyżej jedno rozliczenie na nauczyciela
+  w danym roku akademickim; kolejne rozliczenia
+  tworzą historię z poprzednich lat.
+  /godzinyPowierzone = suma liczbaGodzin
+  Powierzeń nauczyciela w obu Semestrach roku.
+end note
+@enduml

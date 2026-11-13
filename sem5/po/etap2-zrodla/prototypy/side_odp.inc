@@ -1,0 +1,1 @@
+<div class="side"><a>Pulpit</a><a>Program studiów</a><a>Prowadzący i pensum</a><a class="on">Plan powierzeń</a><a>Propozycje przydziałów</a><a>Uwagi do rozwiązania <span class="badge">3</span></a><a>Zgłoszenia grup <span class="badge">1</span></a><a>Import / eksport</a></div>

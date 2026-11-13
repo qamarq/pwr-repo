@@ -1,0 +1,28 @@
+@startuml
+!include head.inc
+title Widok 2 — konsultowanie propozycji przydziałów
+actor "Czas" as CZ
+actor "Osoba dokonująca\npowierzeń" as ODP
+actor "Prowadzący" as PR
+actor "Serwer pocztowy" as SP <<system>>
+actor "Usługa AI" as AI <<system>>
+rectangle "FLAME" {
+  usecase "UC14 Uznaj propozycje za\nzaakceptowane milcząco" as UC14
+  usecase "UC13 Wyślij\nprzypomnienia" as UC13
+  usecase "UC11 Wyślij propozycje\nprzydziałów" as UC11
+  usecase "UC15 Rozwiąż uwagę\nprowadzącego" as UC15
+  usecase "UC12 Odpowiedz na\npropozycję przydziału" as UC12
+  usecase "UC08 Zmień lub usuń\npowierzenie" as UC08
+}
+CZ --> UC14
+CZ --> UC13
+ODP --> UC11
+ODP --> UC15
+PR --> UC12
+UC15 ..> UC08 : <<include>>
+UC13 --> SP
+UC11 --> SP
+UC15 --> SP
+UC15 --> AI
+UC12 --> AI
+@enduml
