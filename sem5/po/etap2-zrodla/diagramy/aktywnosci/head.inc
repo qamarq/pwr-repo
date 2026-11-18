@@ -7,3 +7,5 @@ skinparam ActivityDiamondBackgroundColor #FFFFFF
 skinparam SwimlaneBorderColor #888888
 skinparam SwimlaneTitleFontStyle bold
 skinparam ArrowColor #333333
+skinparam NoteBorderColor #444444
+skinparam NoteFontSize 12

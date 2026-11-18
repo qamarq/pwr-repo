@@ -1,1 +1,0 @@
-<div class="top"><span class="logo">FLAME</span><span class="ctx">Rok 2026/2027 · semestr zimowy</span><span class="ctx">Informatyka Stosowana, I st., stacj. — nabór 2025</span><span class="user">dr inż. Ewa Malinowska · Osoba dokonująca powierzeń</span></div>

@@ -66,7 +66,7 @@ UCS = [
   post="Powierzenie zapisano w planie powierzeń. Godziny nieobsadzone zapotrzebowania oraz roczne rozliczenie pensum prowadzącego zostały zaktualizowane.",
   flows=[
    ("Główny przepływ zdarzeń", [
-     ("1.", "Wybiera z listy zapotrzebowania formę zajęć kursu, dla której chce powierzyć godziny", ""),
+     ("1.", "Wybiera „Powierz” przy formie zajęć kursu na liście zapotrzebowania", ""),
      ("2.", "", "Wyświetla szczegóły zapotrzebowania (kurs, forma, liczba grup, liczba godzin, godziny nieobsadzone) oraz prowadzących, którzy mogą prowadzić kurs, wraz ze stanem ich pensum i preferencjami"),
      ("3.", "Wybiera prowadzącego, wprowadza liczbę godzin i opcjonalnie liczbę grup", ""),
      ("4.", "", "Weryfikuje, że dane są kompletne i poprawne, oraz sprawdza pensum i limity godzin prowadzącego (UC07)"),
@@ -357,67 +357,84 @@ UCS = [
 ]
 
 STYLE_RULES = [
-    "Źródła: 10 heurystyk użyteczności J. Nielsena, wytyczne WCAG 2.1 na poziomie AA (wymaganie z wizji) oraz kolorystyka nawiązująca do identyfikacji wizualnej PWr (czerwień jako kolor akcentu).",
+    "Prototypy są makietami szkieletowymi – bez typografii, kolorystyki i grafiki. Pokazują układ widoku, prezentowane dane i dostępne akcje; wygląd zostanie ustalony na etapie projektowania.",
 ]
 STYLE_LIST = [
-    "Stały układ ekranu: górny pasek (nazwa systemu, rok i semestr, instancja planu, użytkownik i rola), menu boczne z liczbą spraw oczekujących, obszar roboczy.",
-    "Na ekranie jest jedna akcja główna (przycisk wypełniony); pozostałe akcje to przyciski obrysowane. Akcje nieodwracalne lub wysyłające wiadomości wymagają potwierdzenia w oknie z podsumowaniem skutków.",
-    "Stan zawsze pokazuje kolor i tekst jednocześnie (WCAG 1.4.1): zielony – poprawny lub zaakceptowany, żółty – ostrzeżenie lub brak, czerwony – błąd lub blokada, niebieski – informacja lub stan w toku.",
-    "Realizację pensum przedstawia pasek postępu z wartościami „godziny / pensum (procent)”.",
-    "Pola obowiązkowe oznacza gwiazdka. Komunikat walidacji pojawia się przy polu i mówi po polsku, co poprawić.",
-    "Ostrzeżenia regulaminowe wskazują regułę biznesową, z której wynikają (np. RB6).",
-    "Wyniki AI są wyświetlane w wyróżnionej ramce z etykietą „Sugestia AI” i pewnością rozpoznania; system nie stosuje ich bez decyzji użytkownika.",
-    "Formaty: data dd.mm.rrrr, godziny jako liczby całkowite z jednostką „h”, spacja jako separator tysięcy.",
-    "Ekrany dla prowadzących (otwierane z odnośnika w wiadomości) są uproszczone: bez menu bocznego, jedna propozycja na ekranie.",
+    "Każdy widok ma w nagłówku identyfikator (V1, V2, …) używany na mapie nawigacji, nazwę ekranu i rolę użytkownika.",
+    "Prototyp każdego przypadku użycia zaczyna się od widoku, na którym przypadek startuje (V1).",
+    "Przyciski zapisano jako [ Nazwa ]; akcja główna ma pogrubioną ramkę. Nazwy przycisków są etykietami przejść na mapie nawigacji.",
+    "Pola obowiązkowe oznacza gwiazdka, listy wyboru – znak ▾, a pola z tekstem pomocniczym – szary tekst.",
+    "Stany i ostrzeżenia są opisane tekstem (np. „brakuje 30 h”, „Ostrzeżenie (RB6)”) z odwołaniem do reguły biznesowej.",
+    "Dane w widokach odpowiadają atrybutom klas modelu informacyjnego wskazanym w wierszu WE/WY specyfikacji przypadku użycia.",
+    "Widoki prowadzącego (otwierane z odnośnika w wiadomości) nie mają menu bocznego.",
 ]
 
 PROTOS = [
-    ("UC09", "p9_stan.png", "Ekran stanu powierzeń – widok „Pensum” z filtrem „tylko problemy”", [
-        "U góry podsumowanie semestru (krok 2); kafelki z problemami są wyróżnione kolorem i liczbą.",
-        "Przełączniki „Obsada”, „Pensum”, „Propozycje” i filtry (krok 3); na rysunku widok „Pensum” z filtrem „tylko problemy”.",
-        "Każdy wiersz pokazuje pasek realizacji pensum, procent, stan i status propozycji (krok 4); wybór wiersza otwiera szczegóły nauczyciela (kroki 5–6).",
-        "W widoku „Obsada” przy nieobsadzonych formach zajęć jest przycisk „Powierz zajęcia” (scenariusz „przejście do powierzenia”).",
+    dict(id="UC06", nav="nav/n06.png", views=[
+        ("wf/uc06_v1.png", "V1 – Plan powierzeń (widok startowy)"),
+        ("wf/uc06_v2.png", "V2 – Nowe powierzenie"),
+    ], notes=[
+        "V1 – widok startowy: zapotrzebowanie planu z godzinami obsadzonymi i brakującymi; przy formach z brakami jest przycisk „Powierz” (krok 1).",
+        "V2 – formularz powierzenia (kroki 2–5): lista prowadzących, którzy mogą prowadzić kurs, z preferencjami i pensum, pola liczby godzin i grup oraz podgląd pensum przed zmianą i po niej z ostrzeżeniami RB6 i RB7.",
+        "Przekroczenie limitu maksymalnego wyświetla komunikat zamiast podglądu, a „Zapisz powierzenie” jest niedostępne. Zapis lub „Anuluj” wraca do V1 (kroki 7–8, wyjątek).",
     ]),
-    ("UC17", "p17_pobierz.png", "Ekran zatwierdzonych powierzeń działu kształcenia", [
-        "Lista planów powierzeń semestru (krok 2); plan w przygotowaniu nie może zostać zaznaczony (RB10).",
-        "Kolumna „Zmiany po zatw.” informuje o powierzeniach dodanych po zatwierdzeniu, np. dorobionych grupach.",
-        "Prawa część: format pliku i zakres, w tym „tylko zmiany od” (krok 3, scenariusz „tylko zmiany”); pod spodem nazwa i rozmiar pliku.",
-        "Podgląd pierwszych wierszy pliku (krok 4) pozwala sprawdzić zawartość przed pobraniem (kroki 5–7).",
+    dict(id="UC09", nav="nav/n09.png", views=[
+        ("wf/uc09_v1.png", "V1 – Stan powierzeń (widok startowy, widok „Pensum”)"),
+        ("wf/uc09_v2.png", "V2 – Szczegóły pozycji (nauczyciel)"),
+    ], notes=[
+        "V1 – widok startowy: podsumowanie semestru (krok 2), przełączniki „Obsada”, „Pensum”, „Propozycje” i filtry (krok 3) oraz zestawienie (krok 4). Zmiana widoku lub filtrów odświeża V1.",
+        "V2 – szczegóły wybranej pozycji (kroki 5–6); dla nauczyciela: rozliczenie pensum, powierzenia w obu semestrach i stan propozycji.",
+        "W szczegółach nieobsadzonej formy zajęć przycisk „Powierz zajęcia” przechodzi do widoku V2 przypadku UC06 (scenariusz „przejście do powierzenia”).",
     ]),
-    ("UC06", "p1_powierz.png", "Ekran planu powierzeń z formularzem nowego powierzenia", [
-        "Lewa część pokazuje zapotrzebowanie planu z godzinami obsadzonymi i brakującymi (kroki 1–2); stan każdej pozycji opisuje etykieta.",
-        "Prawa część to formularz powierzenia (krok 3) z listą prowadzących, którzy mogą prowadzić kurs, ich pensum i preferencjami.",
-        "Podgląd pensum po zmianie oraz ostrzeżenia RB6 i RB7 (kroki 4–5, scenariusz „ostrzeżenie o obciążeniu”) odświeżają się po każdej zmianie liczby godzin.",
-        "Przy przekroczeniu limitu maksymalnego ramka ostrzeżenia staje się czerwona, a przycisk „Zapisz powierzenie” jest nieaktywny.",
+    dict(id="UC12", nav="nav/n12.png", views=[
+        ("wf/uc12_v1.png", "V1 – Propozycja przydziału (widok startowy)"),
+        ("wf/uc12_v2.png", "V2 – Potwierdzenie akceptacji"),
+        ("wf/uc12_v3.png", "V3 – Zgłoszenie uwag"),
+        ("wf/uc12_v4.png", "V4 – Odpowiedź zapisana"),
+    ], notes=[
+        "V1 – widok startowy, otwierany z odnośnika w wiadomości: pozycje propozycji, pensum i termin odpowiedzi (kroki 1–2).",
+        "V2 – okno potwierdzenia akceptacji z polem zgody na obciążenie ponad 125% (150%) pensum, widocznym tylko, gdy zgoda jest wymagana (kroki 4–5).",
+        "V3 – formularz uwag: wybór uwagi przy każdej pozycji i treść uwag (kroki 4a–5a).",
+        "V4 – potwierdzenie zapisania odpowiedzi (krok 7 lub 8a).",
     ]),
-    ("UC11", "p2_wyslij.png", "Ekran wysyłki propozycji przydziałów", [
-        "Lista prowadzących z nowymi lub zmienionymi powierzeniami; zaznaczenie decyduje o wysyłce (kroki 2–3).",
-        "Pod listą termin odpowiedzi z podpowiedzią dopuszczalnego zakresu i pole dodatkowej informacji.",
-        "Prawa część to podgląd wiadomości dla wskazanego prowadzącego (krok 4); widać w nim informację o wymaganej zgodzie pisemnej.",
-        "Przycisk akcji głównej pokazuje liczbę wysyłanych propozycji (krok 5).",
-    ]),
-    ("UC12", "p3_odpowiedz.png", "Strona odpowiedzi prowadzącego – zgłaszanie uwag", [
-        "Strona otwierana z odnośnika w wiadomości; pokazano stan po wybraniu „Zgłaszam uwagi” (kroki 4a–5a).",
-        "Przy każdej pozycji prowadzący wybiera rodzaj uwagi; treść uwag jest obowiązkowa.",
-        "Po wybraniu „Akceptuję” system wyświetla okno potwierdzenia, a przy obciążeniu ponad 125% (150%) pensum – pole zgody pisemnej (krok 4).",
-    ]),
-    ("UC15", "p4_uwagi.png", "Ekran uwag do rozwiązania z sugestią AI", [
-        "Lista uwag oczekujących z pewnością rozpoznania AI; odpowiedzi niejednoznaczne oznaczono „do weryfikacji” (krok 1).",
-        "Szczegóły uwagi: treść odpowiedzi i ramka „Sugestia AI” z rozpoznanym rodzajem, pozycjami i możliwym rozwiązaniem (krok 2); „Popraw rozpoznanie” realizuje scenariusz korekty.",
-        "„Zmień powierzenia” przenosi do planu powierzeń przefiltrowanego do powierzeń prowadzącego (kroki 3–5); „Odrzuć uwagę” otwiera okno z polem uzasadnienia.",
-    ]),
-    ("UC16", "p5_zatwierdz.png", "Okno zatwierdzania planu powierzeń – warunki niespełnione", [
-        "Okno pokazuje wynik sprawdzenia warunków RB10 (krok 2); na rysunku – scenariusz „warunki niespełnione”.",
-        "Braki są odnośnikami prowadzącymi do odpowiedniej pozycji planu lub uwagi; przycisk „Zatwierdź plan” jest nieaktywny.",
-        "Gdy wszystkie warunki są spełnione, okno pokazuje podsumowanie planu, a przycisk jest aktywny (kroki 3–4).",
-    ]),
-    ("UC19", "p6_dorob.png", "Okno dorabiania grupy na podstawie zgłoszenia działu kształcenia", [
-        "Okno otwarte ze zgłoszenia działu kształcenia dla zatwierdzonego planu; u góry treść zgłoszenia (krok 2).",
-        "Liczba dodatkowych grup i studentów (krok 3); system od razu wylicza grupy i godziny po zmianie.",
-        "Prowadzący uporządkowani według brakujących godzin (kroki 4–5); pod listą wynik sprawdzenia pensum i limitów (krok 6).",
-        "Dla zatwierdzonego planu opcja „Powierz później” jest niedostępna.",
+    dict(id="UC17", nav="nav/n17.png", views=[
+        ("wf/uc17_v1.png", "V1 – Zatwierdzone powierzenia (widok startowy)"),
+        ("wf/uc17_v2.png", "V2 – Podgląd pliku"),
+    ], notes=[
+        "V1 – widok startowy: plany powierzeń semestru, przy czym plan w przygotowaniu nie może zostać zaznaczony (RB10); wybór formatu i zakresu (kroki 2–3).",
+        "V2 – podgląd pierwszych wierszy pliku z nazwą i rozmiarem (krok 4); „Pobierz XLSX/CSV” zapisuje plik (kroki 5–7), a „Wróć” pozwala zmienić wybór.",
     ]),
 ]
+
+IO = {
+    "UC06": [
+        ("1.", ":Zapotrzebowanie (wybrana forma zajęć)", "—"),
+        ("2.", "—", ":Zapotrzebowanie (liczbaGrup, /liczbaGodzin, /godzinyNieobsadzone), :Forma zajęć (rodzaj, liczbaGodzin), :Kurs (kod, nazwa), :Prowadzący (tytul, imie, nazwisko), :Roczne rozliczenie pensum (/godzinyPowierzone, /pensumPoZnizkach), :Preferencja prowadzącego (preferowanaForma)"),
+        ("3.", ":Prowadzący, :Powierzenie zajęć (liczbaGodzin, liczbaGrup)", "—"),
+        ("5.", "—", ":Roczne rozliczenie pensum (/godzinyPowierzone przed zmianą i po niej, /pensumPoZnizkach)"),
+        ("7.", "—", "nowy obiekt :Powierzenie zajęć; zaktualizowane :Zapotrzebowanie (/godzinyNieobsadzone) i :Roczne rozliczenie pensum (/godzinyPowierzone)"),
+    ],
+    "UC09": [
+        ("1.", ":Semestr", "—"),
+        ("2.", "—", ":Zapotrzebowanie (/liczbaGodzin, /godzinyNieobsadzone), :Roczne rozliczenie pensum (/brakujaceGodziny, /godzinyPonadwymiarowe), :Wersja propozycji (status)"),
+        ("3.", "filtry: :Instancja planu, :Kurs (kod, nazwa), :Prowadzący (nazwisko)", "—"),
+        ("4.", "—", "Obsada – :Zapotrzebowanie, :Forma zajęć, :Kurs; Pensum – :Nauczyciel akademicki, :Roczne rozliczenie pensum (stanowisko, grupaPracownicza, /godzinyPowierzone, /pensumPoZnizkach); Propozycje – :Wersja propozycji (numer, status, terminOdpowiedzi)"),
+        ("6.", "—", ":Powierzenie zajęć (liczbaGodzin, liczbaGrup), :Zniżka pensum (podstawa, liczbaGodzin), :Wersja propozycji, :Odpowiedź prowadzącego"),
+    ],
+    "UC12": [
+        ("1.", "odnośnik z tokenem wskazujący :Wersję propozycji", "—"),
+        ("2.", "—", ":Wersja propozycji (numer, dataWyslania, terminOdpowiedzi, wymagaZgodyPisemnej), :Pozycja propozycji (nazwaKursu, forma, liczbaGrup, liczbaGodzin), :Roczne rozliczenie pensum (/godzinyPowierzone, /pensumPoZnizkach)"),
+        ("5.", ":Odpowiedź prowadzącego (zgodaNaPrzekroczenie)", "—"),
+        ("6.", "—", "nowy obiekt :Odpowiedź prowadzącego (rodzaj = zgoda, dataOtrzymania, kanal = formularz); :Wersja propozycji (status, dataAkceptacji)"),
+        ("5a", ":Uwaga do pozycji (zadanie) dla wybranych :Pozycji propozycji, :Odpowiedź prowadzącego (tresc)", "—"),
+        ("6a–7a", "—", "nowe obiekty :Odpowiedź prowadzącego i :Uwaga do pozycji, :Wersja propozycji (status), :Analiza AI (rozpoznanyRodzaj, pewnosc, wymagaWeryfikacji)"),
+    ],
+    "UC17": [
+        ("2.", "—", ":Plan powierzeń (dataZatwierdzenia, /status), :Instancja planu (oznaczenie), :Semestr (terminPrzekazaniaPowierzen), liczba :Powierzeń zajęć, godzin i powierzeń z poZatwierdzeniu = prawda"),
+        ("3.", "wybrane :Plany powierzeń, format pliku, data „zmiany od” (porównywana z :Powierzenie zajęć.dataModyfikacji)", "—"),
+        ("4., 6.", "—", ":Kierunek (skrot), :Plan studiów (stopien, formaStudiow), :Kurs (kod, nazwa), :Forma zajęć (rodzaj), :Powierzenie zajęć (liczbaGrup, liczbaGodzin, poZatwierdzeniu), :Prowadzący (tytul, imie, nazwisko, adresEmail)"),
+    ],
+}
 
 MODEL_INTRO = "Model informacyjny rozwija model domenowy z etapu I do poziomu danych przechowywanych w systemie: wszystkie asocjacje mają nazwy i krotności, atrybuty mają typy, a dziedziny wartości opisują typy wyliczeniowe. Model podzielono na trzy diagramy; klasy pochodzące z innej części pokazano bez atrybutów („...”)."
 MODEL_CHANGES = [
@@ -492,7 +509,7 @@ UCS += [
    ("Główny przepływ zdarzeń", [
      ("1.", "Wybiera „Zatwierdzone powierzenia”", ""),
      ("2.", "", "Wyświetla plany powierzeń semestru: zatwierdzone (data zatwierdzenia, liczba powierzeń, godziny, liczba zmian po zatwierdzeniu) – zaznaczone – oraz plany w przygotowaniu bez możliwości wyboru"),
-     ("3.", "Zaznacza plany, wybiera format pliku i zakres „wszystkie powierzenia”", ""),
+     ("3.", "Zaznacza plany, wybiera format pliku i zakres „wszystkie powierzenia”, a następnie „Pokaż podgląd”", ""),
      ("4.", "", "Weryfikuje wybór i wyświetla podgląd pierwszych wierszy oraz nazwę i rozmiar pliku (liczba powierzeń, godzin, planów)"),
      ("5.", "Wybiera „Pobierz”", ""),
      ("6.", "", "Generuje plik i udostępnia go do pobrania"),
@@ -538,4 +555,4 @@ ACT = {
     "UC16": ("act/a16.png", "Niespełnienie warunków obsadzenia, akceptacji lub limitów kończy przypadek bez zatwierdzenia. Przekroczenie terminu przekazania nie blokuje zatwierdzenia, ale wymaga podania przyczyny opóźnienia."),
 }
 UCS = sorted([u for u in UCS if u["id"] in KEEP], key=lambda u: u["id"])
-PROTOS = sorted([p for p in PROTOS if p[0] in KEEP], key=lambda p: p[0])
+

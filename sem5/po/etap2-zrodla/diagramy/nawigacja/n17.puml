@@ -1,0 +1,10 @@
+@startuml
+!include head.inc
+title UC17 Pobierz zatwierdzone powierzenia — mapa nawigacji
+state "V1: Zatwierdzone powierzenia" as V1
+state "V2: Podgląd pliku" as V2
+[*] --> V1 : menu „Zatwierdzone powierzenia”
+V1 --> V2 : „Pokaż podgląd”
+V2 --> V1 : „Wróć”
+V2 --> [*] : „Pobierz XLSX/CSV”\n(plik zapisany)
+@enduml

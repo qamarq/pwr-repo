@@ -154,6 +154,8 @@ def uc_spec(uc):
         rows.append((tp(name, True), flow_table(uc['actor'], steps, note) + '<w:p><w:pPr><w:spacing w:after="0"/></w:pPr></w:p>'))
     data = ''.join(tbullet(t) if k == 'b' else tp(t) for k, t in uc['data'])
     rows.append((tp('Dane', True), data))
+    io_rows = [['Krok', 'Wejście (WE)', 'Wyjście (WY)']] + [list(r) for r in IO[uc['id']]]
+    rows.append((tp('WE/WY – obiekty modelu informacyjnego', True), table([760, 2800, 3360], io_rows, header_fill='E7E6E6') + '<w:p><w:pPr><w:spacing w:after="0"/></w:pPr></w:p>'))
     grid = f'<w:gridCol w:w="{L}"/><w:gridCol w:w="{R}"/>'
     xml = (f'<w:tbl><w:tblPr><w:tblW w:w="{L+R}" w:type="dxa"/><w:tblBorders>{BORDER}</w:tblBorders><w:tblLayout w:type="fixed"/>'
            f'<w:tblCellMar><w:left w:w="80" w:type="dxa"/><w:right w:w="80" w:type="dxa"/></w:tblCellMar><w:tblLook w:val="04A0" w:firstRow="0" w:lastRow="0" w:firstColumn="1" w:lastColumn="0" w:noHBand="0" w:noVBand="1"/></w:tblPr><w:tblGrid>{grid}</w:tblGrid>')
@@ -195,7 +197,7 @@ uc_diag_xml = ''.join(body)
 
 body = []
 body.append(heading('Specyfikacja przypadków użycia', 1))
-body.append(p('Wyspecyfikowano cztery przypadki użycia (po dwa na członka zespołu): powierzenie zajęć z kontrolą pensum (UC06), przegląd stanu powierzeń (UC09), odpowiedź prowadzącego na propozycję przydziału (UC12) i pobranie zatwierdzonych powierzeń przez dział kształcenia (UC17). Każdy przypadek opisano tabelarycznie i uzupełniono diagramem aktywności z komentarzem. Numery reguł biznesowych (RB) odnoszą się do etapu I.'))
+body.append(p('Wyspecyfikowano cztery przypadki użycia (po dwa na członka zespołu): powierzenie zajęć z kontrolą pensum (UC06), przegląd stanu powierzeń (UC09), odpowiedź prowadzącego na propozycję przydziału (UC12) i pobranie zatwierdzonych powierzeń przez dział kształcenia (UC17). Każdy przypadek opisano tabelarycznie – z wejściami i wyjściami (WE/WY) wskazanymi jako obiekty klas modelu informacyjnego – i uzupełniono diagramem aktywności z komentarzem; notatki «WE»/«WY» na diagramach wskazują te same obiekty. Numery reguł biznesowych (RB) odnoszą się do etapu I.'))
 for uc in UCS:
     body.append(uc_spec(uc))
 uc_spec_xml = ''.join(body)
@@ -207,17 +209,17 @@ for t in STYLE_RULES:
     body.append(p(t))
 for t in STYLE_LIST:
     body.append(bullet(t))
-body.append(p('Mapa nawigacji między ekranami prototypu:', keep=True, spacing='<w:spacing w:before="160" w:after="80"/>'))
-body.append(image('nav.png'))
-body.append(caption('Mapa nawigacji (P1–P4 – ekrany prototypu)'))
-for i, (ucid, f, c, notes) in enumerate(PROTOS, 1):
-    name = next(u['name'] for u in UCS if u['id'] == ucid)
-    body.append(heading(f'{ucid} {name}', 2))
-    body.append(image(f'ui/{f}'))
-    body.append(caption(f'P{i} – {c}'))
-    for n in notes:
+for pr in PROTOS:
+    name = next(u['name'] for u in UCS if u['id'] == pr['id'])
+    body.append(heading(f"{pr['id']} {name}", 2))
+    body.append(image(pr['nav']))
+    body.append(caption(f"{pr['id']} – mapa nawigacji"))
+    for f, c in pr['views']:
+        body.append(image(f, max_w_in=6.3))
+        body.append(caption(f"{pr['id']} {c}"))
+    for n in pr['notes']:
         body.append(bullet(n))
-body.append(p('Wynik włączanego przypadku UC07 (sprawdzenie pensum i limitów) jest wyświetlany w ekranie P1.'))
+body.append(p('Wynik włączanego przypadku UC07 (sprawdzenie pensum i limitów) jest wyświetlany w widoku V2 przypadku UC06.'))
 proto_xml = ''.join(body)
 
 # 3. Model informacyjny

@@ -11,6 +11,11 @@ if (Istnieją plany powierzeń\nw semestrze?) then (nie)
 else (tak)
 endif
 :Wyświetla podsumowanie semestru:\nobsada, pensum, statusy propozycji;
+note right #FFFFFF
+<<WY>>
+:Zapotrzebowanie, :Roczne rozliczenie pensum,
+:Wersja propozycji
+end note
 |Osoba dokonująca powierzeń|
 repeat
   :Wybiera widok (Obsada / Pensum / Propozycje)\ni ustawia filtry;
@@ -24,6 +29,11 @@ repeat
   if (Wybiera pozycję?) then (tak)
     |System|
     :Wyświetla szczegóły pozycji\n(powierzenia, zniżki, wersje propozycji);
+note right #FFFFFF
+<<WY>>
+:Powierzenie zajęć, :Zniżka pensum,
+:Wersja propozycji
+end note
     |Osoba dokonująca powierzeń|
     if („Powierz zajęcia” przy\nnieobsadzonej formie?) then (tak)
       |System|

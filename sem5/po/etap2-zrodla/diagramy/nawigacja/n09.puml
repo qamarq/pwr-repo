@@ -1,0 +1,12 @@
+@startuml
+!include head.inc
+title UC09 Przeglądaj stan powierzeń — mapa nawigacji
+state "V1: Stan powierzeń" as V1
+state "V2: Szczegóły pozycji" as V2
+state "UC06 – V2: Nowe powierzenie" as U6
+[*] --> V1 : menu „Stan powierzeń”
+V1 --> V1 : „Obsada” / „Pensum” /\n„Propozycje”, filtry
+V1 --> V2 : wybór wiersza
+V2 --> V1 : „Wróć do zestawienia”
+V2 --> U6 : „Powierz zajęcia”\n(nieobsadzona forma)
+@enduml

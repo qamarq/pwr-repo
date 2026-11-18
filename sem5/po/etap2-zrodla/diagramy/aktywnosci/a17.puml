@@ -11,6 +11,10 @@ if (Istnieje zatwierdzony plan\npowierzeń w semestrze?) then (nie)
 else (tak)
 endif
 :Wyświetla zatwierdzone plany\n(data zatwierdzenia, powierzenia,\ngodziny, zmiany po zatwierdzeniu);
+note right #FFFFFF
+<<WY>>
+:Plan powierzeń, :Instancja planu
+end note
 repeat
   |Pracownik działu kształcenia|
   :Zaznacza plany, wybiera format\n(XLSX / CSV) i zakres;
@@ -19,6 +23,11 @@ repeat
 backward :Wyświetla komunikat;
 repeat while (Wybrano plan i są\npowierzenia w zakresie?) is (nie) not (tak)
 :Generuje plik z powierzeniami;
+note right #FFFFFF
+<<WY>>
+:Powierzenie zajęć, :Kurs, :Forma zajęć,
+:Prowadzący, :Kierunek
+end note
 if (Plik wygenerowany?) then (tak)
   :Udostępnia plik do pobrania;
   |Pracownik działu kształcenia|

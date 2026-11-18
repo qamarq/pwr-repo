@@ -1,0 +1,16 @@
+@startuml
+!include head.inc
+title UC12 Odpowiedz na propozycję przydziału — mapa nawigacji
+state "V1: Propozycja przydziału" as V1
+state "V2: Potwierdzenie akceptacji" as V2
+state "V3: Zgłoszenie uwag" as V3
+state "V4: Odpowiedź zapisana" as V4
+[*] --> V1 : odnośnik z wiadomości e-mail
+V1 --> V2 : „Akceptuję”
+V2 --> V4 : „Potwierdź”
+V2 --> V1 : „Anuluj”
+V1 --> V3 : „Zgłaszam uwagi”
+V3 --> V4 : „Wyślij uwagi”
+V3 --> V1 : „Wróć”
+V4 --> [*] : „Zamknij”
+@enduml

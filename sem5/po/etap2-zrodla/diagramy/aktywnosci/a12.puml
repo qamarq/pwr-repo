@@ -11,6 +11,11 @@ if (Termin minął lub istnieje\nnowsza wersja?) then (tak)
 else (nie)
 endif
 :Wyświetla propozycję, sumę godzin,\nstan pensum i termin;
+note right #FFFFFF
+<<WY>>
+:Wersja propozycji, :Pozycja propozycji,
+:Roczne rozliczenie pensum
+end note
 |Prowadzący|
 if (Odpowiedź) then (akceptuję)
   repeat
@@ -21,6 +26,11 @@ if (Odpowiedź) then (akceptuję)
     |System|
   repeat while (Brak wymaganej zgody?) is (tak: komunikat) not (nie)
   :Rejestruje odpowiedź „zgoda”,\nstatus „zaakceptowana”;
+note right #FFFFFF
+<<WY>>
+:Odpowiedź prowadzącego
+(rodzaj = zgoda)
+end note
   :Wyświetla potwierdzenie\ni wysyła je e-mailem;
 else (zgłaszam uwagi)
   |System|
@@ -31,8 +41,17 @@ else (zgłaszam uwagi)
     |System|
   repeat while (Dane poprawne?) is (nie: komunikat) not (tak)
   :Rejestruje odpowiedź z uwagami,\nstatus „zgłoszono uwagi”;
+note right #FFFFFF
+<<WY>>
+:Odpowiedź prowadzącego,
+:Uwaga do pozycji
+end note
   |Usługa AI|
   :Rozpoznaje rodzaj odpowiedzi\ni wskazuje pozycje;
+note right #FFFFFF
+<<WY>>
+:Analiza AI
+end note
   |System|
   :Zapisuje wynik analizy jako sugestię\n(gdy AI niedostępna — do ręcznej weryfikacji);
   :Wyświetla potwierdzenie\ni powiadamia osobę dokonującą powierzeń;

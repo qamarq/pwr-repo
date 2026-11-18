@@ -1,0 +1,11 @@
+@startuml
+!include head.inc
+title UC06 Powierz zajęcia — mapa nawigacji
+state "V1: Plan powierzeń" as V1
+state "V2: Nowe powierzenie" as V2
+[*] --> V1 : menu „Plan powierzeń”
+V1 --> V2 : „Powierz” przy formie zajęć
+V2 --> V2 : zmiana prowadzącego\nlub liczby godzin\n(odświeżenie podglądu)
+V2 --> V1 : „Zapisz powierzenie”
+V2 --> V1 : „Anuluj”
+@enduml
