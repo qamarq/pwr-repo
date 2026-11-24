@@ -4,30 +4,30 @@
 
 - [1. DDL](#1-ddl)
   - [1.1 CREATE TABLE](#11-create-table)
-  - [1.2 Data types](#12-data-types)
+  - [1.2 Typy danych](#12-typy-danych)
   - [1.3 PRIMARY KEY](#13-primary-key)
   - [1.4 NOT NULL / UNIQUE](#14-not-null--unique)
-  - [1.5 Filtered unique index](#15-filtered-unique-index)
+  - [1.5 Filtrowany indeks unikalny](#15-filtrowany-indeks-unikalny)
   - [1.6 CHECK](#16-check)
   - [1.7 REFERENCES](#17-references)
   - [1.8 DEFAULT](#18-default)
   - [1.9 ALTER TABLE ADD CONSTRAINT](#19-alter-table-add-constraint)
   - [1.10 NOCHECK CONSTRAINT](#110-nocheck-constraint)
-  - [1.11 ALTER TABLE columns](#111-alter-table-columns)
+  - [1.11 ALTER TABLE – kolumny](#111-alter-table--kolumny)
   - [1.12 DROP TABLE](#112-drop-table)
   - [1.13 IDENTITY](#113-identity)
 - [2. DML](#2-dml)
   - [2.1 INSERT … VALUES](#21-insert--values)
-  - [2.2 Date literal](#22-date-literal)
+  - [2.2 Literał daty](#22-literał-daty)
   - [2.3 UPDATE](#23-update)
   - [2.4 UPDATE … FROM JOIN](#24-update--from-join)
   - [2.5 DELETE](#25-delete)
   - [2.6 OUTPUT](#26-output)
   - [2.7 BEGIN TRAN / COMMIT / ROLLBACK](#27-begin-tran--commit--rollback)
-- [3. SELECT basics](#3-select-basics)
+- [3. Podstawy SELECT](#3-podstawy-select)
   - [3.1 SELECT … FROM](#31-select--from)
-  - [3.2 Column alias](#32-column-alias)
-  - [3.3 Table alias](#33-table-alias)
+  - [3.2 Alias kolumny](#32-alias-kolumny)
+  - [3.3 Alias tabeli](#33-alias-tabeli)
   - [3.4 DISTINCT](#34-distinct)
   - [3.5 WHERE](#35-where)
   - [3.6 BETWEEN](#36-between)
@@ -37,8 +37,8 @@
   - [3.10 ORDER BY](#310-order-by)
   - [3.11 TOP](#311-top)
   - [3.12 OFFSET … FETCH](#312-offset--fetch)
-  - [3.13 SELECT without FROM](#313-select-without-from)
-- [4. Strings](#4-strings)
+  - [3.13 SELECT bez FROM](#313-select-bez-from)
+- [4. Napisy](#4-napisy)
   - [4.1 +](#41-)
   - [4.2 CONCAT](#42-concat)
   - [4.3 CONCAT_WS](#43-concat_ws)
@@ -51,20 +51,20 @@
   - [4.10 REPLACE](#410-replace)
   - [4.11 STUFF](#411-stuff)
   - [4.12 TRIM / LTRIM / RTRIM](#412-trim--ltrim--rtrim)
-  - [4.13 Empty string](#413-empty-string)
-- [5. NULL handling](#5-null-handling)
+  - [4.13 Pusty napis](#413-pusty-napis)
+- [5. Obsługa NULL](#5-obsługa-null)
   - [5.1 ISNULL](#51-isnull)
   - [5.2 COALESCE](#52-coalesce)
   - [5.3 NULLIF](#53-nullif)
-  - [5.4 Comparing with NULL](#54-comparing-with-null)
+  - [5.4 Porównywanie z NULL](#54-porównywanie-z-null)
   - [5.5 IS DISTINCT FROM](#55-is-distinct-from)
-- [6. Numbers](#6-numbers)
+- [6. Liczby](#6-liczby)
   - [6.1 ROUND](#61-round)
-  - [6.2 Truncating](#62-truncating)
+  - [6.2 Obcinanie](#62-obcinanie)
   - [6.3 %](#63-)
   - [6.4 CEILING / FLOOR](#64-ceiling--floor)
-  - [6.5 Integer division](#65-integer-division)
-- [7. Dates](#7-dates)
+  - [6.5 Dzielenie całkowite](#65-dzielenie-całkowite)
+- [7. Daty](#7-daty)
   - [7.1 GETDATE / SYSDATETIME](#71-getdate--sysdatetime)
   - [7.2 YEAR / MONTH / DAY](#72-year--month--day)
   - [7.3 DATEPART](#73-datepart)
@@ -74,91 +74,91 @@
   - [7.7 DATETRUNC](#77-datetrunc)
   - [7.8 DATEFROMPARTS](#78-datefromparts)
   - [7.9 DATENAME](#79-datename)
-  - [7.10 Last Wednesday of month](#710-last-wednesday-of-month)
-- [8. Conversions](#8-conversions)
+  - [7.10 Ostatnia środa miesiąca](#710-ostatnia-środa-miesiąca)
+- [8. Konwersje](#8-konwersje)
   - [8.1 CAST](#81-cast)
   - [8.2 CONVERT](#82-convert)
   - [8.3 FORMAT](#83-format)
   - [8.4 TRY_CAST](#84-try_cast)
-- [9. Conditionals](#9-conditionals)
+- [9. Warunki](#9-warunki)
   - [9.1 CASE WHEN](#91-case-when)
-  - [9.2 CASE value](#92-case-value)
+  - [9.2 CASE wartość](#92-case-wartość)
   - [9.3 IIF](#93-iif)
   - [9.4 GREATEST / LEAST](#94-greatest--least)
-- [10. Grouping](#10-grouping)
+- [10. Grupowanie](#10-grupowanie)
   - [10.1 COUNT](#101-count)
   - [10.2 SUM / AVG / MIN / MAX](#102-sum--avg--min--max)
   - [10.3 GROUP BY](#103-group-by)
   - [10.4 HAVING](#104-having)
-  - [10.5 Conditional COUNT](#105-conditional-count)
+  - [10.5 Warunkowy COUNT](#105-warunkowy-count)
   - [10.6 STRING_AGG](#106-string_agg)
-  - [10.7 Group by expression](#107-group-by-expression)
+  - [10.7 Grupowanie po wyrażeniu](#107-grupowanie-po-wyrażeniu)
   - [10.8 ROLLUP](#108-rollup)
-- [11. Joins](#11-joins)
+- [11. Złączenia](#11-złączenia)
   - [11.1 JOIN](#111-join)
   - [11.2 LEFT JOIN](#112-left-join)
   - [11.3 RIGHT JOIN](#113-right-join)
   - [11.4 FULL JOIN](#114-full-join)
   - [11.5 CROSS JOIN](#115-cross-join)
-  - [11.6 No USING / NATURAL](#116-no-using--natural)
-  - [11.7 Self join](#117-self-join)
-  - [11.8 Join chain](#118-join-chain)
-  - [11.9 Join to a fixed row](#119-join-to-a-fixed-row)
-  - [11.10 Anti-join](#1110-anti-join)
+  - [11.6 Brak USING / NATURAL](#116-brak-using--natural)
+  - [11.7 Samozłączenie](#117-samozłączenie)
+  - [11.8 Łańcuch złączeń](#118-łańcuch-złączeń)
+  - [11.9 Złączenie z konkretnym wierszem](#119-złączenie-z-konkretnym-wierszem)
+  - [11.10 Antyzłączenie](#1110-antyzłączenie)
   - [11.11 CROSS / OUTER APPLY](#1111-cross--outer-apply)
-  - [11.12 LEFT JOIN + WHERE trap](#1112-left-join--where-trap)
-- [12. Set operators](#12-set-operators)
+  - [11.12 Pułapka LEFT JOIN + WHERE](#1112-pułapka-left-join--where)
+- [12. Operatory zbiorowe](#12-operatory-zbiorowe)
   - [12.1 UNION / UNION ALL](#121-union--union-all)
   - [12.2 INTERSECT](#122-intersect)
   - [12.3 EXCEPT](#123-except)
-  - [12.4 ORDER BY in set operations](#124-order-by-in-set-operations)
-- [13. Subqueries](#13-subqueries)
-  - [13.1 Scalar subquery](#131-scalar-subquery)
-  - [13.2 Subquery in SELECT / HAVING](#132-subquery-in-select--having)
-  - [13.3 IN (subquery)](#133-in-subquery)
-  - [13.4 NOT IN + NULL trap](#134-not-in--null-trap)
+  - [12.4 ORDER BY w operacjach zbiorowych](#124-order-by-w-operacjach-zbiorowych)
+- [13. Podzapytania](#13-podzapytania)
+  - [13.1 Podzapytanie skalarne](#131-podzapytanie-skalarne)
+  - [13.2 Podzapytanie w SELECT / HAVING](#132-podzapytanie-w-select--having)
+  - [13.3 IN (podzapytanie)](#133-in-podzapytanie)
+  - [13.4 Pułapka NOT IN + NULL](#134-pułapka-not-in--null)
   - [13.5 EXISTS / NOT EXISTS](#135-exists--not-exists)
   - [13.6 ALL](#136-all)
   - [13.7 ANY](#137-any)
-  - [13.8 Subquery in FROM](#138-subquery-in-from)
+  - [13.8 Podzapytanie w FROM](#138-podzapytanie-w-from)
   - [13.9 WITH (CTE)](#139-with-cte)
-- [14. Hierarchical queries](#14-hierarchical-queries)
-  - [14.1 Recursive CTE](#141-recursive-cte)
-  - [14.2 Level](#142-level)
-  - [14.3 Upwards](#143-upwards)
-  - [14.4 Path and root](#144-path-and-root)
-  - [14.5 Leaf check](#145-leaf-check)
-  - [14.6 Tree order](#146-tree-order)
+- [14. Zapytania hierarchiczne](#14-zapytania-hierarchiczne)
+  - [14.1 Rekurencyjne CTE](#141-rekurencyjne-cte)
+  - [14.2 Poziom](#142-poziom)
+  - [14.3 W górę drzewa](#143-w-górę-drzewa)
+  - [14.4 Ścieżka i korzeń](#144-ścieżka-i-korzeń)
+  - [14.5 Sprawdzanie liścia](#145-sprawdzanie-liścia)
+  - [14.6 Kolejność drzewa](#146-kolejność-drzewa)
   - [14.7 MAXRECURSION](#147-maxrecursion)
   - [14.8 GENERATE_SERIES](#148-generate_series)
-- [15. Window functions (OVER)](#15-window-functions-over)
+- [15. Funkcje okna (OVER)](#15-funkcje-okna-over)
   - [15.1 OVER ()](#151-over-)
   - [15.2 PARTITION BY](#152-partition-by)
   - [15.3 ROW_NUMBER](#153-row_number)
   - [15.4 RANK / DENSE_RANK](#154-rank--dense_rank)
-  - [15.5 Running total](#155-running-total)
+  - [15.5 Suma narastająca](#155-suma-narastająca)
   - [15.6 ROWS BETWEEN](#156-rows-between)
   - [15.7 LAG / LEAD](#157-lag--lead)
   - [15.8 FIRST_VALUE](#158-first_value)
-  - [15.9 Top-N per group](#159-top-n-per-group)
+  - [15.9 Top-N w grupie](#159-top-n-w-grupie)
 - [16. Pivot](#16-pivot)
   - [16.1 PIVOT](#161-pivot)
   - [16.2 UNPIVOT](#162-unpivot)
-  - [16.3 Unpivot with APPLY](#163-unpivot-with-apply)
-  - [16.4 Pivot with CASE](#164-pivot-with-case)
+  - [16.3 Unpivot przez APPLY](#163-unpivot-przez-apply)
+  - [16.4 Pivot przez CASE](#164-pivot-przez-case)
 - [17. sqlcmd](#17-sqlcmd)
   - [17.1 GO](#171-go)
   - [17.2 :r](#172-r)
-  - [17.3 -I flag](#173--i-flag)
+  - [17.3 Flaga -I](#173-flaga--i)
   - [17.4 sp_help](#174-sp_help)
   - [17.5 sys.tables](#175-systables)
   - [17.6 EXIT](#176-exit)
-- [18. Combos](#18-combos)
-  - [18.1 Tree over a SELECT source](#181-tree-over-a-select-source)
-  - [18.2 Tree as a source + JOIN](#182-tree-as-a-source--join)
-  - [18.3 Tree + GROUP BY (all subordinates)](#183-tree--group-by-all-subordinates)
-  - [18.4 Tree with roots from a subquery](#184-tree-with-roots-from-a-subquery)
-  - [18.5 Grouped SELECT as a source + JOIN](#185-grouped-select-as-a-source--join)
+- [18. Combosy](#18-combosy)
+  - [18.1 Drzewo ze źródłem z SELECT-a](#181-drzewo-ze-źródłem-z-select-a)
+  - [18.2 Drzewo jako źródło + JOIN](#182-drzewo-jako-źródło--join)
+  - [18.3 Drzewo + GROUP BY (wszyscy podwładni)](#183-drzewo--group-by-wszyscy-podwładni)
+  - [18.4 Drzewo z korzeniami z podzapytania](#184-drzewo-z-korzeniami-z-podzapytania)
+  - [18.5 Pogrupowany SELECT jako źródło + JOIN](#185-pogrupowany-select-jako-źródło--join)
 - [19. Kartkówka – przykładowe zadania](#19-kartkówka--przykładowe-zadania)
   - [19.1 Zadanie 1](#191-zadanie-1)
   - [19.2 Zadanie 2](#192-zadanie-2)
@@ -170,15 +170,15 @@
 
 ### 1.1 CREATE TABLE
 
-Creates a table; there is no `CREATE TABLE IF NOT EXISTS`.
+Tworzy tabelę; nie ma `CREATE TABLE IF NOT EXISTS`.
 
 ```sql
 CREATE TABLE wrogowie (imie_wroga VARCHAR(15) PRIMARY KEY, gatunek VARCHAR(15));
 ```
 
-### 1.2 Data types
+### 1.2 Typy danych
 
-`NUMERIC(p)`, `VARCHAR(n)`, `NVARCHAR(n)` (Unicode), `INT`, `BIT`, `DATE` and `DATETIME2`.
+`NUMERIC(p)`, `VARCHAR(n)`, `NVARCHAR(n)` (Unicode), `INT`, `BIT`, `DATE` i `DATETIME2`.
 
 ```sql
 pseudo VARCHAR(15), przydzial_myszy NUMERIC(3), w_stadku_od DATE
@@ -186,7 +186,7 @@ pseudo VARCHAR(15), przydzial_myszy NUMERIC(3), w_stadku_od DATE
 
 ### 1.3 PRIMARY KEY
 
-Unique, non-null row id; a composite key goes at table level.
+Unikalny, niepusty identyfikator wiersza; klucz złożony podaje się na poziomie tabeli.
 
 ```sql
 PRIMARY KEY (pseudo, imie_wroga)
@@ -194,15 +194,15 @@ PRIMARY KEY (pseudo, imie_wroga)
 
 ### 1.4 NOT NULL / UNIQUE
 
-`UNIQUE` allows only one `NULL` in the column.
+`UNIQUE` dopuszcza tylko jeden `NULL` w kolumnie.
 
 ```sql
 nazwa VARCHAR(20) NOT NULL, teren VARCHAR(15) UNIQUE
 ```
 
-### 1.5 Filtered unique index
+### 1.5 Filtrowany indeks unikalny
 
-Unique values but many `NULL`s allowed (needed for `szef_bandy`).
+Unikalne wartości, ale wiele `NULL`-i dozwolonych (potrzebne dla `szef_bandy`).
 
 ```sql
 CREATE UNIQUE INDEX bandy_szef_uq ON bandy (szef_bandy) WHERE szef_bandy IS NOT NULL;
@@ -210,7 +210,7 @@ CREATE UNIQUE INDEX bandy_szef_uq ON bandy (szef_bandy) WHERE szef_bandy IS NOT 
 
 ### 1.6 CHECK
 
-A column CHECK sees only its own column; multi-column checks go at table level.
+CHECK kolumny widzi tylko swoją kolumnę; warunki na kilku kolumnach idą na poziom tabeli.
 
 ```sql
 plec VARCHAR(1) CHECK (plec IN ('M', 'D')),
@@ -219,7 +219,7 @@ CONSTRAINT fu_max_ch CHECK (max_myszy >= min_myszy)
 
 ### 1.7 REFERENCES
 
-Foreign key, can point to the same table.
+Klucz obcy, może wskazywać na tę samą tabelę.
 
 ```sql
 szef VARCHAR(15) REFERENCES kocury(pseudo)
@@ -227,7 +227,7 @@ szef VARCHAR(15) REFERENCES kocury(pseudo)
 
 ### 1.8 DEFAULT
 
-Value used when the column is left out of an INSERT.
+Wartość użyta, gdy kolumna zostanie pominięta w INSERT.
 
 ```sql
 w_stadku_od DATE DEFAULT GETDATE()
@@ -235,7 +235,7 @@ w_stadku_od DATE DEFAULT GETDATE()
 
 ### 1.9 ALTER TABLE ADD CONSTRAINT
 
-Adds a constraint later, e.g. to break the `bandy` ↔ `kocury` cycle.
+Dodaje ograniczenie później, np. żeby rozbić cykl `bandy` ↔ `kocury`.
 
 ```sql
 ALTER TABLE bandy ADD CONSTRAINT bandy_szef_fk FOREIGN KEY (szef_bandy) REFERENCES kocury(pseudo);
@@ -243,16 +243,16 @@ ALTER TABLE bandy ADD CONSTRAINT bandy_szef_fk FOREIGN KEY (szef_bandy) REFERENC
 
 ### 1.10 NOCHECK CONSTRAINT
 
-No `DEFERRABLE`; a constraint can be switched off and back on instead.
+Nie ma `DEFERRABLE`; zamiast tego ograniczenie można wyłączyć i włączyć z powrotem.
 
 ```sql
 ALTER TABLE bandy NOCHECK CONSTRAINT bandy_szef_fk;
 ALTER TABLE bandy WITH CHECK CHECK CONSTRAINT bandy_szef_fk;
 ```
 
-### 1.11 ALTER TABLE columns
+### 1.11 ALTER TABLE – kolumny
 
-Adds, changes or removes a column (no `COLUMN` keyword in `ADD`).
+Dodaje, zmienia albo usuwa kolumnę (bez słowa `COLUMN` w `ADD`).
 
 ```sql
 ALTER TABLE kocury ADD ulubiona VARCHAR(20);
@@ -262,7 +262,7 @@ ALTER TABLE kocury DROP COLUMN ulubiona;
 
 ### 1.12 DROP TABLE
 
-Removes a table; no `CASCADE`, so drop FKs pointing at it first.
+Usuwa tabelę; nie ma `CASCADE`, więc najpierw usuń wskazujące na nią klucze obce.
 
 ```sql
 DROP TABLE IF EXISTS wrogowie_kocurow;
@@ -270,7 +270,7 @@ DROP TABLE IF EXISTS wrogowie_kocurow;
 
 ### 1.13 IDENTITY
 
-Auto-increment column.
+Kolumna auto-inkrementowana.
 
 ```sql
 CREATE TABLE incydenty (id INT IDENTITY(1, 1) PRIMARY KEY, opis VARCHAR(50));
@@ -280,15 +280,15 @@ CREATE TABLE incydenty (id INT IDENTITY(1, 1) PRIMARY KEY, opis VARCHAR(50));
 
 ### 2.1 INSERT … VALUES
 
-Inserts one or more rows (up to 1000 per `VALUES`).
+Wstawia jeden lub więcej wierszy (do 1000 w jednym `VALUES`).
 
 ```sql
 INSERT INTO funkcje (funkcja, min_myszy, max_myszy) VALUES ('SZEFUNIO', 90, 110), ('BANDZIOR', 70, 90);
 ```
 
-### 2.2 Date literal
+### 2.2 Literał daty
 
-A plain string; `DATE '…'` is not supported, `'YYYYMMDD'` is safe under any settings.
+Zwykły napis; `DATE '…'` nie jest obsługiwane, `'YYYYMMDD'` działa przy każdych ustawieniach.
 
 ```sql
 INSERT INTO kocury (imie, pseudo, w_stadku_od) VALUES ('JACEK', 'PLACEK', '2008-12-01');
@@ -296,7 +296,7 @@ INSERT INTO kocury (imie, pseudo, w_stadku_od) VALUES ('JACEK', 'PLACEK', '2008-
 
 ### 2.3 UPDATE
 
-Changes values in matching rows.
+Zmienia wartości w pasujących wierszach.
 
 ```sql
 UPDATE bandy SET szef_bandy = 'TYGRYS' WHERE nr_bandy = 1;
@@ -304,7 +304,7 @@ UPDATE bandy SET szef_bandy = 'TYGRYS' WHERE nr_bandy = 1;
 
 ### 2.4 UPDATE … FROM JOIN
 
-Update using values from a joined table.
+Aktualizacja wartościami z dołączonej tabeli.
 
 ```sql
 UPDATE K SET nr_bandy = B.nr_bandy FROM kocury K JOIN bandy B ON B.szef_bandy = K.szef;
@@ -312,7 +312,7 @@ UPDATE K SET nr_bandy = B.nr_bandy FROM kocury K JOIN bandy B ON B.szef_bandy = 
 
 ### 2.5 DELETE
 
-Removes matching rows.
+Usuwa pasujące wiersze.
 
 ```sql
 DELETE FROM wrogowie_kocurow WHERE imie_wroga = 'KAZIO';
@@ -320,7 +320,7 @@ DELETE FROM wrogowie_kocurow WHERE imie_wroga = 'KAZIO';
 
 ### 2.6 OUTPUT
 
-Returns the changed rows (`inserted` = new values, `deleted` = old).
+Zwraca zmienione wiersze (`inserted` = nowe wartości, `deleted` = stare).
 
 ```sql
 UPDATE kocury SET przydzial_myszy += 1 OUTPUT deleted.przydzial_myszy, inserted.przydzial_myszy WHERE pseudo = 'ZERO';
@@ -328,33 +328,33 @@ UPDATE kocury SET przydzial_myszy += 1 OUTPUT deleted.przydzial_myszy, inserted.
 
 ### 2.7 BEGIN TRAN / COMMIT / ROLLBACK
 
-Statements auto-commit; `BEGIN TRAN` starts a transaction you can undo.
+Instrukcje zatwierdzają się automatycznie; `BEGIN TRAN` zaczyna transakcję, którą można wycofać.
 
 ```sql
 BEGIN TRAN; DELETE FROM wrogowie_kocurow; ROLLBACK;
 ```
 
-## 3. SELECT basics
+## 3. Podstawy SELECT
 
 ### 3.1 SELECT … FROM
 
-Picks columns from a table.
+Wybiera kolumny z tabeli.
 
 ```sql
 SELECT imie, funkcja FROM kocury;
 ```
 
-### 3.2 Column alias
+### 3.2 Alias kolumny
 
-Double quotes or square brackets keep spaces.
+Podwójne cudzysłowy albo nawiasy kwadratowe zachowują spacje.
 
 ```sql
 SELECT przydzial_myszy AS "Zjada", myszy_extra AS [Myszy extra] FROM kocury;
 ```
 
-### 3.3 Table alias
+### 3.3 Alias tabeli
 
-`AS` is optional.
+`AS` jest opcjonalne.
 
 ```sql
 SELECT K.imie FROM kocury AS K;
@@ -362,7 +362,7 @@ SELECT K.imie FROM kocury AS K;
 
 ### 3.4 DISTINCT
 
-Removes duplicate rows.
+Usuwa powtarzające się wiersze.
 
 ```sql
 SELECT DISTINCT funkcja FROM kocury;
@@ -370,7 +370,7 @@ SELECT DISTINCT funkcja FROM kocury;
 
 ### 3.5 WHERE
 
-Filters rows.
+Filtruje wiersze.
 
 ```sql
 SELECT imie FROM kocury WHERE plec = 'D' AND przydzial_myszy >= 55;
@@ -378,7 +378,7 @@ SELECT imie FROM kocury WHERE plec = 'D' AND przydzial_myszy >= 55;
 
 ### 3.6 BETWEEN
 
-Range check, both ends inclusive.
+Sprawdzenie zakresu, oba końce włącznie.
 
 ```sql
 SELECT imie FROM kocury WHERE w_stadku_od BETWEEN '2005-09-01' AND '2007-07-31';
@@ -386,7 +386,7 @@ SELECT imie FROM kocury WHERE w_stadku_od BETWEEN '2005-09-01' AND '2007-07-31';
 
 ### 3.7 IN
 
-Matches any value from a list.
+Pasuje do dowolnej wartości z listy.
 
 ```sql
 SELECT imie FROM kocury WHERE funkcja IN ('MILUSIA', 'KOT');
@@ -394,7 +394,7 @@ SELECT imie FROM kocury WHERE funkcja IN ('MILUSIA', 'KOT');
 
 ### 3.8 LIKE
 
-Pattern match; case-insensitive with the default collation, `[ ]` matches a set of chars.
+Dopasowanie wzorca; przy domyślnym collation nie rozróżnia wielkości liter, `[ ]` pasuje do zbioru znaków.
 
 ```sql
 SELECT pseudo FROM kocury WHERE pseudo LIKE '%a%' AND pseudo LIKE '[L-T]%';
@@ -402,7 +402,7 @@ SELECT pseudo FROM kocury WHERE pseudo LIKE '%a%' AND pseudo LIKE '[L-T]%';
 
 ### 3.9 IS NULL
 
-The only correct way to test for `NULL`.
+Jedyny poprawny sposób sprawdzenia `NULL`.
 
 ```sql
 SELECT imie_wroga FROM wrogowie WHERE lapowka IS NULL;
@@ -410,7 +410,7 @@ SELECT imie_wroga FROM wrogowie WHERE lapowka IS NULL;
 
 ### 3.10 ORDER BY
 
-Sorts the result; `NULL`s come first in `ASC`.
+Sortuje wynik; `NULL`-e są na początku przy `ASC`.
 
 ```sql
 SELECT pseudo, w_stadku_od FROM kocury ORDER BY w_stadku_od DESC, pseudo;
@@ -418,7 +418,7 @@ SELECT pseudo, w_stadku_od FROM kocury ORDER BY w_stadku_od DESC, pseudo;
 
 ### 3.11 TOP
 
-First n rows; `WITH TIES` also keeps rows equal to the last one.
+Pierwsze n wierszy; `WITH TIES` zostawia też wiersze równe ostatniemu.
 
 ```sql
 SELECT TOP 3 WITH TIES pseudo FROM kocury ORDER BY przydzial_myszy DESC;
@@ -426,25 +426,25 @@ SELECT TOP 3 WITH TIES pseudo FROM kocury ORDER BY przydzial_myszy DESC;
 
 ### 3.12 OFFSET … FETCH
 
-Skips and takes rows; requires `ORDER BY`.
+Pomija i pobiera wiersze; wymaga `ORDER BY`.
 
 ```sql
 SELECT pseudo FROM kocury ORDER BY przydzial_myszy DESC OFFSET 1 ROWS FETCH NEXT 3 ROWS ONLY;
 ```
 
-### 3.13 SELECT without FROM
+### 3.13 SELECT bez FROM
 
-No dummy table needed.
+Nie potrzeba sztucznej tabeli.
 
 ```sql
 SELECT GETDATE();
 ```
 
-## 4. Strings
+## 4. Napisy
 
 ### 4.1 +
 
-Concatenation; numbers and dates must be cast, and `NULL` makes the result `NULL`.
+Łączenie napisów; liczby i daty trzeba rzutować, a `NULL` daje `NULL` w wyniku.
 
 ```sql
 SELECT imie + ' zwany ' + pseudo + ' z bandy ' + CAST(nr_bandy AS VARCHAR) FROM kocury;
@@ -452,7 +452,7 @@ SELECT imie + ' zwany ' + pseudo + ' z bandy ' + CAST(nr_bandy AS VARCHAR) FROM 
 
 ### 4.2 CONCAT
 
-Concatenates any number of arguments, converts types and skips `NULL`s.
+Łączy dowolną liczbę argumentów, konwertuje typy i pomija `NULL`-e.
 
 ```sql
 SELECT CONCAT(imie, ' zwany ', pseudo, ' od ', w_stadku_od) FROM kocury;
@@ -460,7 +460,7 @@ SELECT CONCAT(imie, ' zwany ', pseudo, ' od ', w_stadku_od) FROM kocury;
 
 ### 4.3 CONCAT_WS
 
-Concatenates with a separator between values.
+Łączy wartości z separatorem między nimi.
 
 ```sql
 SELECT CONCAT_WS(', ', imie, pseudo, funkcja) FROM kocury;
@@ -468,7 +468,7 @@ SELECT CONCAT_WS(', ', imie, pseudo, funkcja) FROM kocury;
 
 ### 4.4 LOWER / UPPER
 
-Changes letter case (no `INITCAP`).
+Zmienia wielkość liter (nie ma `INITCAP`).
 
 ```sql
 SELECT LOWER(pseudo), UPPER(imie) FROM kocury;
@@ -476,7 +476,7 @@ SELECT LOWER(pseudo), UPPER(imie) FROM kocury;
 
 ### 4.5 LEN
 
-Number of characters, ignoring trailing spaces.
+Liczba znaków, bez spacji na końcu.
 
 ```sql
 SELECT pseudo FROM kocury WHERE LEN(pseudo) > 4;
@@ -484,7 +484,7 @@ SELECT pseudo FROM kocury WHERE LEN(pseudo) > 4;
 
 ### 4.6 CHARINDEX
 
-Position of a substring (1-based), 0 when not found; the searched text goes first.
+Pozycja podnapisu (od 1), 0 gdy nie znaleziono; szukany tekst idzie pierwszy.
 
 ```sql
 SELECT pseudo, CHARINDEX('A', pseudo) FROM kocury;
@@ -492,7 +492,7 @@ SELECT pseudo, CHARINDEX('A', pseudo) FROM kocury;
 
 ### 4.7 SUBSTRING
 
-Substring from a position; the length is required.
+Podnapis od pozycji; długość jest wymagana.
 
 ```sql
 SELECT SUBSTRING(pseudo, 2, 3) FROM kocury;
@@ -500,7 +500,7 @@ SELECT SUBSTRING(pseudo, 2, 3) FROM kocury;
 
 ### 4.8 LEFT / RIGHT
 
-First / last n characters.
+Pierwsze / ostatnie n znaków.
 
 ```sql
 SELECT LEFT(pseudo, 2), RIGHT(pseudo, 2) FROM kocury;
@@ -508,7 +508,7 @@ SELECT LEFT(pseudo, 2), RIGHT(pseudo, 2) FROM kocury;
 
 ### 4.9 REPLICATE
 
-Repeats a string; used for padding since there is no `LPAD`.
+Powtarza napis; używane do dopełniania, bo nie ma `LPAD`.
 
 ```sql
 SELECT RIGHT(REPLICATE('*', 10) + pseudo, 10) FROM kocury;
@@ -516,7 +516,7 @@ SELECT RIGHT(REPLICATE('*', 10) + pseudo, 10) FROM kocury;
 
 ### 4.10 REPLACE
 
-Replaces all occurrences.
+Zamienia wszystkie wystąpienia.
 
 ```sql
 SELECT REPLACE(pseudo, 'A', '#') FROM kocury;
@@ -524,7 +524,7 @@ SELECT REPLACE(pseudo, 'A', '#') FROM kocury;
 
 ### 4.11 STUFF
 
-Replaces characters at a given position (like Postgres `OVERLAY`).
+Zamienia znaki na podanej pozycji (jak `OVERLAY` w Postgresie).
 
 ```sql
 SELECT STUFF(pseudo, CHARINDEX('A', pseudo), 1, '#') FROM kocury WHERE pseudo LIKE '%A%';
@@ -532,25 +532,25 @@ SELECT STUFF(pseudo, CHARINDEX('A', pseudo), 1, '#') FROM kocury WHERE pseudo LI
 
 ### 4.12 TRIM / LTRIM / RTRIM
 
-Removes surrounding spaces.
+Usuwa spacje z obu stron.
 
 ```sql
 SELECT TRIM('  TYGRYS  ');
 ```
 
-### 4.13 Empty string
+### 4.13 Pusty napis
 
-`''` is a normal value, not `NULL`.
+`''` to zwykła wartość, nie `NULL`.
 
 ```sql
 SELECT CASE WHEN '' IS NULL THEN 'NULL' ELSE 'nie NULL' END;
 ```
 
-## 5. NULL handling
+## 5. Obsługa NULL
 
 ### 5.1 ISNULL
 
-Replaces `NULL` with a value (2 arguments).
+Zamienia `NULL` na wartość (2 argumenty).
 
 ```sql
 SELECT przydzial_myszy + ISNULL(myszy_extra, 0) FROM kocury;
@@ -558,7 +558,7 @@ SELECT przydzial_myszy + ISNULL(myszy_extra, 0) FROM kocury;
 
 ### 5.2 COALESCE
 
-First non-`NULL` argument.
+Pierwszy argument różny od `NULL`.
 
 ```sql
 SELECT COALESCE(myszy_extra, przydzial_myszy, 0) FROM kocury;
@@ -566,41 +566,41 @@ SELECT COALESCE(myszy_extra, przydzial_myszy, 0) FROM kocury;
 
 ### 5.3 NULLIF
 
-Returns `NULL` when both arguments are equal.
+Zwraca `NULL`, gdy oba argumenty są równe.
 
 ```sql
 SELECT NULLIF(przydzial_myszy, 0) FROM kocury;
 ```
 
-### 5.4 Comparing with NULL
+### 5.4 Porównywanie z NULL
 
-`= NULL` is never true; aggregates skip `NULL`s.
+`= NULL` nigdy nie jest prawdą; funkcje agregujące pomijają `NULL`-e.
 
 ```sql
-SELECT imie FROM kocury WHERE myszy_extra = NULL;   -- always 0 rows
+SELECT imie FROM kocury WHERE myszy_extra = NULL;   -- zawsze 0 wierszy
 ```
 
 ### 5.5 IS DISTINCT FROM
 
-`NULL`-safe "not equal" (since 2022).
+„Różne” bezpieczne dla `NULL` (od 2022).
 
 ```sql
 SELECT imie FROM kocury WHERE myszy_extra IS DISTINCT FROM 0;
 ```
 
-## 6. Numbers
+## 6. Liczby
 
 ### 6.1 ROUND
 
-Rounds to n decimal places; the 2nd argument is required.
+Zaokrągla do n miejsc po przecinku; drugi argument jest wymagany.
 
 ```sql
 SELECT ROUND(przydzial_myszy / 1.1, 0), ROUND(przydzial_myszy / 1.1, 1) FROM kocury;
 ```
 
-### 6.2 Truncating
+### 6.2 Obcinanie
 
-`ROUND(x, n, 1)` cuts off instead of rounding.
+`ROUND(x, n, 1)` obcina zamiast zaokrąglać.
 
 ```sql
 SELECT ROUND(przydzial_myszy / 7.0, 0, 1) FROM kocury;
@@ -608,7 +608,7 @@ SELECT ROUND(przydzial_myszy / 7.0, 0, 1) FROM kocury;
 
 ### 6.3 %
 
-Remainder of division.
+Reszta z dzielenia.
 
 ```sql
 SELECT pseudo FROM kocury WHERE przydzial_myszy % 2 = 0;
@@ -616,25 +616,25 @@ SELECT pseudo FROM kocury WHERE przydzial_myszy % 2 = 0;
 
 ### 6.4 CEILING / FLOOR
 
-Rounds up / down to an integer.
+Zaokrągla w górę / w dół do liczby całkowitej.
 
 ```sql
 SELECT CEILING(przydzial_myszy / 7.0), FLOOR(przydzial_myszy / 7.0) FROM kocury;
 ```
 
-### 6.5 Integer division
+### 6.5 Dzielenie całkowite
 
-Integer / integer drops the decimals: `5 / 2 = 2`.
+Liczba całkowita / całkowita obcina część ułamkową: `5 / 2 = 2`.
 
 ```sql
 SELECT 5 / 2, 5.0 / 2, CAST(5 AS NUMERIC(5, 2)) / 2;
 ```
 
-## 7. Dates
+## 7. Daty
 
 ### 7.1 GETDATE / SYSDATETIME
 
-Current date and time; cast to `DATE` for just the day.
+Bieżąca data i czas; rzutuj na `DATE`, żeby dostać sam dzień.
 
 ```sql
 SELECT GETDATE(), SYSDATETIME(), CAST(GETDATE() AS DATE);
@@ -642,7 +642,7 @@ SELECT GETDATE(), SYSDATETIME(), CAST(GETDATE() AS DATE);
 
 ### 7.2 YEAR / MONTH / DAY
 
-Gets a date part as a number.
+Wyciąga część daty jako liczbę.
 
 ```sql
 SELECT imie_wroga FROM wrogowie_kocurow WHERE YEAR(data_incydentu) = 2009;
@@ -650,7 +650,7 @@ SELECT imie_wroga FROM wrogowie_kocurow WHERE YEAR(data_incydentu) = 2009;
 
 ### 7.3 DATEPART
 
-Any date part as a number; `WEEKDAY` depends on `@@DATEFIRST`.
+Dowolna część daty jako liczba; `WEEKDAY` zależy od `@@DATEFIRST`.
 
 ```sql
 SELECT DATEPART(QUARTER, w_stadku_od), DATEPART(WEEKDAY, w_stadku_od) FROM kocury;
@@ -658,7 +658,7 @@ SELECT DATEPART(QUARTER, w_stadku_od), DATEPART(WEEKDAY, w_stadku_od) FROM kocur
 
 ### 7.4 DATEADD
 
-Adds days, months, years… (no `date + n`).
+Dodaje dni, miesiące, lata… (nie ma `data + n`).
 
 ```sql
 SELECT DATEADD(MONTH, 6, w_stadku_od) FROM kocury;
@@ -666,7 +666,7 @@ SELECT DATEADD(MONTH, 6, w_stadku_od) FROM kocury;
 
 ### 7.5 DATEDIFF
 
-Counts unit boundaries crossed, not full units.
+Liczy przekroczone granice jednostek, a nie pełne jednostki.
 
 ```sql
 SELECT pseudo FROM kocury WHERE w_stadku_od <= DATEADD(YEAR, -15, GETDATE());
@@ -674,7 +674,7 @@ SELECT pseudo FROM kocury WHERE w_stadku_od <= DATEADD(YEAR, -15, GETDATE());
 
 ### 7.6 EOMONTH
 
-Last day of the month, optionally n months ahead.
+Ostatni dzień miesiąca, opcjonalnie n miesięcy do przodu.
 
 ```sql
 SELECT EOMONTH(GETDATE()), EOMONTH(GETDATE(), 1);
@@ -682,7 +682,7 @@ SELECT EOMONTH(GETDATE()), EOMONTH(GETDATE(), 1);
 
 ### 7.7 DATETRUNC
 
-Start of the month/year/… (since 2022).
+Początek miesiąca/roku/… (od 2022).
 
 ```sql
 SELECT DATETRUNC(MONTH, GETDATE());
@@ -690,7 +690,7 @@ SELECT DATETRUNC(MONTH, GETDATE());
 
 ### 7.8 DATEFROMPARTS
 
-Builds a date from numbers.
+Tworzy datę z liczb.
 
 ```sql
 SELECT DATEFROMPARTS(2009, 1, 7);
@@ -698,25 +698,25 @@ SELECT DATEFROMPARTS(2009, 1, 7);
 
 ### 7.9 DATENAME
 
-Name of a date part, in the session language.
+Nazwa części daty, w języku sesji.
 
 ```sql
 SELECT DATENAME(MONTH, w_stadku_od), DATENAME(WEEKDAY, w_stadku_od) FROM kocury;
 ```
 
-### 7.10 Last Wednesday of month
+### 7.10 Ostatnia środa miesiąca
 
-Last day minus the days back to Wednesday, independent of `@@DATEFIRST`.
+Ostatni dzień minus liczba dni wstecz do środy, niezależnie od `@@DATEFIRST`.
 
 ```sql
 SELECT DATEADD(DAY, -((DATEPART(WEEKDAY, EOMONTH(GETDATE())) + @@DATEFIRST + 3) % 7), EOMONTH(GETDATE()));
 ```
 
-## 8. Conversions
+## 8. Konwersje
 
 ### 8.1 CAST
 
-Standard type conversion.
+Standardowa konwersja typu.
 
 ```sql
 SELECT CAST(przydzial_myszy AS VARCHAR(10)) FROM kocury;
@@ -724,7 +724,7 @@ SELECT CAST(przydzial_myszy AS VARCHAR(10)) FROM kocury;
 
 ### 8.2 CONVERT
 
-Conversion with a style code (`23` = `yyyy-mm-dd`).
+Konwersja z kodem stylu (`23` = `yyyy-mm-dd`).
 
 ```sql
 SELECT CONVERT(VARCHAR(10), w_stadku_od, 23) FROM kocury;
@@ -732,7 +732,7 @@ SELECT CONVERT(VARCHAR(10), w_stadku_od, 23) FROM kocury;
 
 ### 8.3 FORMAT
 
-.NET-style formatting of dates and numbers.
+Formatowanie dat i liczb w stylu .NET.
 
 ```sql
 SELECT FORMAT(w_stadku_od, 'yyyy-MM-dd'), FORMAT(w_stadku_od, 'MMMM') FROM kocury;
@@ -740,25 +740,25 @@ SELECT FORMAT(w_stadku_od, 'yyyy-MM-dd'), FORMAT(w_stadku_od, 'MMMM') FROM kocur
 
 ### 8.4 TRY_CAST
 
-Returns `NULL` instead of an error when conversion fails.
+Zwraca `NULL` zamiast błędu, gdy konwersja się nie uda.
 
 ```sql
 SELECT TRY_CAST('abc' AS INT);
 ```
 
-## 9. Conditionals
+## 9. Warunki
 
 ### 9.1 CASE WHEN
 
-Conditions checked in order; all branches must return the same type.
+Warunki sprawdzane po kolei; wszystkie gałęzie muszą zwracać ten sam typ.
 
 ```sql
 SELECT CASE WHEN 12 * przydzial_myszy > 660 THEN CAST(12 * przydzial_myszy AS VARCHAR) ELSE 'Ponizej 660' END FROM kocury;
 ```
 
-### 9.2 CASE value
+### 9.2 CASE wartość
 
-Compares one expression against values.
+Porównuje jedno wyrażenie z wartościami.
 
 ```sql
 SELECT CASE plec WHEN 'M' THEN 'Kocur' ELSE 'Kotka' END FROM kocury;
@@ -766,7 +766,7 @@ SELECT CASE plec WHEN 'M' THEN 'Kocur' ELSE 'Kotka' END FROM kocury;
 
 ### 9.3 IIF
 
-Short if-else.
+Krótkie if-else.
 
 ```sql
 SELECT IIF(plec = 'M', 'Kocur', 'Kotka') FROM kocury;
@@ -774,17 +774,17 @@ SELECT IIF(plec = 'M', 'Kocur', 'Kotka') FROM kocury;
 
 ### 9.4 GREATEST / LEAST
 
-Largest / smallest of the arguments (since 2022).
+Największy / najmniejszy z argumentów (od 2022).
 
 ```sql
 SELECT pseudo, GREATEST(przydzial_myszy, ISNULL(myszy_extra, 0)) FROM kocury;
 ```
 
-## 10. Grouping
+## 10. Grupowanie
 
 ### 10.1 COUNT
 
-`COUNT(*)` counts rows, `COUNT(col)` non-`NULL`s, `COUNT(DISTINCT col)` unique values.
+`COUNT(*)` liczy wiersze, `COUNT(kol)` wartości różne od `NULL`, `COUNT(DISTINCT kol)` unikalne wartości.
 
 ```sql
 SELECT COUNT(*), COUNT(myszy_extra), COUNT(DISTINCT nr_bandy) FROM kocury;
@@ -792,7 +792,7 @@ SELECT COUNT(*), COUNT(myszy_extra), COUNT(DISTINCT nr_bandy) FROM kocury;
 
 ### 10.2 SUM / AVG / MIN / MAX
 
-Aggregates; `AVG` of an `INT` column returns an `INT`.
+Funkcje agregujące; `AVG` z kolumny `INT` zwraca `INT`.
 
 ```sql
 SELECT SUM(przydzial_myszy), AVG(przydzial_myszy), MIN(w_stadku_od), MAX(przydzial_myszy) FROM kocury;
@@ -800,7 +800,7 @@ SELECT SUM(przydzial_myszy), AVG(przydzial_myszy), MIN(w_stadku_od), MAX(przydzi
 
 ### 10.3 GROUP BY
 
-One row per group; every non-aggregated column must be listed, aliases not allowed.
+Jeden wiersz na grupę; każdą niezagregowaną kolumnę trzeba wypisać, aliasy niedozwolone.
 
 ```sql
 SELECT B.nr_bandy, B.nazwa, COUNT(*) FROM bandy B JOIN kocury K ON K.nr_bandy = B.nr_bandy GROUP BY B.nr_bandy, B.nazwa;
@@ -808,15 +808,15 @@ SELECT B.nr_bandy, B.nazwa, COUNT(*) FROM bandy B JOIN kocury K ON K.nr_bandy = 
 
 ### 10.4 HAVING
 
-Filters groups (`WHERE` filters rows before grouping).
+Filtruje grupy (`WHERE` filtruje wiersze przed grupowaniem).
 
 ```sql
 SELECT pseudo FROM wrogowie_kocurow GROUP BY pseudo HAVING COUNT(*) >= 2;
 ```
 
-### 10.5 Conditional COUNT
+### 10.5 Warunkowy COUNT
 
-`COUNT(CASE …)` counts only rows matching the condition.
+`COUNT(CASE …)` liczy tylko wiersze spełniające warunek.
 
 ```sql
 SELECT pseudo FROM wrogowie_kocurow WK JOIN wrogowie W ON W.imie_wroga = WK.imie_wroga GROUP BY pseudo HAVING COUNT(CASE WHEN W.gatunek = 'PIES' THEN 1 END) > 0;
@@ -824,15 +824,15 @@ SELECT pseudo FROM wrogowie_kocurow WK JOIN wrogowie W ON W.imie_wroga = WK.imie
 
 ### 10.6 STRING_AGG
 
-Joins a group's values into one string.
+Łączy wartości z grupy w jeden napis.
 
 ```sql
 SELECT nr_bandy, STRING_AGG(pseudo, ', ') WITHIN GROUP (ORDER BY pseudo) FROM kocury GROUP BY nr_bandy;
 ```
 
-### 10.7 Group by expression
+### 10.7 Grupowanie po wyrażeniu
 
-The full expression must be repeated in `GROUP BY`.
+Całe wyrażenie trzeba powtórzyć w `GROUP BY`.
 
 ```sql
 SELECT MONTH(w_stadku_od), COUNT(*) FROM kocury GROUP BY MONTH(w_stadku_od);
@@ -840,17 +840,17 @@ SELECT MONTH(w_stadku_od), COUNT(*) FROM kocury GROUP BY MONTH(w_stadku_od);
 
 ### 10.8 ROLLUP
 
-Adds a total row (`NULL` in the grouped column).
+Dodaje wiersz z sumą (`NULL` w grupowanej kolumnie).
 
 ```sql
 SELECT nr_bandy, SUM(przydzial_myszy) FROM kocury GROUP BY ROLLUP (nr_bandy);
 ```
 
-## 11. Joins
+## 11. Złączenia
 
 ### 11.1 JOIN
 
-Only rows with a match on both sides.
+Tylko wiersze z dopasowaniem po obu stronach.
 
 ```sql
 SELECT K.pseudo, B.nazwa FROM kocury K JOIN bandy B ON B.nr_bandy = K.nr_bandy;
@@ -858,7 +858,7 @@ SELECT K.pseudo, B.nazwa FROM kocury K JOIN bandy B ON B.nr_bandy = K.nr_bandy;
 
 ### 11.2 LEFT JOIN
 
-All rows from the left side, `NULL`s where nothing matches.
+Wszystkie wiersze z lewej strony, `NULL`-e tam, gdzie nic nie pasuje.
 
 ```sql
 SELECT B.nazwa, K.pseudo FROM bandy B LEFT JOIN kocury K ON K.nr_bandy = B.nr_bandy;
@@ -866,7 +866,7 @@ SELECT B.nazwa, K.pseudo FROM bandy B LEFT JOIN kocury K ON K.nr_bandy = B.nr_ba
 
 ### 11.3 RIGHT JOIN
 
-All rows from the right side.
+Wszystkie wiersze z prawej strony.
 
 ```sql
 SELECT K.pseudo, B.nazwa FROM kocury K RIGHT JOIN bandy B ON B.nr_bandy = K.nr_bandy;
@@ -874,7 +874,7 @@ SELECT K.pseudo, B.nazwa FROM kocury K RIGHT JOIN bandy B ON B.nr_bandy = K.nr_b
 
 ### 11.4 FULL JOIN
 
-All rows from both sides.
+Wszystkie wiersze z obu stron.
 
 ```sql
 SELECT S.pseudo, P.pseudo FROM kocury S FULL JOIN kocury P ON P.szef = S.pseudo;
@@ -882,47 +882,47 @@ SELECT S.pseudo, P.pseudo FROM kocury S FULL JOIN kocury P ON P.szef = S.pseudo;
 
 ### 11.5 CROSS JOIN
 
-Every row combined with every row.
+Każdy wiersz z każdym wierszem.
 
 ```sql
 SELECT K.pseudo, F.funkcja FROM kocury K CROSS JOIN funkcje F;
 ```
 
-### 11.6 No USING / NATURAL
+### 11.6 Brak USING / NATURAL
 
-Always write the join condition with `ON`.
+Warunek złączenia zawsze piszemy przez `ON`.
 
 ```sql
 SELECT K.pseudo, B.nazwa FROM kocury K JOIN bandy B ON B.nr_bandy = K.nr_bandy;
 ```
 
-### 11.7 Self join
+### 11.7 Samozłączenie
 
-Joins a table with itself (cat and its boss).
+Złączenie tabeli z samą sobą (kot i jego szef).
 
 ```sql
 SELECT K.imie, S.imie AS szef FROM kocury K LEFT JOIN kocury S ON S.pseudo = K.szef;
 ```
 
-### 11.8 Join chain
+### 11.8 Łańcuch złączeń
 
-Each extra self join goes one level higher.
+Każde kolejne samozłączenie to poziom wyżej.
 
 ```sql
 SELECT K.imie, S1.imie, S2.imie FROM kocury K LEFT JOIN kocury S1 ON S1.pseudo = K.szef LEFT JOIN kocury S2 ON S2.pseudo = S1.szef;
 ```
 
-### 11.9 Join to a fixed row
+### 11.9 Złączenie z konkretnym wierszem
 
-Joins one specific row to compare every row against it.
+Dołącza jeden konkretny wiersz, żeby porównać z nim każdy wiersz.
 
 ```sql
 SELECT K.imie FROM kocury K JOIN kocury J ON J.imie = 'JACEK' WHERE K.w_stadku_od < J.w_stadku_od;
 ```
 
-### 11.10 Anti-join
+### 11.10 Antyzłączenie
 
-`LEFT JOIN` + `IS NULL` finds rows with no match.
+`LEFT JOIN` + `IS NULL` znajduje wiersze bez dopasowania.
 
 ```sql
 SELECT B.nazwa FROM bandy B LEFT JOIN kocury K ON K.nr_bandy = B.nr_bandy WHERE K.pseudo IS NULL;
@@ -930,25 +930,25 @@ SELECT B.nazwa FROM bandy B LEFT JOIN kocury K ON K.nr_bandy = B.nr_bandy WHERE 
 
 ### 11.11 CROSS / OUTER APPLY
 
-Subquery run per row that can use its columns (`OUTER` keeps rows without a match).
+Podzapytanie wykonywane dla każdego wiersza, może używać jego kolumn (`OUTER` zostawia wiersze bez dopasowania).
 
 ```sql
 SELECT K.pseudo, O.imie_wroga FROM kocury K OUTER APPLY (SELECT TOP 1 imie_wroga FROM wrogowie_kocurow WK WHERE WK.pseudo = K.pseudo ORDER BY data_incydentu DESC) O;
 ```
 
-### 11.12 LEFT JOIN + WHERE trap
+### 11.12 Pułapka LEFT JOIN + WHERE
 
-A `WHERE` condition on the right table turns it into an inner join; put it in `ON`.
+Warunek w `WHERE` na prawej tabeli zamienia złączenie w wewnętrzne; daj go do `ON`.
 
 ```sql
 SELECT B.nazwa, K.pseudo FROM bandy B LEFT JOIN kocury K ON K.nr_bandy = B.nr_bandy AND K.plec = 'M';
 ```
 
-## 12. Set operators
+## 12. Operatory zbiorowe
 
 ### 12.1 UNION / UNION ALL
 
-Stacks results; `UNION` removes duplicates, `UNION ALL` doesn't.
+Skleja wyniki; `UNION` usuwa duplikaty, `UNION ALL` nie.
 
 ```sql
 SELECT pseudo FROM kocury WHERE plec = 'M' UNION ALL SELECT pseudo FROM kocury WHERE przydzial_myszy > 60;
@@ -956,7 +956,7 @@ SELECT pseudo FROM kocury WHERE plec = 'M' UNION ALL SELECT pseudo FROM kocury W
 
 ### 12.2 INTERSECT
 
-Rows present in both results.
+Wiersze obecne w obu wynikach.
 
 ```sql
 SELECT pseudo FROM kocury WHERE plec = 'M' INTERSECT SELECT pseudo FROM wrogowie_kocurow;
@@ -964,49 +964,49 @@ SELECT pseudo FROM kocury WHERE plec = 'M' INTERSECT SELECT pseudo FROM wrogowie
 
 ### 12.3 EXCEPT
 
-Rows from the first result but not the second (`MINUS` in Oracle).
+Wiersze z pierwszego wyniku, których nie ma w drugim (`MINUS` w Oracle).
 
 ```sql
 SELECT nr_bandy FROM bandy EXCEPT SELECT nr_bandy FROM kocury;
 ```
 
-### 12.4 ORDER BY in set operations
+### 12.4 ORDER BY w operacjach zbiorowych
 
-Written once at the end, using names from the first `SELECT`.
+Piszemy raz na końcu, używając nazw z pierwszego `SELECT`.
 
 ```sql
 SELECT pseudo, 'Prominent' AS typ FROM kocury UNION ALL SELECT pseudo, 'Szarak' FROM kocury ORDER BY typ, pseudo;
 ```
 
-## 13. Subqueries
+## 13. Podzapytania
 
-### 13.1 Scalar subquery
+### 13.1 Podzapytanie skalarne
 
-Returns one value, usable like a constant.
+Zwraca jedną wartość, można jej używać jak stałej.
 
 ```sql
 SELECT pseudo FROM kocury WHERE przydzial_myszy > (SELECT AVG(przydzial_myszy) FROM kocury);
 ```
 
-### 13.2 Subquery in SELECT / HAVING
+### 13.2 Podzapytanie w SELECT / HAVING
 
-Same value repeated per row or compared per group.
+Ta sama wartość powtórzona w każdym wierszu albo porównywana dla każdej grupy.
 
 ```sql
 SELECT nr_bandy, AVG(przydzial_myszy) FROM kocury GROUP BY nr_bandy HAVING AVG(przydzial_myszy) > (SELECT AVG(przydzial_myszy) FROM kocury);
 ```
 
-### 13.3 IN (subquery)
+### 13.3 IN (podzapytanie)
 
-Matches any value the subquery returns.
+Pasuje do dowolnej wartości zwróconej przez podzapytanie.
 
 ```sql
 SELECT imie FROM kocury WHERE nr_bandy IN (SELECT nr_bandy FROM bandy WHERE teren IN ('SAD', 'POLE'));
 ```
 
-### 13.4 NOT IN + NULL trap
+### 13.4 Pułapka NOT IN + NULL
 
-One `NULL` in the subquery makes the result empty.
+Jeden `NULL` w podzapytaniu daje pusty wynik.
 
 ```sql
 SELECT pseudo FROM kocury WHERE pseudo NOT IN (SELECT szef FROM kocury WHERE szef IS NOT NULL);
@@ -1014,7 +1014,7 @@ SELECT pseudo FROM kocury WHERE pseudo NOT IN (SELECT szef FROM kocury WHERE sze
 
 ### 13.5 EXISTS / NOT EXISTS
 
-Checks if a correlated subquery returns any row; immune to `NULL`s.
+Sprawdza, czy podzapytanie skorelowane zwraca jakikolwiek wiersz; odporne na `NULL`-e.
 
 ```sql
 SELECT K.pseudo FROM kocury K WHERE NOT EXISTS (SELECT 1 FROM kocury P WHERE P.szef = K.pseudo);
@@ -1022,7 +1022,7 @@ SELECT K.pseudo FROM kocury K WHERE NOT EXISTS (SELECT 1 FROM kocury P WHERE P.s
 
 ### 13.6 ALL
 
-True if the condition holds for every value (empty set → true).
+Prawda, jeśli warunek zachodzi dla każdej wartości (pusty zbiór → prawda).
 
 ```sql
 SELECT imie FROM kocury WHERE przydzial_myszy >= ALL (SELECT 3 * przydzial_myszy FROM kocury WHERE funkcja = 'MILUSIA');
@@ -1030,15 +1030,15 @@ SELECT imie FROM kocury WHERE przydzial_myszy >= ALL (SELECT 3 * przydzial_myszy
 
 ### 13.7 ANY
 
-True if the condition holds for at least one value (empty set → false).
+Prawda, jeśli warunek zachodzi dla co najmniej jednej wartości (pusty zbiór → fałsz).
 
 ```sql
 SELECT imie FROM kocury WHERE przydzial_myszy > ANY (SELECT przydzial_myszy FROM kocury WHERE funkcja = 'KOT');
 ```
 
-### 13.8 Subquery in FROM
+### 13.8 Podzapytanie w FROM
 
-Uses a query result as a table; the alias is required and `ORDER BY` inside needs `TOP`.
+Używa wyniku zapytania jak tabeli; alias jest wymagany, a `ORDER BY` w środku wymaga `TOP`.
 
 ```sql
 SELECT * FROM (SELECT nr_bandy, SUM(przydzial_myszy) AS suma FROM kocury GROUP BY nr_bandy) AS sumy WHERE suma > 200;
@@ -1046,57 +1046,57 @@ SELECT * FROM (SELECT nr_bandy, SUM(przydzial_myszy) AS suma FROM kocury GROUP B
 
 ### 13.9 WITH (CTE)
 
-Names a subquery so it can be reused; end the previous statement with `;`.
+Nazywa podzapytanie, żeby można było go użyć ponownie; poprzednią instrukcję zakończ `;`.
 
 ```sql
 WITH sumy AS (SELECT nr_bandy, SUM(przydzial_myszy) AS suma FROM kocury GROUP BY nr_bandy) SELECT * FROM sumy WHERE suma > 200;
 ```
 
-## 14. Hierarchical queries
+## 14. Zapytania hierarchiczne
 
-### 14.1 Recursive CTE
+### 14.1 Rekurencyjne CTE
 
-Anchor rows `UNION ALL` a step that joins back to the CTE (no `RECURSIVE` keyword).
+Wiersze startowe `UNION ALL` krok, który łączy się z powrotem z CTE (bez słowa `RECURSIVE`).
 
 ```sql
 WITH drzewo AS (SELECT pseudo FROM kocury WHERE szef IS NULL UNION ALL SELECT K.pseudo FROM kocury K JOIN drzewo D ON K.szef = D.pseudo) SELECT * FROM drzewo;
 ```
 
-### 14.2 Level
+### 14.2 Poziom
 
-Carry a counter column, increased in each step.
+Przenoś kolumnę-licznik, zwiększaną w każdym kroku.
 
 ```sql
 WITH drzewo AS (SELECT pseudo, 1 AS poziom FROM kocury WHERE funkcja = 'BANDZIOR' UNION ALL SELECT K.pseudo, D.poziom + 1 FROM kocury K JOIN drzewo D ON K.szef = D.pseudo) SELECT REPLICATE(' ', 4 * (poziom - 1)) + pseudo FROM drzewo;
 ```
 
-### 14.3 Upwards
+### 14.3 W górę drzewa
 
-Swap the join direction to walk from a cat to its bosses.
+Odwróć kierunek złączenia, żeby iść od kota do jego szefów.
 
 ```sql
 WITH szefowie AS (SELECT pseudo, szef FROM kocury WHERE pseudo = 'ZERO' UNION ALL SELECT K.pseudo, K.szef FROM kocury K JOIN szefowie S ON K.pseudo = S.szef) SELECT pseudo FROM szefowie;
 ```
 
-### 14.4 Path and root
+### 14.4 Ścieżka i korzeń
 
-Carry the root value and a path; both parts must have the exact same type, so cast.
+Przenoś wartość z korzenia i ścieżkę; obie części muszą mieć dokładnie ten sam typ, więc rzutuj.
 
 ```sql
 WITH sciezki AS (SELECT imie AS korzen, szef, CAST(imie AS VARCHAR(200)) AS sciezka FROM kocury WHERE funkcja = 'KOT' UNION ALL SELECT S.korzen, K.szef, CAST(S.sciezka + ' | ' + K.imie AS VARCHAR(200)) FROM sciezki S JOIN kocury K ON K.pseudo = S.szef) SELECT korzen, sciezka FROM sciezki WHERE szef IS NULL;
 ```
 
-### 14.5 Leaf check
+### 14.5 Sprawdzanie liścia
 
-A row is a leaf when nobody points to it.
+Wiersz jest liściem, gdy nikt na niego nie wskazuje.
 
 ```sql
 SELECT K.pseudo FROM kocury K WHERE NOT EXISTS (SELECT 1 FROM kocury P WHERE P.szef = K.pseudo);
 ```
 
-### 14.6 Tree order
+### 14.6 Kolejność drzewa
 
-Sort by the path built from the root down (Oracle's `ORDER SIBLINGS BY`).
+Sortuj po ścieżce budowanej od korzenia w dół (odpowiednik `ORDER SIBLINGS BY` z Oracle).
 
 ```sql
 WITH drzewo AS (SELECT pseudo, CAST(pseudo AS VARCHAR(200)) AS sciezka FROM kocury WHERE szef IS NULL UNION ALL SELECT K.pseudo, CAST(D.sciezka + '/' + K.pseudo AS VARCHAR(200)) FROM kocury K JOIN drzewo D ON K.szef = D.pseudo) SELECT pseudo FROM drzewo ORDER BY sciezka;
@@ -1104,7 +1104,7 @@ WITH drzewo AS (SELECT pseudo, CAST(pseudo AS VARCHAR(200)) AS sciezka FROM kocu
 
 ### 14.7 MAXRECURSION
 
-Recursion depth limit (default 100, 0 = none).
+Limit głębokości rekurencji (domyślnie 100, 0 = bez limitu).
 
 ```sql
 WITH liczby AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM liczby WHERE n < 500) SELECT n FROM liczby OPTION (MAXRECURSION 0);
@@ -1112,17 +1112,17 @@ WITH liczby AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM liczby WHERE n < 500) 
 
 ### 14.8 GENERATE_SERIES
 
-Generates numbers 1..n (since 2022).
+Generuje liczby 1..n (od 2022).
 
 ```sql
 SELECT value FROM GENERATE_SERIES(1, 12);
 ```
 
-## 15. Window functions (OVER)
+## 15. Funkcje okna (OVER)
 
 ### 15.1 OVER ()
 
-Aggregate over all rows without collapsing them.
+Agregat po wszystkich wierszach bez zwijania ich.
 
 ```sql
 SELECT pseudo, przydzial_myszy, SUM(przydzial_myszy) OVER () FROM kocury;
@@ -1130,7 +1130,7 @@ SELECT pseudo, przydzial_myszy, SUM(przydzial_myszy) OVER () FROM kocury;
 
 ### 15.2 PARTITION BY
 
-Aggregate per group, kept on every row.
+Agregat dla każdej grupy, widoczny w każdym wierszu.
 
 ```sql
 SELECT pseudo, ROUND(100.0 * przydzial_myszy / SUM(przydzial_myszy) OVER (PARTITION BY nr_bandy), 0) AS proc FROM kocury;
@@ -1138,7 +1138,7 @@ SELECT pseudo, ROUND(100.0 * przydzial_myszy / SUM(przydzial_myszy) OVER (PARTIT
 
 ### 15.3 ROW_NUMBER
 
-Numbers rows 1, 2, 3… with no ties.
+Numeruje wiersze 1, 2, 3… bez remisów.
 
 ```sql
 SELECT pseudo, ROW_NUMBER() OVER (PARTITION BY nr_bandy ORDER BY przydzial_myszy DESC) FROM kocury;
@@ -1146,15 +1146,15 @@ SELECT pseudo, ROW_NUMBER() OVER (PARTITION BY nr_bandy ORDER BY przydzial_myszy
 
 ### 15.4 RANK / DENSE_RANK
 
-Ranks with ties: `RANK` 1,2,2,4 and `DENSE_RANK` 1,2,2,3.
+Rankingi z remisami: `RANK` 1,2,2,4, a `DENSE_RANK` 1,2,2,3.
 
 ```sql
 SELECT pseudo, RANK() OVER (ORDER BY przydzial_myszy DESC), DENSE_RANK() OVER (ORDER BY przydzial_myszy DESC) FROM kocury;
 ```
 
-### 15.5 Running total
+### 15.5 Suma narastająca
 
-`ORDER BY` inside `OVER` makes the aggregate cumulative.
+`ORDER BY` wewnątrz `OVER` robi z agregatu sumę narastającą.
 
 ```sql
 SELECT pseudo, SUM(przydzial_myszy) OVER (ORDER BY w_stadku_od) FROM kocury;
@@ -1162,7 +1162,7 @@ SELECT pseudo, SUM(przydzial_myszy) OVER (ORDER BY w_stadku_od) FROM kocury;
 
 ### 15.6 ROWS BETWEEN
 
-Sets exactly which rows the window covers.
+Określa dokładnie, które wiersze obejmuje okno.
 
 ```sql
 SELECT pseudo, AVG(przydzial_myszy) OVER (ORDER BY w_stadku_od ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) FROM kocury;
@@ -1170,7 +1170,7 @@ SELECT pseudo, AVG(przydzial_myszy) OVER (ORDER BY w_stadku_od ROWS BETWEEN 1 PR
 
 ### 15.7 LAG / LEAD
 
-Value from the previous / next row.
+Wartość z poprzedniego / następnego wiersza.
 
 ```sql
 SELECT pseudo, LAG(pseudo) OVER (ORDER BY w_stadku_od), LEAD(pseudo) OVER (ORDER BY w_stadku_od) FROM kocury;
@@ -1178,15 +1178,15 @@ SELECT pseudo, LAG(pseudo) OVER (ORDER BY w_stadku_od), LEAD(pseudo) OVER (ORDER
 
 ### 15.8 FIRST_VALUE
 
-First value in the window.
+Pierwsza wartość w oknie.
 
 ```sql
 SELECT pseudo, FIRST_VALUE(pseudo) OVER (PARTITION BY nr_bandy ORDER BY w_stadku_od) FROM kocury;
 ```
 
-### 15.9 Top-N per group
+### 15.9 Top-N w grupie
 
-Window functions aren't allowed in `WHERE`, so filter in an outer query.
+Funkcji okna nie można używać w `WHERE`, więc filtruj w zapytaniu zewnętrznym.
 
 ```sql
 SELECT * FROM (SELECT pseudo, nr_bandy, RANK() OVER (PARTITION BY nr_bandy ORDER BY przydzial_myszy DESC) AS rnk FROM kocury) AS ranking WHERE rnk = 1;
@@ -1196,7 +1196,7 @@ SELECT * FROM (SELECT pseudo, nr_bandy, RANK() OVER (PARTITION BY nr_bandy ORDER
 
 ### 16.1 PIVOT
 
-Turns row values into columns; values go in `[ ]`, only one aggregate.
+Zamienia wartości z wierszy na kolumny; wartości w `[ ]`, tylko jeden agregat.
 
 ```sql
 SELECT nr_bandy, [M] AS samce, [D] AS samice FROM (SELECT nr_bandy, plec, przydzial_myszy FROM kocury) AS zrodlo PIVOT (SUM(przydzial_myszy) FOR plec IN ([M], [D])) AS wynik;
@@ -1204,23 +1204,23 @@ SELECT nr_bandy, [M] AS samce, [D] AS samice FROM (SELECT nr_bandy, plec, przydz
 
 ### 16.2 UNPIVOT
 
-Turns columns into rows; the columns must have the same type, `NULL`s are skipped.
+Zamienia kolumny na wiersze; kolumny muszą mieć ten sam typ, `NULL`-e są pomijane.
 
 ```sql
 SELECT pseudo, rodzaj, ile FROM (SELECT pseudo, przydzial_myszy, myszy_extra FROM kocury) AS zrodlo UNPIVOT (ile FOR rodzaj IN (przydzial_myszy, myszy_extra)) AS wynik;
 ```
 
-### 16.3 Unpivot with APPLY
+### 16.3 Unpivot przez APPLY
 
-Columns into rows with your own labels, keeping `NULL`s.
+Kolumny na wiersze z własnymi etykietami, z zachowaniem `NULL`-i.
 
 ```sql
 SELECT K.pseudo, U.rodzaj, U.ile FROM kocury K CROSS APPLY (VALUES ('PRZYDZIAL', K.przydzial_myszy), ('EXTRA', K.myszy_extra)) AS U(rodzaj, ile);
 ```
 
-### 16.4 Pivot with CASE
+### 16.4 Pivot przez CASE
 
-Portable pivot: one conditional aggregate per column.
+Przenośny pivot: jeden warunkowy agregat na kolumnę.
 
 ```sql
 SELECT nr_bandy, SUM(CASE WHEN plec = 'M' THEN przydzial_myszy ELSE 0 END) AS samce, SUM(CASE WHEN plec = 'D' THEN przydzial_myszy ELSE 0 END) AS samice FROM kocury GROUP BY nr_bandy;
@@ -1230,7 +1230,7 @@ SELECT nr_bandy, SUM(CASE WHEN plec = 'M' THEN przydzial_myszy ELSE 0 END) AS sa
 
 ### 17.1 GO
 
-Sends the batch typed so far to the server (not SQL, a sqlcmd command).
+Wysyła dotąd wpisaną paczkę na serwer (to nie SQL, tylko polecenie sqlcmd).
 
 ```sql
 SELECT * FROM kocury;
@@ -1239,15 +1239,15 @@ GO
 
 ### 17.2 :r
 
-Runs a script file.
+Uruchamia plik ze skryptem.
 
 ```sql
 :r lista3/zad1.sql
 ```
 
-### 17.3 -I flag
+### 17.3 Flaga -I
 
-Turns on `QUOTED_IDENTIFIER`, required for filtered indexes (used in `db.sh`).
+Włącza `QUOTED_IDENTIFIER`, wymagane dla indeksów filtrowanych (używane w `db.sh`).
 
 ```sql
 sqlcmd -S localhost -U sa -P Admin_123 -C -I
@@ -1255,7 +1255,7 @@ sqlcmd -S localhost -U sa -P Admin_123 -C -I
 
 ### 17.4 sp_help
 
-Shows a table's columns and constraints.
+Pokazuje kolumny i ograniczenia tabeli.
 
 ```sql
 EXEC sp_help 'kocury';
@@ -1263,7 +1263,7 @@ EXEC sp_help 'kocury';
 
 ### 17.5 sys.tables
 
-Lists tables.
+Lista tabel.
 
 ```sql
 SELECT name FROM sys.tables;
@@ -1271,17 +1271,17 @@ SELECT name FROM sys.tables;
 
 ### 17.6 EXIT
 
-Quits sqlcmd.
+Wychodzi z sqlcmd.
 
 ```sql
 EXIT
 ```
 
-## 18. Combos
+## 18. Combosy
 
-### 18.1 Tree over a SELECT source
+### 18.1 Drzewo ze źródłem z SELECT-a
 
-Put the filtered rows in a CTE and run the recursion on it; a cat cut out of the source also cuts its whole branch (like a condition in Oracle `CONNECT BY`).
+Przefiltrowane wiersze wrzucasz do CTE i na nim puszczasz rekurencję; kot wycięty w źródle odcina też całą swoją gałąź (jak warunek w `CONNECT BY` w Oracle).
 
 ```sql
 WITH zrodlo AS (
@@ -1297,9 +1297,9 @@ SELECT REPLICATE(' ', 4 * (poziom - 1)) + pseudo AS hierarchia, myszy
 FROM drzewo;
 ```
 
-### 18.2 Tree as a source + JOIN
+### 18.2 Drzewo jako źródło + JOIN
 
-Build the tree first, then treat it as a normal table: join, filter by level, sort.
+Najpierw budujesz drzewo, potem traktujesz je jak zwykłą tabelę: złączenie, filtr po poziomie, sortowanie.
 
 ```sql
 WITH drzewo AS (
@@ -1314,9 +1314,9 @@ WHERE d.poziom >= 2
 ORDER BY d.poziom, d.pseudo;
 ```
 
-### 18.3 Tree + GROUP BY (all subordinates)
+### 18.3 Drzewo + GROUP BY (wszyscy podwładni)
 
-Anchor = every (boss, direct subordinate) pair, the step carries the boss down; then `GROUP BY` the carried root.
+Start = każda para (szef, bezpośredni podwładny), krok przenosi szefa w dół; potem `GROUP BY` po przeniesionym korzeniu.
 
 ```sql
 WITH pod AS (
@@ -1331,9 +1331,9 @@ GROUP BY p.korzen
 ORDER BY podwladni DESC, p.korzen;
 ```
 
-### 18.4 Tree with roots from a subquery
+### 18.4 Drzewo z korzeniami z podzapytania
 
-The anchor `WHERE` can use a subquery, e.g. start from the band bosses.
+`WHERE` w części startowej może używać podzapytania, np. start od szefów band.
 
 ```sql
 WITH drzewo AS (
@@ -1346,9 +1346,9 @@ SELECT REPLICATE(' ', 4 * (poziom - 1)) + pseudo AS hierarchia
 FROM drzewo;
 ```
 
-### 18.5 Grouped SELECT as a source + JOIN
+### 18.5 Pogrupowany SELECT jako źródło + JOIN
 
-Aggregate in a subquery, join it back to the rows and compare each row with its group.
+Agregujesz w podzapytaniu, dołączasz je z powrotem do wierszy i porównujesz każdy wiersz z jego grupą.
 
 ```sql
 SELECT k.pseudo, k.przydzial_myszy, s.srednia
@@ -1366,7 +1366,7 @@ ORDER BY k.nr_bandy, k.przydzial_myszy DESC;
 
 Dla każdego poziomu hierarchii (zaczynając od TYGRYSA) wyświetl numer poziomu, liczbę kotów, średni przydział myszy i listę ich pseudonimów.
 
-Hint: tree with a level column, then `GROUP BY poziom` on top of it.
+Podpowiedź: drzewo z kolumną poziomu, potem `GROUP BY poziom` na nim.
 
 ```sql
 WITH drzewo AS (
@@ -1395,7 +1395,7 @@ poziom | ile | srednio | koty
 
 Dla kotów pełniących funkcję KOT wyświetl imię i liczbę szczebli dzielących je od głównego szefa.
 
-Hint: walk upwards from the KOT cats, carry the name and a counter, keep the row where `szef IS NULL`.
+Podpowiedź: idziesz w górę od kotów z funkcją KOT, przenosisz imię i licznik, zostawiasz wiersz, gdzie `szef IS NULL`.
 
 ```sql
 WITH w_gore AS (
@@ -1422,7 +1422,7 @@ LATKA | 2
 
 Wyświetl hierarchię (z wcięciami) tylko kotów z band działających na terenie POLE lub CALOSC, razem z nazwą bandy.
 
-Hint: the source CTE does the band filter, the tree runs on it; sort by path to get tree order. The path needs `CAST` in both parts.
+Podpowiedź: CTE-źródło robi filtr band, drzewo idzie po nim; sortowanie po ścieżce daje kolejność drzewa. Ścieżka wymaga `CAST` w obu częściach.
 
 ```sql
 WITH zrodlo AS (
@@ -1457,7 +1457,7 @@ TYGRYS            SZEFOSTWO
 
 Dla każdego kota, który jest czyimś szefem, podaj liczbę wszystkich jego podwładnych (bezpośrednich i pośrednich) i sumę ich przydziałów myszy.
 
-Hint: same as 18.3.
+Podpowiedź: to samo co 18.3.
 
 ```sql
 WITH pod AS (
@@ -1487,7 +1487,7 @@ KURKA  | 1         | 43
 
 Wyświetl koty, które dostają więcej myszy niż średnia w ich bandzie, razem z tą średnią.
 
-Hint: same as 18.5; with a correlated subquery in `WHERE` it works too, but the average can't be shown then.
+Podpowiedź: to samo co 18.5; z podzapytaniem skorelowanym w `WHERE` też działa, ale wtedy nie pokażesz średniej.
 
 ```sql
 SELECT k.pseudo, k.przydzial_myszy, s.srednia
