@@ -24,19 +24,19 @@ LAPACZ  |            3 |            1 |       0 |   52.67 |          5
 KOT     |            3 |            1 |       0 |   41.00 |          3
 */
 SELECT
-  funkcja,
-  COUNT(*) AS LICZBAKOTOW,
-  SUM(plec = 'D') AS KOTKI,
-  SUM(NVL2 (myszy_extra, 1, 0)) AS zextra,
-  ROUND(AVG(przydzial_myszy + NVL (myszy_extra, 0)), 2) AS srd,
-  MAX(przydzial_myszy + NVL (myszy_extra, 0)) - MIN(przydzial_myszy + NVL (myszy_extra, 0)) AS ROZ
+  funkcja AS "Funkcja",
+  COUNT(*) AS "Liczba kotow",
+  COUNT(CASE WHEN plec = 'D' THEN 1 END) AS "Liczba kotek",
+  COUNT(myszy_extra) AS "Z extra",
+  ROUND(AVG(przydzial_myszy + NVL(myszy_extra, 0)), 2) AS "Srednio",
+  MAX(przydzial_myszy + NVL(myszy_extra, 0)) - MIN(przydzial_myszy + NVL(myszy_extra, 0)) AS "Rozpietosc"
 FROM
   kocury
 WHERE
-  funkcja != 'SZEFUNIO'
+  funkcja <> 'SZEFUNIO'
 GROUP BY
   funkcja
 HAVING
   COUNT(*) >= 3
 ORDER BY
-  srd DESC;
+  "Srednio" DESC;

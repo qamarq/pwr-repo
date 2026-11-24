@@ -7,9 +7,9 @@ Struktura wyniku:
 
 Imie, Gatunek
 */
-SELECT
-  K.imie AS Imie,
-  W.Gatunek AS Gatunek
+SELECT DISTINCT
+  K.imie AS "Imie",
+  W.gatunek AS "Gatunek"
 FROM
   kocury K
   JOIN wrogowie_kocurow WK ON K.pseudo = WK.pseudo
@@ -21,7 +21,12 @@ WHERE
     FROM
       kocury K2
       JOIN wrogowie_kocurow WK2 ON K2.pseudo = WK2.pseudo
+      JOIN wrogowie W2 ON WK2.imie_wroga = W2.imie_wroga
     WHERE
-      K2.banda = K.banda
-      AND WK2.imie_wroga = WK.imie_wroga
-  );
+      K2.nr_bandy = K.nr_bandy
+      AND K2.pseudo <> K.pseudo
+      AND W2.gatunek = W.gatunek
+  )
+ORDER BY
+  1,
+  2;

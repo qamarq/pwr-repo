@@ -22,17 +22,17 @@ LACIACI MYSLIWI | PUCEK      |            5 |          1 |         4
 ROCKERSI        | BRAK       |            0 |          0 |         0
 */
 SELECT
-  B.nazwa,
-  NVL (S.imie, 'BRAK') AS szef,
-  COUNT(DISTINCT K.pseudo) AS liczba,
+  B.nazwa AS "Banda",
+  NVL(S.imie, 'BRAK') AS "Szef bandy",
+  COUNT(DISTINCT K.pseudo) AS "Liczba kotow",
   SUM(
     CASE
-      WHEN WK.pseudo is NULL
-      AND K.pseudo is not NULL THEN 1
+      WHEN WK.pseudo IS NULL
+      AND K.pseudo IS NOT NULL THEN 1
       ELSE 0
     END
-  ) AS bezwrogow,
-  COUNT(WK.pseudo) AS indcy
+  ) AS "Bez wrogow",
+  COUNT(WK.pseudo) AS "Incydenty"
 FROM
   kocury K
   RIGHT JOIN bandy B ON B.nr_bandy = K.nr_bandy

@@ -25,32 +25,21 @@ Jacek   | PLACEK |     2 |    3 |          67 | NORMALNY
 Bari    | RURA   |     2 |    2 |          56 | NORMALNY
 */
 SELECT
-  INITCAP (imie) as Imie,
-  pseudo,
-  w_stadku_od,
-  nr_bandy,
-  2012 - 1 - EXTRACT(
-    YEAR
-    FROM
-      w_stadku_od
-  ) AS staz,
-  COALESCE(przydzial_myszy, 0) + COALESCE(myszy_extra, 0) AS Myszy_razem,
+  INITCAP(imie) AS "Imie",
+  pseudo AS "Pseudo",
+  nr_bandy AS "Banda",
+  TRUNC(MONTHS_BETWEEN(DATE '2012-01-01', w_stadku_od) / 12) AS "Staz",
+  przydzial_myszy + NVL(myszy_extra, 0) AS "Myszy razem",
   CASE
-    WHEN (
-      COALESCE(przydzial_myszy, 0) + COALESCE(myszy_extra, 0)
-    ) > 70 THEN 'NAJEDZONY'
-    WHEN COALESCE(przydzial_myszy, 0) + COALESCE(myszy_extra, 0) < 50 THEN 'glodny'
-    ELSE 'normanly'
-  END AS "status"
+    WHEN przydzial_myszy + NVL(myszy_extra, 0) < 50 THEN 'GLODNY'
+    WHEN przydzial_myszy + NVL(myszy_extra, 0) <= 70 THEN 'NORMALNY'
+    ELSE 'NAJEDZONY'
+  END AS "Status"
 FROM
   kocury
 WHERE
   nr_bandy IN (2, 4)
-  AND EXTRACT(
-    MONTH
-    FROM
-      w_stadku_od
-  ) >= 6
+  AND EXTRACT(MONTH FROM w_stadku_od) >= 6
 ORDER BY
-  staz DESC,
+  "Staz" DESC,
   pseudo;

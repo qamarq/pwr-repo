@@ -23,15 +23,17 @@ LOLA     |               1 | LOLA -> TYGRYS
 MALA     |               1 | MALA -> TYGRYS
 */
 SELECT
-  CONNECT_BY_ROOT pseudo,
-  LEVEL - 1,
-  SYS_CONNECT_BY_PATH (pseudo, ' -> ') AS DROGA
+  CONNECT_BY_ROOT pseudo AS "Kot",
+  LEVEL - 1 AS "Liczba szczebli",
+  SUBSTR(SYS_CONNECT_BY_PATH(pseudo, ' -> '), 5) AS "Droga sluzbowa"
 FROM
   kocury
 WHERE
-  szef IS NULL START
-WITH
-  funkcja in ('KOT', 'MILUSIA') CONNECT BY pseudo = PRIOR szef
+  szef IS NULL
+START WITH
+  funkcja IN ('KOT', 'MILUSIA')
+CONNECT BY
+  pseudo = PRIOR szef
 ORDER BY
-  LEVEL DESC,
-  pseudo;
+  2 DESC,
+  1;

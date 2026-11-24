@@ -48,32 +48,65 @@ Dodatkowo (bez funkcji okna): rozwiąż "Srednia w bandzie" i "Miejsce"
 drugi raz, używając wyłącznie podzapytań skorelowanych.
 */
 SELECT
-  B.nazwa,
-  K.pseudo,
-  AVG(K.przydzial_myszy) OVER (
-    PARTITION BY
-      K.nr_bandy
-  ) AS sredniawbandzieprzydzialu,
-  RANK() OVER (
-    PARTITION BY
-      K.nr_bandy
-    ORDER BY
-      przydzial_myszy DESC
-  ) AS miejscewgprzydzialu
+  B.nazwa AS "Banda",
+  K.pseudo AS "Pseudo",
+  K.funkcja AS "Funkcja",
+  K.przydzial_myszy + NVL(K.myszy_extra, 0) AS "Myszy",
+  ROUND(AVG(K.przydzial_myszy + NVL(K.myszy_extra, 0)) OVER (PARTITION BY K.nr_bandy), 2) AS "Srednia w bandzie",
+  RANK() OVER (PARTITION BY K.nr_bandy ORDER BY K.przydzial_myszy + NVL(K.myszy_extra, 0) DESC) AS "Miejsce",
+  (SELECT COUNT(*) FROM kocury P WHERE P.szef = K.pseudo) AS "Podwladni",
+  (SELECT COUNT(*) FROM wrogowie_kocurow WK WHERE WK.pseudo = K.pseudo) AS "Wrogowie",
+  NVL(
+    (SELECT TO_CHAR(MAX(W.stopien_wrogosci))
+     FROM wrogowie_kocurow WK
+     JOIN wrogowie W ON W.imie_wroga = WK.imie_wroga
+     WHERE WK.pseudo = K.pseudo),
+    '-'
+  ) AS "Max wrogosc",
+  CASE
+    WHEN K.przydzial_myszy + NVL(K.myszy_extra, 0) < F.min_myszy THEN 'PONIZEJ'
+    WHEN K.przydzial_myszy + NVL(K.myszy_extra, 0) > F.max_myszy THEN 'POWYZEJ'
+    ELSE 'OK'
+  END AS "Widelki"
+FROM
+  kocury K
+  JOIN bandy B ON B.nr_bandy = K.nr_bandy
+  JOIN funkcje F ON F.funkcja = K.funkcja
+WHERE
+  K.nr_bandy IN (
+    SELECT nr_bandy
+    FROM kocury
+    GROUP BY nr_bandy
+    HAVING COUNT(*) >= 4
+  )
+ORDER BY
+  "Banda",
+  "Miejsce",
+  "Pseudo";
+
+-- wersja bez funkcji okna (srednia i miejsce podzapytaniami skorelowanymi)
+SELECT
+  B.nazwa AS "Banda",
+  K.pseudo AS "Pseudo",
+  K.przydzial_myszy + NVL(K.myszy_extra, 0) AS "Myszy",
+  (SELECT ROUND(AVG(X.przydzial_myszy + NVL(X.myszy_extra, 0)), 2)
+   FROM kocury X
+   WHERE X.nr_bandy = K.nr_bandy) AS "Srednia w bandzie",
+  (SELECT COUNT(*) + 1
+   FROM kocury X
+   WHERE X.nr_bandy = K.nr_bandy
+     AND X.przydzial_myszy + NVL(X.myszy_extra, 0) > K.przydzial_myszy + NVL(K.myszy_extra, 0)) AS "Miejsce"
 FROM
   kocury K
   JOIN bandy B ON B.nr_bandy = K.nr_bandy
 WHERE
-  K.nr_bandy in (
-    SELECT
-      K2.nr_bandy
-    FROM
-      kocury K2
-      JOIN bandy B2 ON B2.nr_bandy = K2.nr_bandy
-    GROUP BY
-      K2.nr_bandy
-    HAVING
-      COUNT(*) >= 4
+  K.nr_bandy IN (
+    SELECT nr_bandy
+    FROM kocury
+    GROUP BY nr_bandy
+    HAVING COUNT(*) >= 4
   )
 ORDER BY
-  B.nazwa;
+  "Banda",
+  "Miejsce",
+  "Pseudo";
