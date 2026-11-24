@@ -170,6 +170,7 @@
   - [20.2 Pytanie 2 – statystyki incydentów](#202-pytanie-2--statystyki-incydentów)
   - [20.3 Pytanie 3 – agresja wg gatunków i lat](#203-pytanie-3--agresja-wg-gatunków-i-lat)
   - [20.4 Pytanie 4 – ścieżka władzy i budżet rodziny](#204-pytanie-4--ścieżka-władzy-i-budżet-rodziny)
+  - [20.5 Zadanie z listy – koty jedzące więcej niż inne koty tej samej funkcji i płci](#205-zadanie-z-listy--koty-jedzące-więcej-niż-inne-koty-tej-samej-funkcji-i-płci)
 
 ## 1. DDL
 
@@ -1670,4 +1671,51 @@ CHYTRY  | DZIELCZY | TYGRYS -> BOLEK                  |              50
 LUCEK   | KOT      | TYGRYS -> ZOMBI -> KURKA -> ZERO |              43
 DUDEK   | KOT      | TYGRYS -> RAFA -> MALY           |              40
 LATKA   | KOT      | TYGRYS -> RAFA -> UCHO           |              40
+```
+
+### 20.5 Zadanie z listy – koty jedzące więcej niż inne koty tej samej funkcji i płci
+
+Dla każdej bandy policz koty, które jedzą (przydział + extra) więcej niż średnia innych kotów o tej samej funkcji i płci.
+
+Podpowiedź: podzapytanie skorelowane po `funkcja` i `plec`, z wykluczeniem samego siebie (`k2.pseudo <> k.pseudo`). Warunek idzie do `ON` w `LEFT JOIN`, żeby bandy z zerem też były w wyniku (pułapka 11.12). Kot bez „kolegi” w swojej funkcji i płci dostaje średnią `NULL`, więc nie przechodzi.
+
+```sql
+SELECT b.nazwa, COUNT(k.pseudo) AS koty_powyzej_sredniej
+FROM bandy b
+LEFT JOIN kocury k ON k.nr_bandy = b.nr_bandy
+     AND k.przydzial_myszy + COALESCE(k.myszy_extra, 0) >
+         (SELECT AVG(k2.przydzial_myszy + COALESCE(k2.myszy_extra, 0))
+          FROM kocury k2
+          WHERE k2.funkcja = k.funkcja
+            AND k2.plec = k.plec
+            AND k2.pseudo <> k.pseudo)
+GROUP BY b.nr_bandy, b.nazwa
+ORDER BY b.nr_bandy;
+```
+
+Wynik:
+
+```text
+     nazwa      | koty_powyzej_sredniej
+-----------------+-----------------------
+SZEFOSTWO       |                     2
+CZARNI RYCERZE  |                     4
+BIALI LOWCY     |                     1
+LACIACI MYSLIWI |                     0
+ROCKERSI        |                     0
+```
+
+Wersja z funkcjami okna – średnia innych = (suma w grupie − własne) / (liczba w grupie − 1), `NULLIF` chroni przed dzieleniem przez 0 (bez bandy z zerem w wyniku):
+
+```sql
+SELECT nr_bandy, COUNT(*) AS koty_powyzej_sredniej
+FROM (SELECT nr_bandy,
+             przydzial_myszy + COALESCE(myszy_extra, 0) AS myszy,
+             (SUM(przydzial_myszy + COALESCE(myszy_extra, 0)) OVER (PARTITION BY funkcja, plec)
+                - (przydzial_myszy + COALESCE(myszy_extra, 0)))
+             / NULLIF(COUNT(*) OVER (PARTITION BY funkcja, plec) - 1, 0) AS srednia_innych
+      FROM kocury) x
+WHERE myszy > srednia_innych
+GROUP BY nr_bandy
+ORDER BY nr_bandy;
 ```
