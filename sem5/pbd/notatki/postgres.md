@@ -165,6 +165,11 @@
   - [19.3 Zadanie 3](#193-zadanie-3)
   - [19.4 Zadanie 4](#194-zadanie-4)
   - [19.5 Zadanie 5](#195-zadanie-5)
+- [20. Kartkówka – zadania z poprzednich lat](#20-kartkówka--zadania-z-poprzednich-lat)
+  - [20.1 Pytanie 1 – unikalny wynik walki w funkcji](#201-pytanie-1--unikalny-wynik-walki-w-funkcji)
+  - [20.2 Pytanie 2 – statystyki incydentów](#202-pytanie-2--statystyki-incydentów)
+  - [20.3 Pytanie 3 – agresja wg gatunków i lat](#203-pytanie-3--agresja-wg-gatunków-i-lat)
+  - [20.4 Pytanie 4 – ścieżka władzy i budżet rodziny](#204-pytanie-4--ścieżka-władzy-i-budżet-rodziny)
 
 ## 1. DDL
 
@@ -1496,4 +1501,173 @@ JOIN (SELECT nr_bandy, ROUND(AVG(przydzial_myszy), 1) AS srednia
       GROUP BY nr_bandy) s ON s.nr_bandy = k.nr_bandy
 WHERE k.przydzial_myszy > s.srednia
 ORDER BY k.nr_bandy, k.przydzial_myszy DESC;
+```
+
+## 20. Kartkówka – zadania z poprzednich lat
+
+Założenia: „poziom agresji” = `wrogowie.stopien_wrogosci` (skala 1–10 pasuje do progów z zadania 3). W zadaniu 1 tabela `wrogowie_kocurow` ma mieć kolumnę `wynik` (`'WROG'`, `'KOT'`, `'REMIS'`) – w naszej bazie jej nie ma, więc rozwiązanie testowałem na sztucznie dodanej kolumnie.
+
+### 20.1 Pytanie 1 – unikalny wynik walki w funkcji
+
+Wypisz imiona kotów oraz wynik walki (np. 'WROG', 'KOT', 'REMIS'), jeśli dany kot osiągnął taki wynik, a żaden inny kot pełniący tę samą funkcję nie uzyskał takiego samego wyniku w żadnym incydencie. Struktura wyniku: Imie, Wynik.
+
+Podpowiedź: `NOT EXISTS` z podzapytaniem skorelowanym po funkcji i wyniku, z wykluczeniem samego siebie (`k2.pseudo <> k.pseudo`); `DISTINCT`, bo kot może mieć kilka incydentów z tym samym wynikiem.
+
+```sql
+SELECT DISTINCT k.imie, wk.wynik
+FROM kocury k
+JOIN wrogowie_kocurow wk ON wk.pseudo = k.pseudo
+WHERE NOT EXISTS (SELECT 1
+                  FROM kocury k2
+                  JOIN wrogowie_kocurow wk2 ON wk2.pseudo = k2.pseudo
+                  WHERE k2.funkcja = k.funkcja
+                    AND k2.pseudo <> k.pseudo
+                    AND wk2.wynik = wk.wynik)
+ORDER BY k.imie;
+```
+
+### 20.2 Pytanie 2 – statystyki incydentów
+
+Dla każdego incydentu wyświetl datę, pseudo, numer bandy kota. Dodatkowo wyznacz, ile innych incydentów miało miejsce w okresie +/- 60 dni od daty bieżącego incydentu (nie wliczając samego siebie). Określ, czy poprzedni incydent był bardziej agresywny, czy mniej – jeżeli nie było poprzedniego incydentu, załóż poziom agresji równy 0. Wyznacz liczbę incydentów od początku roku. Wyznacz numer incydentu (czyli który to jest kolejno incydent) w danej bandzie w danym roku.
+
+Podpowiedź: wszystko funkcjami okna. ±60 dni = `RANGE BETWEEN INTERVAL '60 days' PRECEDING AND INTERVAL '60 days' FOLLOWING` minus 1 (sam incydent); poprzedni = `LAG(..., 1, 0)`; od początku roku = `COUNT(*)` narastająco z `PARTITION BY` rok; numer w bandzie = `ROW_NUMBER()` z `PARTITION BY` banda, rok.
+
+```sql
+SELECT wk.data_incydentu, wk.pseudo, k.nr_bandy,
+       COUNT(*) OVER (ORDER BY wk.data_incydentu
+                      RANGE BETWEEN INTERVAL '60 days' PRECEDING AND INTERVAL '60 days' FOLLOWING) - 1 AS incydenty_w_ok_60dni,
+       CASE WHEN LAG(w.stopien_wrogosci, 1, 0) OVER (ORDER BY wk.data_incydentu, wk.pseudo) > w.stopien_wrogosci
+            THEN 'TAK' ELSE 'NIE' END AS czy_poprzedni_bardziej_agresywny,
+       COUNT(*) OVER (PARTITION BY EXTRACT(YEAR FROM wk.data_incydentu)
+                      ORDER BY wk.data_incydentu, wk.pseudo
+                      ROWS UNBOUNDED PRECEDING) AS incydentow_od_poczatku_roku,
+       ROW_NUMBER() OVER (PARTITION BY k.nr_bandy, EXTRACT(YEAR FROM wk.data_incydentu)
+                          ORDER BY wk.data_incydentu, wk.pseudo) AS numer_incydentu_w_bandzie_w_roku
+FROM wrogowie_kocurow wk
+JOIN kocury k ON k.pseudo = wk.pseudo
+JOIN wrogowie w ON w.imie_wroga = wk.imie_wroga
+ORDER BY wk.data_incydentu, wk.pseudo;
+```
+
+Wynik:
+
+```text
+data_incydentu |  pseudo  | nr_bandy | incydenty_w_ok_60dni | czy_poprzedni_bardziej_agresywny | incydentow_od_poczatku_roku | numer_incydentu_w_bandzie_w_roku
+----------------+----------+----------+----------------------+----------------------------------+-----------------------------+----------------------------------
+2004-10-13     | TYGRYS   |        1 |                    0 | NIE                              |                           1 |                                1
+2005-03-07     | ZOMBI    |        3 |                    1 | TAK                              |                           1 |                                1
+2005-03-29     | BOLEK    |        1 |                    1 | NIE                              |                           2 |                                1
+2006-09-12     | SZYBKA   |        2 |                    0 | TAK                              |                           1 |                                1
+2007-03-07     | MALA     |        1 |                    0 | NIE                              |                           1 |                                1
+2007-06-12     | TYGRYS   |        1 |                    0 | NIE                              |                           2 |                                2
+2007-11-10     | BOLEK    |        1 |                    0 | NIE                              |                           3 |                                3
+2008-12-12     | LASKA    |        2 |                    2 | NIE                              |                           1 |                                1
+2009-01-07     | LASKA    |        2 |                    2 | NIE                              |                           1 |                                1
+2009-02-07     | DAMA     |        4 |                    2 | NIE                              |                           2 |                                1
+2009-04-14     | MAN      |        4 |                    1 | TAK                              |                           3 |                                2
+2009-05-11     | LYSY     |        2 |                    1 | TAK                              |                           4 |                                2
+2009-09-03     | RURA     |        2 |                    0 | NIE                              |                           5 |                                3
+2010-07-12     | PLACEK   |        2 |                    0 | TAK                              |                           1 |                                1
+2010-11-19     | PUSZYSTA |        3 |                    1 | TAK                              |                           2 |                                1
+2010-12-14     | KURKA    |        3 |                    1 | NIE                              |                           3 |                                2
+2011-07-13     | MALY     |        4 |                    1 | NIE                              |                           1 |                                1
+2011-07-14     | UCHO     |        4 |                    1 | NIE                              |                           2 |                                2
+```
+
+### 20.3 Pytanie 3 – agresja wg gatunków i lat
+
+Przygotuj zestawienie liczby incydentów oraz średniego poziomu agresji dla różnych gatunków wrogów (chcemy wszystkie gatunki), jakie miały w latach 2009, 2010, 2011. Kategorie poziomu agresji: Niska [1-4], Srednia [5-8], Wysoka [9-10], przedstawione w kolumnach. Zamiast brakujących wartości zastosuj 0.
+
+Podpowiedź: „wszystkie gatunki” = gatunki × lata przez `CROSS JOIN`, potem `LEFT JOIN` do incydentów (złączonych z wrogami w podzapytaniu, bo inaczej liczyłby się wróg bez incydentu). Pivot przez `COUNT/AVG(CASE …)`, `COALESCE(…, 0)` na brakujące średnie.
+
+```sql
+SELECT g.gatunek, r.rok,
+       COUNT(CASE WHEN i.agresja BETWEEN 1 AND 4 THEN 1 END) AS niski_liczba,
+       COUNT(CASE WHEN i.agresja BETWEEN 5 AND 8 THEN 1 END) AS sredni_liczba,
+       COUNT(CASE WHEN i.agresja BETWEEN 9 AND 10 THEN 1 END) AS wysoki_liczba,
+       COALESCE(ROUND(AVG(CASE WHEN i.agresja BETWEEN 1 AND 4 THEN i.agresja END), 2), 0) AS niski_srednia,
+       COALESCE(ROUND(AVG(CASE WHEN i.agresja BETWEEN 5 AND 8 THEN i.agresja END), 2), 0) AS sredni_srednia,
+       COALESCE(ROUND(AVG(CASE WHEN i.agresja BETWEEN 9 AND 10 THEN i.agresja END), 2), 0) AS wysoki_srednia
+FROM (SELECT DISTINCT gatunek FROM wrogowie) g
+CROSS JOIN (VALUES (2009), (2010), (2011)) AS r(rok)
+LEFT JOIN (SELECT w.gatunek, w.stopien_wrogosci AS agresja, EXTRACT(YEAR FROM wk.data_incydentu) AS rok
+           FROM wrogowie_kocurow wk
+           JOIN wrogowie w ON w.imie_wroga = wk.imie_wroga) i ON i.gatunek = g.gatunek AND i.rok = r.rok
+GROUP BY g.gatunek, r.rok
+ORDER BY g.gatunek, r.rok;
+```
+
+Wynik:
+
+```text
+gatunek  | rok  | niski_liczba | sredni_liczba | wysoki_liczba | niski_srednia | sredni_srednia | wysoki_srednia
+----------+------+--------------+---------------+---------------+---------------+----------------+----------------
+CZLOWIEK | 2009 |            0 |             0 |             2 |             0 |              0 |          10.00
+CZLOWIEK | 2010 |            0 |             0 |             0 |             0 |              0 |              0
+CZLOWIEK | 2011 |            0 |             1 |             0 |             0 |           7.00 |              0
+KOGUT    | 2009 |            0 |             0 |             0 |             0 |              0 |              0
+KOGUT    | 2010 |            1 |             0 |             0 |          3.00 |              0 |              0
+KOGUT    | 2011 |            0 |             0 |             0 |             0 |              0 |              0
+LIS      | 2009 |            0 |             0 |             0 |             0 |              0 |              0
+LIS      | 2010 |            0 |             0 |             0 |             0 |              0 |              0
+LIS      | 2011 |            0 |             1 |             0 |             0 |           5.00 |              0
+PIES     | 2009 |            2 |             0 |             1 |          1.50 |              0 |          10.00
+PIES     | 2010 |            1 |             0 |             0 |          4.00 |              0 |              0
+PIES     | 2011 |            0 |             0 |             0 |             0 |              0 |              0
+SOSNA    | 2009 |            0 |             0 |             0 |             0 |              0 |              0
+SOSNA    | 2010 |            1 |             0 |             0 |          1.00 |              0 |              0
+SOSNA    | 2011 |            0 |             0 |             0 |             0 |              0 |              0
+```
+
+### 20.4 Pytanie 4 – ścieżka władzy i budżet rodziny
+
+Dla każdego kota wyznacz „Ścieżkę Władzy” (ciąg pseudonimów od szefa głównego do danego kota). Dodatkowo oblicz „Całkowity Budżet Rodziny” – sumę przydziału myszy (wraz z ekstra) danego kota oraz wszystkich jego bezpośrednich i pośrednich podwładnych. Wyniki posortuj według budżetu malejąco.
+
+Podpowiedź: dwa rekurencyjne CTE – jedno buduje ścieżkę od korzenia w dół, drugie daje pary (kot, on sam lub dowolny podwładny); potem złączenie i `SUM`.
+
+```sql
+WITH RECURSIVE sciezki AS (
+    SELECT pseudo, imie, funkcja, pseudo::text AS sciezka
+    FROM kocury
+    WHERE szef IS NULL
+    UNION ALL
+    SELECT k.pseudo, k.imie, k.funkcja, s.sciezka || ' -> ' || k.pseudo
+    FROM kocury k JOIN sciezki s ON k.szef = s.pseudo
+), pod AS (
+    SELECT pseudo AS korzen, pseudo FROM kocury
+    UNION ALL
+    SELECT p.korzen, k.pseudo FROM kocury k JOIN pod p ON k.szef = p.pseudo
+)
+SELECT s.imie, s.funkcja, s.sciezka,
+       SUM(k.przydzial_myszy + COALESCE(k.myszy_extra, 0)) AS budzet_rodzinny
+FROM sciezki s
+JOIN pod p ON p.korzen = s.pseudo
+JOIN kocury k ON k.pseudo = p.pseudo
+GROUP BY s.pseudo, s.imie, s.funkcja, s.sciezka
+ORDER BY budzet_rodzinny DESC, s.imie;
+```
+
+Wynik (zgadza się z przykładem z kartkówki):
+
+```text
+ imie   | funkcja  |             sciezka              | budzet_rodzinny
+---------+----------+----------------------------------+-----------------
+MRUCZEK | SZEFUNIO | TYGRYS                           |            1149
+BOLEK   | BANDZIOR | TYGRYS -> LYSY                   |             333
+KOREK   | BANDZIOR | TYGRYS -> ZOMBI                  |             247
+PUCEK   | LOWCZY   | TYGRYS -> RAFA                   |             247
+PUNIA   | LOWCZY   | TYGRYS -> ZOMBI -> KURKA         |             104
+MICKA   | MILUSIA  | TYGRYS -> LOLA                   |              72
+JACEK   | LOWCZY   | TYGRYS -> LYSY -> PLACEK         |              67
+ZUZIA   | LOWCZY   | TYGRYS -> LYSY -> SZYBKA         |              65
+RUDA    | MILUSIA  | TYGRYS -> MALA                   |              64
+BARI    | LAPACZ   | TYGRYS -> LYSY -> RURA           |              56
+SONIA   | MILUSIA  | TYGRYS -> ZOMBI -> PUSZYSTA      |              55
+BELA    | MILUSIA  | TYGRYS -> LYSY -> LASKA          |              52
+KSAWERY | LAPACZ   | TYGRYS -> RAFA -> MAN            |              51
+MELA    | LAPACZ   | TYGRYS -> RAFA -> DAMA           |              51
+CHYTRY  | DZIELCZY | TYGRYS -> BOLEK                  |              50
+LUCEK   | KOT      | TYGRYS -> ZOMBI -> KURKA -> ZERO |              43
+DUDEK   | KOT      | TYGRYS -> RAFA -> MALY           |              40
+LATKA   | KOT      | TYGRYS -> RAFA -> UCHO           |              40
 ```
